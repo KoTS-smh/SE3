@@ -1,0 +1,5 @@
+rootProject.name = 'crowdsourcingSystem'
+include 'server'
+include 'web'
+
+
