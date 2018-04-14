@@ -7,8 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @ControllerAdvice
+@EnableWebMvc
 public class ExceptionHandle {
 
     private final static org.slf4j.Logger LOGGER=LoggerFactory.getLogger(ExceptionHandle.class);
