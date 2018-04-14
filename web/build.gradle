@@ -10,8 +10,8 @@ task npmBuild(type: NpmTask, dependsOn: npmInstall) {
 
 //Gradle的java插件的jar任务，依赖npmBuild,即web子模块打jar包前必须运行npm run build
 jar.dependsOn npmBuild
-group 'com.sec'
-version '1.0-SNAPSHOT'
+group= 'com.sec'
+version= '1.0-SNAPSHOT'
 
 //调用npm run dev
 task npmDev(type: NpmTask, dependsOn: npmInstall) {
