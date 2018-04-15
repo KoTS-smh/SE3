@@ -17,6 +17,8 @@ import javax.annotation.Resource;
 import java.io.File;
 import org.apache.commons.io.FileUtils;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -56,9 +58,25 @@ public class UserController {
     }
 
     @RequestMapping("/user/register")
-    public Result register(@RequestBody UserModel userModel){
+    public Result register(@RequestBody UserModel userModel) throws IOException{
+        String inUsername = userModel.getUsername();
+        String inPassword = userModel.getPassword();
+        File file = new File("src/data/user.json");
+        String content = FileUtils.readFileToString(file, "UTF-8");
+
+        JSONArray array = new JSONArray(content);
+        JSONObject object = new JSONObject();
+        object.put("username", userModel.getUsername());
+        object.put("password", userModel.getPassword());
+        object.put("tel_number", userModel.getTel_number());
+        array.put(object);
+
+        FileUtils.write(file, array.toString());
+
 
         //userService.register();
+        System.out.println(userModel.getUsername());
+        System.out.println(userModel.getPassword());
         return ResultUtils.success();
     }
 

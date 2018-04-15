@@ -57,6 +57,7 @@ export default new Router({
                     path: '/createTask',
                     component: resolve => require(['../components/page/space/CreateTask.vue'], resolve)
                 }
+    
             ]
         },
         {
@@ -66,6 +67,10 @@ export default new Router({
         {
             path: '/allAnnotation',
             component:resolve => require(['src/components/page/annotation/allAnnotation.vue'],resolve)
+        },
+        {
+            path: '/register',
+            component: resolve => require(['../components/page/space/Register.vue'],resolve)
         }
     ]
 })
