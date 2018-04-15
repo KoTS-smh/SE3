@@ -94,28 +94,28 @@
         <el-dialog title="请输入标注分类" :visible.sync="dialogTableVisible">
             <el-form id="parentForm">
                 <el-form-item label="分类1">
-                    <el-input  auto-complete="off"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classification1"></el-input>
 
                 </el-form-item>
 
                 <el-form-item label="分类2">
-                    <el-input  auto-complete="off"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classification2"></el-input>
 
                 </el-form-item>
 
                 <el-form-item label="分类3">
-                    <el-input  auto-complete="off"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classification3"></el-input>
 
                 </el-form-item>
 
                 <el-form-item label="分类">
-                    <el-input  auto-complete="off"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classification4"></el-input>
 
                 </el-form-item>
             </el-form>
 
             <div style="text-align:right;">
-                <el-button type="primary">确认</el-button>
+                <el-button type="primary" @click="changeClassification">确认</el-button>
             </div>
         </el-dialog>
 
@@ -125,6 +125,7 @@
 
 <script>
 import upload from '../../common/upload.vue'
+import axios from 'axios'
 export default {
     name: 'app',
     components: {
@@ -133,6 +134,9 @@ export default {
   data() {
       return {
         imgList:[],
+        taskData: [],
+        apiUrl: 'localhost:8080/#/api/tasks',
+        item: {},
         options: [
             {
                 value: 'option1',
@@ -165,7 +169,12 @@ export default {
           desc: '',
           value: 0,
           input: '',
-          num: 0
+          num: 0,
+          classification1: '',
+          classification2: '',
+          classification3: '',
+          classification4: '',
+
         },
 
         action: 'http://upload.qiniu.com/', // 替换自己的上传链接
@@ -198,15 +207,19 @@ export default {
         },
         onSubmit() {
             var tmpName = this.form.name
-            var tmpType = this.form.region
+            var tmpType = this.value
             var tmpDate = this.form.date1 + this.form.date2
             var tmpPoint = this.form.value
             var tmpTimes = this.form.input
             var tmpLevel = this.form.num
             var tmpImgList = this.imgList
             var tmpNote = this.form.desc
+            var tmpC1 = this.form.classification1
+            var tmpC2 = this.form.classification2
+            var tmpC3 = this.form.classification3
+            var tmpC4 = this.form.classification4
 
-            function task(name, type, date, point, targetTimes, taskLevel, imgUrls, note){
+            function task(name, type, date, point, targetTimes, taskLevel, imgUrls, note, c1, c2, c3, c4){
                 this.name = name
                 this.type = type
                 this.date = date
@@ -215,16 +228,30 @@ export default {
                 this.taskLevel = taskLevel
                 this.imgUrls = imgUrls
                 this.note = note
+                this.c1 = c1
+                this.c2 = c2
+                this.c3 = c3
+                this.c4 = c4
             }
 
-            var newTask = new task(tmpName, tmpType, tmpDate, tmpPoint, tmpTimes, tmpLevel, tmpImgList, tmpNote)
+            var newTask = new task(tmpName, tmpType, tmpDate, tmpPoint, tmpTimes, tmpLevel, tmpImgList, tmpNote, tmpC1, tmpC2, tmpC3, tmpC4)
             var j = JSON.stringify(newTask)
             console.log(j)
+            
+            axios.get('http://localhost:8080/taskInfo', j).then(function (response) {
+                console.log(response);
+            }).catch(function(err) {
+                console.log(err);
+            });
+
         },
         addLabel() {
             var elFormItem = document.createElement('el-form-item')
             var parent = document.getElementById('parentForm')
             parent.appendChild(elFormItem)
+        },
+        changeClassification() {
+
         }
 
     },
@@ -235,6 +262,14 @@ export default {
             }
         }
     }
+}
+
+function download(content, fileName, contentType) {
+    var a = document.createElement("a");
+    var file = new Blob([content], {type: contentType});
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
 }
 </script>
 

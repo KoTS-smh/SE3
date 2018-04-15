@@ -33,6 +33,7 @@ module.exports = {
     }
   },
   module: {
+
       loaders: [
           {
               test: /\.js$/,
@@ -43,6 +44,7 @@ module.exports = {
               }
           }
       ],
+
     rules: [
       {
         test: /\.vue$/,
@@ -71,6 +73,9 @@ module.exports = {
       }
     ]
   },
+  node: {
+        fs: 'empty'
+    }
     // plugins: [
     //     new webpack.DllReferencePlugin({
     //       context: path.resolve(__dirname, '..'),

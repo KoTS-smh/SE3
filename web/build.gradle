@@ -18,3 +18,9 @@ task npmDev(type: NpmTask, dependsOn: npmInstall) {
     group = 'node'
     args = ['run', 'dev']
 }
+
+
+node {
+    download = true
+    version='9.2.0'
+}
