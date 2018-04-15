@@ -19,6 +19,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     export default {
         data: function(){
             return {
@@ -42,12 +43,28 @@
                 self.$refs[formName].validate((valid) => {
                     if (valid) {
                         localStorage.setItem('ms_username',self.ruleForm.username);
-                        self.$router.push('/readme');
+                        //self.$router.push('/readme');
                     } else {
                         console.log('error submit!!');
                         return false;
                     }
                 });
+
+                var userModel = JSON.stringify(this.ruleForm)
+                axios.post('http://localhost:8080/user/login', this.ruleForm).then(function(response){
+                   console.log(response);
+                   console.log(response.data.code);
+                   if(response.data.code != 0){
+                       self.open();
+                   }else{
+                       self.$router.push('/readme');
+                   }
+                }).catch(function(err){
+                    console.log(err);
+                }) 
+            },
+            open() {
+                this.$message('用户名或密码错误');
             }
         }
     }
