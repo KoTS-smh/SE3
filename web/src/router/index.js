@@ -7,7 +7,7 @@ export default new Router({
     routes: [
         {
             path: '/',
-            redirect: '/login'
+            redirect: '/guide'
         },
         {
             path: '/readme',
@@ -64,8 +64,16 @@ export default new Router({
             component: resolve => require(['../components/page/login/Login.vue'], resolve)
         },
         {
+            path:'/register',
+            component:resolve => require(['../components/page/register/Register.vue'],resolve)
+        },
+        {
             path: '/allAnnotation',
             component:resolve => require(['src/components/page/annotation/allAnnotation.vue'],resolve)
+        },
+        {
+            path:'/guide',
+            component:resolve => require(['../components/page/guide/Guide.vue'],resolve)
         }
     ]
 })
