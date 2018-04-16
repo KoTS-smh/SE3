@@ -40,6 +40,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     export default {
         data: function(){
             return {
@@ -63,7 +64,7 @@
                 self.$refs[formName].validate((valid) => {
                     if (valid) {
                         localStorage.setItem('ms_username',self.ruleForm.username);
-                        self.$router.push('/register');
+                        //self.$router.push('/readme');
                     } else {
                         console.log('error submit!!');
                         return false;
@@ -83,6 +84,22 @@
                         ?this.$router.go(-1)
                         :this.router.push('/guide')
                 })
+
+                var userModel = JSON.stringify(this.ruleForm)
+                axios.post('http://localhost:8080/user/login', this.ruleForm).then(function(response){
+                   console.log(response);
+                   console.log(response.data.code);
+                   if(response.data.code != 0){
+                       self.open();
+                   }else{
+                       self.$router.push('/readme');
+                   }
+                }).catch(function(err){
+                    console.log(err);
+                })
+            },
+            open() {
+                this.$message('用户名或密码错误');
             }
         }
     }
@@ -119,6 +136,7 @@
         text-align: center;
         font-size:30px;
         color: #fff;
+
     }
     .ms-login{
         position: absolute;
