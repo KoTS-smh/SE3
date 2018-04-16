@@ -41,12 +41,12 @@
                         </el-form-item>
                     <!--手机填写区域-->
                         <el-form-item prop="phone">
-                            <el-input v-model="ruleForm.phone" placeholder="phone"></el-input>
+                            <el-input v-model="ruleForm.tel_number" placeholder="phone"></el-input>
                         </el-form-item>
                 </el-form>
                 <!--注册按钮-->
                 <div class="register-btn">
-                    <el-button icon="icon-person_add" type="primary" @click="submitForm('ruleForm')" style="width: 100%">  注册</el-button>
+                    <el-button icon="icon-person_add" type="primary" @click="register()" style="width: 100%">  注册</el-button>
                 </div>
                 <!--取消按钮-->
                 <div class="cancel-btn">
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import axios from 'axios'
     export default {
         name: "Register",
         data: function(){
@@ -102,7 +103,7 @@
                     username: '',
                     password: '',
                     passwordConfirm:'',
-                    phone:''
+                    tel_number:''
                 },
                 rules: {
                     username: [
@@ -114,16 +115,30 @@
                     passwordConfirm:[
                         { validator:checkPasswordConfirm,trigger:'blur'}
                     ],
-                    phone:[
+                    tel_number:[
                         { validator:checkPhone,trigger:'blur'}
                     ]
                 }
             }
         },
         methods: {
-            submitForm(ruleForm) {
-
+            register() {
+                const self = this;
+                //judge before register
+                
+                axios.post('http://localhost:8080/user/register', this.ruleForm).then(function(response){
+                    self.success();
+                    self.sleep(1000).then(() => {
+                        self.$router.push('/login')
+                    });
+                    
+                }).catch(function(err){
+                    console.log(err);
+                    self.failed();
+                })
+                
             },
+
             goBack(){
                 this.$confirm('您将返回离开登录界面，是否确定？','提示',{
                     confirmButtonText:'确定',
@@ -134,6 +149,16 @@
                         ?this.$router.go(-1)
                         :this.router.push('/guide')
                 })
+            },
+
+            success() {
+                this.$message('注册成功,请登陆');
+            },
+            failed() {
+                this.$message('注册失败，请检查网络情况')
+            },
+            sleep(time) {
+                return new Promise((resolve) => setTimeout(resolve, time));
             }
         }
     }

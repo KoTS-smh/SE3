@@ -58,9 +58,9 @@ public class UserController {
     }
 
     /**
-     *
-     * @param userModel
-     * @return
+     * 用户注册功能
+     * @param userModel 用户信息的一层封装
+     * @return 注册结果
      * @throws IOException
      */
     @RequestMapping("/user/register")
@@ -77,7 +77,7 @@ public class UserController {
         object.put("tel_number", userModel.getTel_number());
         array.put(object);
 
-        FileUtils.write(file, array.toString());
+        FileUtils.write(file, array.toString(2));
 
 
         //userService.register();
