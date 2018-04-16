@@ -57,6 +57,12 @@ public class UserController {
         throw new ResultException("用户名或密码错误", 10001);
     }
 
+    /**
+     *
+     * @param userModel
+     * @return
+     * @throws IOException
+     */
     @RequestMapping("/user/register")
     public Result register(@RequestBody UserModel userModel) throws IOException{
         String inUsername = userModel.getUsername();
