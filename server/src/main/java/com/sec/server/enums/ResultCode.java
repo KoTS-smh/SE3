@@ -5,7 +5,8 @@ public enum ResultCode {
     SUCCESS(0, "请求成功"),
     UNKNOWN_ERROR(-1,"未知错误"),
     WEAK_NET_WORK(1, "网络异常，请稍后重试"),
-    PASSWORD_ERROR(10001, "用户名或密码错误"),
+    PASSWORD_ERROR(10001, "密码错误"),
+    UNKNOWN_USER_ERROR(10010,"用户名不存在"),
     PARAMETER_ERROR(10101, "参数错误");
 
     private int code;

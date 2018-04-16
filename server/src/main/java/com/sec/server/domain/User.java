@@ -1,13 +1,15 @@
 package com.sec.server.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sec.server.enums.UserLevel;
 
 public class User {
     private long userId;
     private String username;
     private String password;
-    private int level;
+    private UserLevel userLevel;
     private long point;
+    private String tel_number;
 
     public long getUserId() {
         return userId;
@@ -34,12 +36,12 @@ public class User {
         this.password = password;
     }
 
-    public int getLevel() {
-        return level;
+    public UserLevel getUserLevel() {
+        return userLevel;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
+    public void setUserLevel(UserLevel userLevel) {
+        this.userLevel = userLevel;
     }
 
     public long getPoint() {
@@ -48,5 +50,13 @@ public class User {
 
     public void setPoint(long point) {
         this.point = point;
+    }
+
+    public String getTel_number() {
+        return tel_number;
+    }
+
+    public void setTel_number(String tel_number) {
+        this.tel_number = tel_number;
     }
 }

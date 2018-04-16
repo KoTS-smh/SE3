@@ -60,7 +60,7 @@
                     }
                 }).catch(function(err){
                     console.log(err);
-                }) 
+                })
             }
         }
     }
@@ -100,12 +100,12 @@
     .login-btn button{
         width:100%;
         height:36px;
-        
+
     }
 
     .cancel-btn{
         text-align: center;
-        
+
         padding: 5px;
     }
     .cancel-btn button{

@@ -28,7 +28,7 @@
             <el-table-column prop="address" label="备注" :formatter="formatter">
             </el-table-column>
             <el-table-column label="操作" width="180">
-                <template scope="scope">
+                <template slot-scope="scope">
                     <el-button size="small"
                             @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                     <el-button size="small" type="danger"
@@ -59,7 +59,7 @@
                     <el-input v-model="selectTable.address" auto-complete="off"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    
+
                 <div class="content-title">支持拖拽</div>
                 <el-upload
                     class="upload-demo"
@@ -79,7 +79,7 @@
                                     extensions="png,gif,jpeg,jpg"
                                     @:imageuploaded="imageuploaded"
                                     @:errorhandle="handleError"></vue-core-image-upload> -->
-            
+
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -105,7 +105,7 @@
                 </el-form-item>
                 <el-form-item>
                 <br>
-                
+
                 <el-upload
                     class="upload-demo"
                     drag
@@ -125,7 +125,7 @@
                                     extensions="png,gif,jpeg,jpg"
                                     @:imageuploaded="imageuploaded"
                                     @:errorhandle="handleError"></vue-core-image-upload> -->
-            
+
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -135,7 +135,7 @@
         </el-dialog>
     </div>
 
-    
+
 </template>
 
 <script>
@@ -173,7 +173,7 @@
                         }
                     }
                     if(!is_del){
-                        if(d.address.indexOf(self.select_cate) > -1 && 
+                        if(d.address.indexOf(self.select_cate) > -1 &&
                             (d.name.indexOf(self.select_word) > -1 ||
                             d.address.indexOf(self.select_word) > -1)
                         ){
@@ -195,7 +195,7 @@
                 let self = this;
                 // if(process.env.NODE_ENV === 'development'){
                 //     self.url = '/ms/table/list';
-                    
+
                 // };
                 self.$axios.get(self.url, {page:self.cur_page}).then((res) => {
                     self.tableData = res.data.list;
@@ -215,7 +215,7 @@
                 this.selectTable = row;
                 this.address = row.address;
                 this.dialogVisible = true;
-                
+
             },
             handleDelete(index, row) {
                 this.$message.error('删除第'+(index+1)+'行');

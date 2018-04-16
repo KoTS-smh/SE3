@@ -26,7 +26,6 @@ public class UserModel {
     }
 
     @NotBlank(message = "电话号码不能为空")
-
     public String getTel_number() {
         return tel_number;
     }

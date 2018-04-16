@@ -20,9 +20,7 @@
         <el-dropdown>
           <i class="el-icon-arrow-down" style="margin-right: 10px"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>查看</el-dropdown-item>
-            <el-dropdown-item>新增</el-dropdown-item>
-            <el-dropdown-item>删除</el-dropdown-item>
+            <el-dropdown-item>退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-menu>
@@ -30,8 +28,8 @@
     <el-container style="height: 656px">
       <el-container style="height: 656px">
         <el-main style="height: 596px;display: flex;align-items:center;justify-content: center">
-            <div :style="{backgroundImage:imgUrl,width:imgX+'px',height:imgY+'px'}">
-              <canvas id="canvas" style="width: 100%; height: 100%">
+            <div style="width: 100%;height: 100%">
+              <canvas id="canvas" :style="{backgroundImage:imgUrl,width:imgX+'px',height:imgY+'px'}">
               </canvas>
             </div>
         </el-main>
@@ -50,18 +48,18 @@
       </el-container>
       <el-aside width="400px" style="border-left: gainsboro 1px solid">
         <el-row style="margin-top: 20px">
-          <el-col :span="6">
+          <el-col :span="6" style="display: flex;align-items:center;justify-content: center">
             <span>任务进度:</span>
           </el-col>
           <el-col :span="18">
             <el-progress :text-inside="true" :stroke-width="18" :percentage="70" style="width: 280px"></el-progress>
           </el-col>
         </el-row>
-        <div style="margin-top: 20px">
+        <div style="margin-top: 20px;display: flex;align-items:center;justify-content: center">
           <i class="el-icon-edit"></i>
-          <span style="font-weight: bold;color:black">标注信息</span>
+          <span style="font-weight: bold">标注信息</span>
         </div>
-        <div>
+        <div style="display: flex;align-items:center;justify-content: center">
         <el-input
           type="textarea"
           :rows="6"
@@ -72,7 +70,7 @@
         </el-input>
         </div>
         <el-row>
-          <el-button-group style="margin-left: 220px;margin-top: 20px">
+          <el-button-group style="margin-left: 230px;margin-top: 20px">
             <el-tooltip content="保存" placement="bottom">
               <el-button type="primary" icon="el-icon-upload" style="width: 80px"></el-button>
             </el-tooltip>
@@ -81,7 +79,7 @@
             </el-tooltip>
           </el-button-group>
         </el-row>
-        <el-button type="primary" style="position: relative; left: 145px; top: 300px">离 开 <i class="el-icon-d-arrow-right"></i></el-button>
+        <el-button type="primary" style="position: relative; left: 295px; top: 300px">离 开 <i class="el-icon-d-arrow-right"></i></el-button>
       </el-aside>
     </el-container>
   </el-container>
@@ -91,8 +89,10 @@
 <script>
   let img =new Image();
   img.src='https://p.upyun.com/docs/cloud/demo.jpg';
-  let imgX,imgY;
     export default {
+      created(){
+
+      },
       data() {
         return {
           activeIndex: '1',
@@ -112,6 +112,13 @@
         },
         handleCurrentChange(val) {
           console.log(`当前页: ${val}`);
+        },
+        fetchData(){
+            axios.get('http://localhost:8080/annotation/getAll',{
+                params:{
+                    annotationId: localStorage.getItem('')
+                }
+            })
         }
       },
         name: "allAnnotation"

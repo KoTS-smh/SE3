@@ -1,14 +1,9 @@
 package com.sec.server.controller;
 
-import com.sec.server.domain.Task;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
-import org.apache.commons.io.FileUtils;
-import org.json.JSONArray;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.File;
-import java.io.IOException;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TaskController {
@@ -25,22 +20,25 @@ public class TaskController {
         return ResultUtils.success();
     }
 
-    @RequestMapping("/task/{taskId}")
-    public Result getTaskInfo(@PathVariable long taskId){
+    @RequestMapping("/task/taskInfo")
+    public Result getTaskInfo(long taskId){
         //todo
         return ResultUtils.success();
     }
 
-    @RequestMapping("/task/addTask")
-    public Result saveTask(@RequestBody Task task) throws IOException{
-        File file = new File("src/data/task.json");
-        String content = FileUtils.readFileToString(file, "UTF-8");
-        JSONArray array = new JSONArray(content);
-
-
-        return null;
+    @RequestMapping("/task/create")
+    public Result createTask(String task){
+        return ResultUtils.success();
     }
 
+    @RequestMapping("/task/update")
+    public Result updateTask(String task){
+        return ResultUtils.success();
+    }
 
+    @RequestMapping("/task/delete")
+    public Result deleteTask(long taskId){
+        return ResultUtils.success();
+    }
 
 }

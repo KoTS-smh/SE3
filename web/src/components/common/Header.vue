@@ -18,7 +18,7 @@
     export default {
         data() {
             return {
-                name: 'linxin'
+                name: ''
             }
         },
         computed:{
@@ -29,7 +29,7 @@
         },
         methods:{
             handleCommand(command) {
-                if(command == 'loginout'){
+                if(command === 'loginout'){
                     localStorage.removeItem('ms_username')
                     this.$router.push('/login');
                 }

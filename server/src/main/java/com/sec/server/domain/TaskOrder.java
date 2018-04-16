@@ -1,10 +1,8 @@
 package com.sec.server.domain;
 
-import java.util.HashMap;
-import java.util.List;
 
 public class TaskOrder {
-
+    private long taskOrderId;
     private long taskId;
     private long acceptUserId;
     private boolean isFinished;
@@ -69,4 +67,11 @@ public class TaskOrder {
         this.annotationId = annotationId;
     }
 
+    public long getTaskOrderId() {
+        return taskOrderId;
+    }
+
+    public void setTaskOrderId(long taskOrderId) {
+        this.taskOrderId = taskOrderId;
+    }
 }
