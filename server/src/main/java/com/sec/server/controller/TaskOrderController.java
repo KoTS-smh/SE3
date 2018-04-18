@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TaskOrderController {
 
-    @RequestMapping("/taskOrder/getAll")
+    @RequestMapping("/taskOrder/orderInfo")
     public Result getAllTaskOrder(long taskOrderId){
         return ResultUtils.success();
     }

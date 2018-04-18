@@ -7,7 +7,7 @@ public class TaskOrder {
     private long acceptUserId;
     private boolean isFinished;
     private int lastPic;
-    private double progress;
+    private int isDone;
     private int rate;
     private long annotationId;
 
@@ -43,14 +43,6 @@ public class TaskOrder {
         this.lastPic = lastPic;
     }
 
-    public double getProgress() {
-        return progress;
-    }
-
-    public void setProgress(double progress) {
-        this.progress = progress;
-    }
-
     public int getRate() {
         return rate;
     }
@@ -73,5 +65,13 @@ public class TaskOrder {
 
     public void setTaskOrderId(long taskOrderId) {
         this.taskOrderId = taskOrderId;
+    }
+
+    public int getIsDone() {
+        return isDone;
+    }
+
+    public void setIsDone(int isDone) {
+        this.isDone = isDone;
     }
 }
