@@ -4,6 +4,7 @@ import com.sec.server.domain.User;
 import com.sec.server.enums.UserLevel;
 import com.sec.server.model.UserModel;
 import com.sec.server.repository.UserDao;
+import com.sec.server.repository.impl.UserDaoImpl;
 import com.sec.server.service.UserService;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +20,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(UserModel userModel) {
+    public void register(UserModel userModel) {
+        userDao = new UserDaoImpl();
         User user=new User();
         user.setPassword(userModel.getPassword());
         user.setPoint(0);
         user.setUsername(userModel.getUsername());
         user.setUserLevel(UserLevel.LEVEL1);
-        return userDao.register(user);
+
+        System.out.println("Service" + user.getUsername());
+        userDao.register(user);
+
     }
 
     @Override

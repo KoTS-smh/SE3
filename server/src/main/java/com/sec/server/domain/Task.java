@@ -7,7 +7,9 @@ import java.util.List;
 
 public class Task {
     private long taskId;
-    private long postUserId;
+    //private long postUserId;
+
+    private String taskname;
     private String taskInfo;
     private List<String> imgUrlList;
     private AnnotationType annotationType;
@@ -15,8 +17,8 @@ public class Task {
     private Date beginDate;
     private Date endDate;
     private int totalPoints;
-    private List<Long> acceptUserIds;
-    private int minUserLevel;
+//    private List<Long> acceptUserIds;
+    private int taskLevel;
     private int maxParticipator;
 
     public long getTaskId() {
@@ -27,13 +29,13 @@ public class Task {
         this.taskId = taskId;
     }
 
-    public long getPostUserId() {
-        return postUserId;
-    }
-
-    public void setPostUserId(long postUserId) {
-        this.postUserId = postUserId;
-    }
+//    public long getPostUserId() {
+//        return postUserId;
+//    }
+//
+//    public void setPostUserId(long postUserId) {
+//        this.postUserId = postUserId;
+//    }
 
     public String getTaskInfo() {
         return taskInfo;
@@ -41,6 +43,14 @@ public class Task {
 
     public void setTaskInfo(String taskInfo) {
         this.taskInfo = taskInfo;
+    }
+
+    public String getTaskname() {
+        return taskname;
+    }
+
+    public void setTaskname(String taskname) {
+        this.taskname = taskname;
     }
 
     public List<String> getImgUrlList() {
@@ -91,20 +101,20 @@ public class Task {
         this.totalPoints = totalPoints;
     }
 
-    public List<Long> getAcceptUserIds() {
-        return acceptUserIds;
+//    public List<Long> getAcceptUserIds() {
+//        return acceptUserIds;
+//    }
+//
+//    public void setAcceptUserIds(List<Long> acceptUserIds) {
+//        this.acceptUserIds = acceptUserIds;
+//    }
+//
+    public int getTaskLevel() {
+        return taskLevel;
     }
 
-    public void setAcceptUserIds(List<Long> acceptUserIds) {
-        this.acceptUserIds = acceptUserIds;
-    }
-
-    public int getMinUserLevel() {
-        return minUserLevel;
-    }
-
-    public void setMinUserLevel(int minUserLevel) {
-        this.minUserLevel = minUserLevel;
+    public void setTaskLevel(int taskLevel) {
+        this.taskLevel = taskLevel;
     }
 
     public int getMaxParticipator() {

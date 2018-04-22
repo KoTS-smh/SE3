@@ -17,20 +17,18 @@
             <el-button type="primary" icon="search" @click="search">搜索</el-button>
             <el-button type="primary"  @click="newTask">新建</el-button>
         </div>
-        <el-table :data="data" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column prop="date" label="日期" sortable width="150">
-            </el-table-column>
-            <el-table-column prop="name" label="任务名称" width="120">
-            </el-table-column>
-            <el-table-column prop="state" label="状态" width="120">
-            </el-table-column>
-            <el-table-column prop="address" label="备注" :formatter="formatter">
-            </el-table-column>
-            <el-table-column label="操作" width="180">
+        <el-table :data="tableData" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange">
+            <el-table-column prop="taskname" label="任务名称" width="140"></el-table-column>
+            <el-table-column prop="taskId" label="任务Id" width="140"></el-table-column>
+            <el-table-column prop="submited" label="任务状态" width="140"></el-table-column>
+            <el-table-column prop="degreeOfCompletion" label="完成度" width="140"></el-table-column>
+            <el-table-column prop="endDate" label="截止时间" width="210"></el-table-column>
+            <el-table-column prop="rate" label="评分" width="140"></el-table-column>
+
+            <el-table-column label="操作" width="200">
                 <template slot-scope="scope">
                     <el-button size="small"
-                            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                            @click="handleEdit(scope.$index, scope.row)">详情</el-button>
                     <el-button size="small" type="danger"
                             @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                 </template>
@@ -87,63 +85,18 @@
                 <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
             </div>
         </el-dialog>
-
-
-        <el-dialog title="新建任务" :visible.sync="newDialogVisible">
-            <el-form>
-                <el-form-item label="任务名称" label-width="100px">
-                    <el-input  auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="日期" label-width="100px">
-                    <el-input  auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="状态" label-width="100px">
-                    <el-input  auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="备注" label-width="100px">
-                    <el-input  auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item>
-                <br>
-
-                <el-upload
-                    class="upload-demo"
-                    drag
-                    action="/api/posts/"
-                    multiple
-                    style="text-align:center">
-                    <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                    <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-                </el-upload>
-
-                <img class="pre-img" :src="src" alt="">
-                <!-- <vue-core-image-upload :class="['pure-button','pure-button-primary','js-btn-crop']"
-                                    :crop="true"
-                                    text="上传图片"
-                                    url="/api/posts/"
-                                    extensions="png,gif,jpeg,jpg"
-                                    @:imageuploaded="imageuploaded"
-                                    @:errorhandle="handleError"></vue-core-image-upload> -->
-
-                </el-form-item>
-            </el-form>
-            <div slot="footer" class="dialog-footer">
-                <el-button @click="newDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="newDialogVisible = false">确 定</el-button>
-            </div>
-        </el-dialog>
     </div>
 
 
 </template>
 
 <script>
+    import axios from 'axios';
     import VueCoreImageUpload  from 'vue-core-image-upload';
     export default {
         data() {
             return {
-                url: './static/testtable.json',
+                //url: './static/testtable.json',
                 tableData: [],
                 cur_page: 1,
                 multipleSelection: [],
@@ -246,7 +199,52 @@
             },
             newTask(){
                 this.newDialogVisible = true;
+            },
+
+            placeTheData() {
+                var username = localStorage.getItem('username')
+                axios.post('http://localhost:8080/taskOrder/getAll', {"username": username, "password": ''})
+                .then(response => {
+                    console.log(response.data.data);
+                    var list = response.data.data;
+                    
+                    var j;
+                    for(j = 0;j < response.data.data.length; j++){
+                        if(response.data.data[j].submited == false){
+                            response.data.data[j].submited = "未提交";
+                        }else{
+                            response.data.data[j].submited = "已提交";
+                        }
+
+                        var date = new Date(response.data.data[j].endDate);
+                        var year = date.getFullYear() + '-';
+                        var month = date.getMonth() + '-';
+                        var day = date.getDay() + ' ';
+                        var hour = date.getHours() + ':';
+                        var minute = date.getMinutes();
+
+                        response.data.data[j].endDate = year + month + day + hour + minute;
+
+                        var tmprate = response.data.data[j].rate;
+                        if(tmprate != null && tmprate != undefined && tmprate != -1){
+                            //donothing
+                        }else{
+                            response.data.data[j].rate = '未评分';
+                        }
+
+                    }
+                    this.tableData = list;
+                }
+                    
+                ).catch(function(err) {
+                    console.log(err);
+                })
+                
             }
+        },
+        
+        mounted() {
+            this.placeTheData();
         }
     }
 </script>

@@ -127,6 +127,7 @@ import axios from 'axios'
                 //judge before register
                 
                 axios.post('http://localhost:8080/user/register', this.ruleForm).then(function(response){
+                    console.log(response);
                     self.success();
                     self.sleep(1000).then(() => {
                         self.$router.push('/login')

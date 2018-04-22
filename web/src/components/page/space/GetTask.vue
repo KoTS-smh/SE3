@@ -14,21 +14,7 @@
         </div>
 
         <el-row>
-        <el-col :span="12" class="taskInfos"><div class="grid-content bg-purple">
-            <!-- <h2>
-            <span>任务名称: </span>
-            <span>{{task.name}}</span>
-            </h2>
-
-            <div>
-                <span>发起人: </span>
-                <span>{{ task.sponsor }}</span>
-            </div>
-
-            <div class="block">
-                <span>开始时间: </span>
-
-            </div> -->
+        <el-col :span="8" class="taskInfos"><div class="grid-content bg-purple">
 
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
                 <el-form-item label="任务名称" prop="name" class="formItems">
@@ -49,13 +35,17 @@
                 <el-form-item label="任务级别" prop="taskLevel" class="formItems">
                     <el-input v-model="ruleForm.taskLevel" readonly></el-input>
                 </el-form-item>
+                <el-form-item label="奖励积分" prop="totalPoint" class="formItems">
+                    <el-input v-model="ruleForm.totalPoint" readonly></el-input>
+                </el-form-item>
                 <el-form-item label="任务进度" prop="process" class="formItems">
                     <el-progress type="circle" :percentage="0"></el-progress>
                 </el-form-item>
+                
 
             </el-form>
         </div></el-col>
-        <el-col :span="12"><div class="grid-content bg-purple-light" >
+        <el-col :span="16"><div class="grid-content bg-purple-light" >
             <el-carousel height="400px">
             <el-carousel-item v-for="item in imgList" :key="item" >
                 <img :src="item" alt="">
@@ -121,7 +111,8 @@ export default {
                 startTime: '2018/4/6 10:27',
                 endTime: '2018/5/6 10:27',
                 tagType: '标框标注',
-                taskLevel: 2
+                taskLevel: 2,
+                totalPoint: 20
             },
             rules: {
 

@@ -7,7 +7,7 @@ public interface UserService {
     //登录方法
     User login(String username,String password);
     //注册方法
-    User register(UserModel userModel);
+    void register(UserModel userModel);
     //更新用户信息
     void updateUser(User user);
     //注销用户

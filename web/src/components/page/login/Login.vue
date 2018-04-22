@@ -1,6 +1,6 @@
 <template>
     <div class="login-wrap">
-        <div class="ms-title">后台管理系统</div>
+        <div class="ms-title">MRGS众包标注系统</div>
         <div class="ms-login">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
                 <el-form-item prop="username">
@@ -12,10 +12,7 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </div>
-                <div class="cancel-btn">
-                    <el-button type="primary">取消</el-button>
-                </div>
-                <p style="font-size:12px;line-height:30px;color:#999;">Tips : 用户名和密码随便填。</p>
+                
             </el-form>
         </div>
     </div>
@@ -52,15 +49,23 @@
                         return false;
                     }
                 });
-
-                var userModel = JSON.stringify(this.ruleForm)
+                var username = this.ruleForm.username
+                console.log(username)
                 axios.post('http://localhost:8080/user/login', this.ruleForm).then(function(response){
-                    if(response.code != 0){
-                        this.$message('这是一条消息提示');
-                    }
+                   console.log(response);
+                   console.log(response.data.code);
+                   localStorage.setItem("username", username);
+                   if(response.data.code != 0){
+                       self.open();
+                   }else{
+                       self.$router.push('/readme');
+                   }
                 }).catch(function(err){
                     console.log(err);
-                })
+                }) 
+            },
+            open() {
+                this.$message('用户名或密码错误');
             }
         }
     }
@@ -87,7 +92,7 @@
         left:50%;
         top:50%;
         width:300px;
-        height:220px;
+        height:160px;
         margin:-150px 0 0 -190px;
         padding:40px;
         border-radius: 5px;
@@ -95,20 +100,8 @@
     }
     .login-btn{
         text-align: center;
-        padding: 5px;
     }
     .login-btn button{
-        width:100%;
-        height:36px;
-
-    }
-
-    .cancel-btn{
-        text-align: center;
-
-        padding: 5px;
-    }
-    .cancel-btn button{
         width:100%;
         height:36px;
     }

@@ -1,6 +1,8 @@
 package com.sec.server.controller;
 
 import com.sec.server.domain.User;
+import com.sec.server.enums.ResultCode;
+import com.sec.server.exception.ResultException;
 import com.sec.server.model.UserModel;
 import com.sec.server.service.UserService;
 import com.sec.server.utils.Result;
@@ -32,8 +34,13 @@ public class UserController {
 
     @RequestMapping("/user/register")
     public Result register(@RequestBody UserModel userModel) throws IOException{
-        User user = userService.register(userModel);
-        return ResultUtils.success(user);
+        try {
+            System.out.println("controller" + userModel.getUsername());
+            userService.register(userModel);
+        }catch (Exception e){
+            throw new ResultException(ResultCode.UNKNOWN_USER_ERROR);
+        }
+        return ResultUtils.success();
     }
 
     @RequestMapping("/user/update")

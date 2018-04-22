@@ -1,15 +1,27 @@
 package com.sec.server.domain;
 
 
+import java.util.Date;
+
 public class TaskOrder {
     private long taskOrderId;
     private long taskId;
+    private String taskname;
     private long acceptUserId;
-    private boolean isFinished;
+    private boolean isSubmited;
     private int lastPic;
-    private int isDone;
+    private int degreeOfCompletion;
     private int rate;
     private long annotationId;
+    private Date endDate;
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
 
     public long getTaskId() {
         return taskId;
@@ -27,12 +39,12 @@ public class TaskOrder {
         this.acceptUserId = acceptUserId;
     }
 
-    public boolean isFinished() {
-        return isFinished;
+    public boolean isSubmited() {
+        return isSubmited;
     }
 
-    public void setFinished(boolean finished) {
-        isFinished = finished;
+    public void setSubmited(boolean submited) {
+        isSubmited = submited;
     }
 
     public int getLastPic() {
@@ -67,11 +79,19 @@ public class TaskOrder {
         this.taskOrderId = taskOrderId;
     }
 
-    public int getIsDone() {
-        return isDone;
+    public int getDegreeOfCompletion() {
+        return degreeOfCompletion;
     }
 
-    public void setIsDone(int isDone) {
-        this.isDone = isDone;
+    public void setDegreeOfCompletion(int degreeOfCompletion) {
+        this.degreeOfCompletion = degreeOfCompletion;
+    }
+
+    public String getTaskname() {
+        return taskname;
+    }
+
+    public void setTaskname(String taskname) {
+        this.taskname = taskname;
     }
 }

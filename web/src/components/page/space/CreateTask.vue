@@ -5,16 +5,10 @@
                 <div class="grid-content bg-purple">
                     <el-form ref="form" :model="form" label-width="100px">
                             <el-form-item label="任务名称">
-                                <el-input v-model="form.name"></el-input>
+                                <el-input v-model="form.taskname"></el-input>
                             </el-form-item>
                             <el-form-item label="标注类型">
-                                <!-- <el-select v-model="form.region"  placeholder="请选择标注类型">
-                                    <el-option label="标框标注" value=""></el-option>
-                                    <el-option label="分类标注" value=""></el-option>
-                                    <el-option label="区域标注" value=""></el-option>
-                                    <el-option label="整体标注" value=""></el-option>
-                                </el-select> -->
-                                <el-select v-model="value" placeholder="请选择">
+                                <el-select v-model="annotationType" placeholder="请选择">
                                     <el-option
                                         v-for="item in options"
                                         :key="item.value"
@@ -24,31 +18,33 @@
                                 </el-select>
                             </el-form-item>
 
-                            <el-form-item label="截止时间">
-                                <el-col :span="11">
-                                <el-date-picker type="date" placeholder="选择日期" v-model="form.date1" style="width: 100%;"></el-date-picker>
+                            <el-form-item label="开始时间">
+                                <el-col :span="14">
+                                <el-date-picker type="datetime" placeholder="选择日期和时间" v-model="form.beginDate" style="width: 100%;"></el-date-picker>
                                 </el-col>
-                                <el-col class="line" :span="2">-</el-col>
-                                <el-col :span="11">
-                                <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
+                            </el-form-item>
+
+                            <el-form-item label="截止时间">
+                                <el-col :span="14">
+                                <el-date-picker type="datetime" placeholder="选择日期和时间" v-model="form.endDate" style="width: 100%;"></el-date-picker>
                                 </el-col>
                             </el-form-item>
 
                             <el-form-item label="奖励积分">
                                 <div class="block">
                                     <el-slider
-                                        v-model="form.value"
+                                        v-model="form.totalPoints"
                                         show-input>
                                     </el-slider>
                                 </div>
                             </el-form-item>
 
-                            <el-form-item label="目标标注次数">
-                                <el-input v-model="form.input" placeholder="请输入标注次数"></el-input>
+                            <el-form-item label="最大标注人数">
+                                <el-input v-model="form.maxParticipator" placeholder="请输入最大标注人数"></el-input>
                             </el-form-item>
 
                             <el-form-item label="任务级别">
-                                <el-input-number v-model="form.num" @change="handleChange" :min="1" :max="10" label="描述文字"></el-input-number>
+                                <el-input-number v-model="form.taskLevel" @change="handleChange" :min="1" :max="10" label="描述文字"></el-input-number>
                                 <p id="description">任务级别越高，接取任务需要的用户级别也越高，0级任务表示所有用户都可以接取</p>
                             </el-form-item>
 
@@ -69,7 +65,7 @@
                             </el-form-item>
 
                             <el-form-item label="备注">
-                                <el-input type="textarea" v-model="form.desc"></el-input>
+                                <el-input type="textarea" v-model="form.taskInfo"></el-input>
                             </el-form-item>
                             <el-form-item>
                                 <el-button type="primary" @click="onSubmit">立即创建</el-button>
@@ -82,7 +78,7 @@
             <el-col :span="12">
                 <div class="grid-content bg-purple">
                     <el-carousel height="400px">
-                    <el-carousel-item v-for="item in imgList" :key="item" >
+                    <el-carousel-item v-for="item in form.imgList" :key="item" >
                         <img :src="item" alt="" >
                     </el-carousel-item>
                     </el-carousel>
@@ -115,7 +111,7 @@
             </el-form>
 
             <div style="text-align:right;">
-                <el-button type="primary" @click="changeClassification">确认</el-button>
+                <el-button type="primary" @click="dialogTableVisible = false">确认</el-button>
             </div>
         </el-dialog>
 
@@ -155,21 +151,18 @@ export default {
                 label: '整体标注'
             }
         ],
-        value: '',
+        
 
         dialogTableVisible: false,
         form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: '',
-          value: 0,
-          input: '',
-          num: 0,
+          taskname: '',
+          beginDate: '',
+          endDate: '',
+          taskInfo: '',
+          totalPoints: 0,
+          maxParticipator: '',
+          taskLevel: 0,
+          imgList: [],
           classification1: '',
           classification2: '',
           classification3: '',
@@ -180,10 +173,11 @@ export default {
         action: 'http://upload.qiniu.com/', // 替换自己的上传链接
         accept: 'image/png, image/jpeg, image/gif',
         multiple: true,
-        token: 'Ujh0-lp7Hk_fUrta0DWEQeBR4sWlavb3firT_Ivd:VmCHx8isaXhNM5VdessXh92qL6w=:eyJzY29wZSI6Im1yZ3MtYnVja2V0IiwiZGVhZGxpbmUiOjE1MjMzOTg1MTh9',
+        token: 'Ujh0-lp7Hk_fUrta0DWEQeBR4sWlavb3firT_Ivd:iTd2eMcBrkdGxw6Sw_mIxV7g0bM=:eyJzY29wZSI6Im1yZ3MtYnVja2V0IiwiZGVhZGxpbmUiOjE1MjQwNjA0OTh9',
         hashes: [],
         keys: [],
-        uploadMsg: []
+        uploadMsg: [],
+        annotationType: ''
       }
     },
     methods: {
@@ -194,7 +188,7 @@ export default {
         uploadFile (res) {
             this.hashes.push(`http://p6r9un2qj.bkt.clouddn.com/${res.hash}`)
             this.keys.push(`http://p6r9un2qj.bkt.clouddn.com/${res.key}`)
-            this.imgList.push(`http://p6r9un2qj.bkt.clouddn.com/${res.key}`)
+            this.form.imgList.push(`http://p6r9un2qj.bkt.clouddn.com/${res.key}`)
         },
         uploadErr (res) {
             this.uploadMsg.push(JSON.stringify(res))
@@ -206,40 +200,12 @@ export default {
 
         },
         onSubmit() {
-            var tmpName = this.form.name
-            var tmpType = this.value
-            var tmpDate = this.form.date1 + this.form.date2
-            var tmpPoint = this.form.value
-            var tmpTimes = this.form.input
-            var tmpLevel = this.form.num
-            var tmpImgList = this.imgList
-            var tmpNote = this.form.desc
-            var tmpC1 = this.form.classification1
-            var tmpC2 = this.form.classification2
-            var tmpC3 = this.form.classification3
-            var tmpC4 = this.form.classification4
+            const self = this
+            this.form.annotationType = this.annotationType
+            axios.post('http://localhost:8080/task/create', this.form).then(function (response) {
 
-            function task(name, type, date, point, targetTimes, taskLevel, imgUrls, note, c1, c2, c3, c4){
-                this.name = name
-                this.type = type
-                this.date = date
-                this.point = point
-                this.targetTimes = targetTimes
-                this.taskLevel = taskLevel
-                this.imgUrls = imgUrls
-                this.note = note
-                this.c1 = c1
-                this.c2 = c2
-                this.c3 = c3
-                this.c4 = c4
-            }
-
-            var newTask = new task(tmpName, tmpType, tmpDate, tmpPoint, tmpTimes, tmpLevel, tmpImgList, tmpNote, tmpC1, tmpC2, tmpC3, tmpC4)
-            var j = JSON.stringify(newTask)
-            console.log(j)
-            
-            axios.get('http://localhost:8080/taskInfo', j).then(function (response) {
                 console.log(response);
+                self.success();
             }).catch(function(err) {
                 console.log(err);
             });
@@ -252,15 +218,34 @@ export default {
         },
         changeClassification() {
 
+        },
+        success() {
+            this.$message('任务创建成功！');
         }
 
     },
     watch: {
-        value: function(val) {
+        annotationType: function(val) {
             if(val === 'option2'){
                 this.dialogTableVisible = true
             }
         }
+        // form: {
+        //     handler: function(val) {
+        //         if (val.annotationType === 'option2' && !this.annotationTypeHasBeenSet){
+
+        //                 this.dialogTableVisible = true
+        //                 this.annotationTypeHasBeenSet = true
+        //         }else{
+        //             this.annotationTypeHasBeenSet = false
+        //             this.form.classification1 = ''
+        //             this.form.classification2 = ''
+        //             this.form.classification3 = ''
+        //             this.form.classification4 = ''
+        //         }
+        //     },
+        //     deep: true
+        // }
     }
 }
 
