@@ -60,6 +60,10 @@ export default new Router({
                 {
                     path: '/checkTask',
                     component: resolve => require(['../components/page/space/CheckTask.vue'], resolve)
+                },
+                {
+                    path: '/analysis',
+                    component: resolve => require(['../components/page/space/Analysis.vue'], resolve)
                 }
             ]
         },

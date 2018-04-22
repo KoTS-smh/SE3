@@ -47,6 +47,10 @@
                                 title: '创建任务'
                             },
                             {
+                                index: 'checkTask',
+                                title: '查看任务'
+                            },
+                            {
                                 index: 'vuetable',
                                 title: 'Vue表格组件'
                             }

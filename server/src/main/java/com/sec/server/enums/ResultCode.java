@@ -7,7 +7,8 @@ public enum ResultCode {
     WEAK_NET_WORK(1, "网络异常，请稍后重试"),
     PASSWORD_ERROR(10001, "密码错误"),
     UNKNOWN_USER_ERROR(10010,"用户名不存在"),
-    PARAMETER_ERROR(10101, "参数错误");
+    PARAMETER_ERROR(10101, "参数错误"),
+    TASK_NOT_FOUND(10110, "任务不存在");
 
     private int code;
     private String msg;

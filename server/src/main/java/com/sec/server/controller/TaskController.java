@@ -1,5 +1,6 @@
 package com.sec.server.controller;
 
+import com.sec.server.domain.Task;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
 import com.sec.server.service.TaskService;
@@ -36,27 +37,12 @@ public class TaskController {
 
     @RequestMapping("/task/taskInfo")
     public Result getTaskInfo(long taskId){
-        //todo
-        return ResultUtils.success();
+        Task task = taskService.getTaskInfo(taskId);
+        return ResultUtils.success(task);
     }
 
     @RequestMapping("/task/create")
     public Result createTask(@RequestBody String task){
-//        System.out.println(task);
-//        JSONObject object = new JSONObject(task);
-//
-//        File file = new File("src/data/task.json");
-//        String content = null;
-//
-//        try {
-//            content = FileUtils.readFileToString(file, "UTF-8");
-//            JSONArray array = new JSONArray(content);
-//            array.put(object);
-//            FileUtils.write(file, array.toString(2));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            throw new ResultException(ResultCode.UNKNOWN_ERROR);
-//        }
         System.out.println(task);
         try {
             taskService.createTask(task);
@@ -70,11 +56,22 @@ public class TaskController {
 
     @RequestMapping("/task/update")
     public Result updateTask(String task){
+
+        try {
+            taskService.updateTask(task);
+        }catch (Exception e){
+            throw new ResultException(ResultCode.UNKNOWN_ERROR);
+        }
         return ResultUtils.success();
     }
 
     @RequestMapping("/task/delete")
     public Result deleteTask(long taskId){
+        try {
+            taskService.deleteTask(taskId);
+        }catch (Exception e){
+            throw new ResultException(ResultCode.UNKNOWN_ERROR);
+        }
         return ResultUtils.success();
     }
 
