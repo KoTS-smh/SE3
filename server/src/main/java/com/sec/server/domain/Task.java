@@ -20,6 +20,7 @@ public class Task {
 //    private List<Long> acceptUserIds;
     private int taskLevel;
     private int maxParticipator;
+    private List<Long> acceptUserIds;
 
     public long getTaskId() {
         return taskId;
@@ -123,5 +124,13 @@ public class Task {
 
     public void setMaxParticipator(int maxParticipator) {
         this.maxParticipator = maxParticipator;
+    }
+
+    public List<Long> getAcceptUserIds() {
+        return acceptUserIds;
+    }
+
+    public void setAcceptUserIds(List<Long> acceptUserIds) {
+        this.acceptUserIds = acceptUserIds;
     }
 }

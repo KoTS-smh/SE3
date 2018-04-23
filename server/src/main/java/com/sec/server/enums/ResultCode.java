@@ -8,7 +8,8 @@ public enum ResultCode {
     PASSWORD_ERROR(10001, "密码错误"),
     UNKNOWN_USER_ERROR(10010,"用户名不存在"),
     PARAMETER_ERROR(10101, "参数错误"),
-    TASK_NOT_FOUND(10110, "任务不存在");
+    TASK_NOT_FOUND(10110, "任务不存在"),
+    NO_IMAGE_ERROR(10111, "任务中无图片");
 
     private int code;
     private String msg;

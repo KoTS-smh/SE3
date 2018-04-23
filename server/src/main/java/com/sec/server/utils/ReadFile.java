@@ -1,6 +1,14 @@
 package com.sec.server.utils;
 
+import com.sec.server.enums.ResultCode;
+import com.sec.server.exception.ResultException;
+import org.apache.commons.io.FileUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReadFile {
     /**
@@ -28,5 +36,60 @@ public class ReadFile {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * 从任务JSON文件获取 标注积分奖励
+     * @param path 文件路径
+     * @return
+     */
+    public static int getPointFromTask(String path, long taskId){
+        File file = new File(path);
+        String content = null;
+        List<Integer> list = new ArrayList();
+
+        try {
+            content = FileUtils.readFileToString(file, "UTF-8");
+            JSONArray array = new JSONArray(content);
+
+            for(int i = 0;i < array.length();++i){
+                JSONObject tmp = (JSONObject) array.get(i);
+                if(tmp.getLong("taskId") == taskId){
+                    int points = tmp.getInt("totalPoints");
+                    return points;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ResultException(ResultCode.TASK_NOT_FOUND);
+        }
+
+        return -1;
+
+    }
+
+    public static int getNumOfPics(String path, long taskId){
+        File file = new File(path);
+        String content = null;
+
+        try {
+            content = FileUtils.readFileToString(file, "UTF-8");
+            JSONArray array = new JSONArray(content);
+
+            for(int i = 0;i < array.length();++i){
+                JSONObject tmp = (JSONObject) array.get(i);
+                if(tmp.getLong("taskId") == taskId){
+                    int numOfPics = tmp.getJSONArray("imgList").length();
+                    System.out.println("in function " + numOfPics);
+                    return numOfPics;
+                }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ResultException(ResultCode.TASK_NOT_FOUND);
+        }
+
+        return -1;
     }
 }

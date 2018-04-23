@@ -18,10 +18,7 @@ public class DataAnalysisController {
     private DataAnalysisService dataAnalysisService;
 
     @RequestMapping("/analysis")
-    public Result sendAnalysisResult(@RequestBody UserModel userModel){
-
-        List list = new ArrayList();
-
+    public Result getAnalysisResult(@RequestBody UserModel userModel){
         return ResultUtils.success();
     }
 }
