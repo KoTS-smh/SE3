@@ -55,6 +55,7 @@
                    console.log(response);
                    console.log(response.data.code);
                    localStorage.setItem("username", username);
+                   localStorage.setItem("userId", response.data.data.userId);
                    if(response.data.code != 0){
                        self.open();
                    }else{

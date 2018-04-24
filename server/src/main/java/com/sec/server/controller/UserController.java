@@ -29,6 +29,7 @@ public class UserController {
     @RequestMapping("/user/login")
     public Result login(@RequestBody UserModel userModel) {
         User user = userService.login(userModel.getUsername(),userModel.getPassword());
+        System.out.println("the userId " + userModel.getUserId());
         return ResultUtils.success(user);
     }
 

@@ -4,6 +4,7 @@ import javax.validation.constraints.NotBlank;
 
 public class UserModel {
     private String username;
+    private long userId;
     private String password;
     private String tel_number;
 
@@ -33,4 +34,9 @@ public class UserModel {
     public void setTel_number(String tel_number) {
         this.tel_number = tel_number;
     }
+
+    @NotBlank(message = "用户Id不能为空")
+    public long getUserId(){return userId;}
+
+    public void setUserId(long userId){this.userId = userId;}
 }

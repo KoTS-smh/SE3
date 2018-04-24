@@ -16,29 +16,32 @@
         <el-row>
         <el-col :span="8" class="taskInfos"><div class="grid-content bg-purple">
 
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
-                <el-form-item label="任务名称" prop="name" class="formItems">
-                    <el-input v-model="ruleForm.name" readonly></el-input>
+            <el-form :model="taskData" :rules="rules" ref="ruleForm" label-width="80px" class="demo-ruleForm">
+                <el-form-item label="任务编号" class="formItems">
+                    <el-input v-model="taskData.taskId" readonly></el-input>
                 </el-form-item>
-                <el-form-item label="发起人" prop="sponsorName" class="formItems">
-                    <el-input v-model="ruleForm.sponsorName" readonly></el-input>
+                <el-form-item label="任务名称" class="formItems">
+                    <el-input v-model="taskData.taskname" readonly></el-input>
                 </el-form-item>
-                <el-form-item label="发起时间" prop="startTime" class="formItems">
-                    <el-input v-model="ruleForm.startTime" readonly></el-input>
+                <el-form-item label="发起人" class="formItems">
+                    <el-input v-model="taskData.sponsorName" readonly></el-input>
                 </el-form-item>
-                <el-form-item label="截止时间" prop="endTime" class="formItems">
-                    <el-input v-model="ruleForm.endTime" readonly></el-input>
+                <el-form-item label="发起时间" class="formItems">
+                    <el-input v-model="taskData.beginDate" readonly></el-input>
                 </el-form-item>
-                <el-form-item label="标注类型" prop="tagType" class="formItems">
-                    <el-input v-model="ruleForm.tagType" readonly></el-input>
+                <el-form-item label="截止时间" class="formItems">
+                    <el-input v-model="taskData.endDate" readonly></el-input>
                 </el-form-item>
-                <el-form-item label="任务级别" prop="taskLevel" class="formItems">
-                    <el-input v-model="ruleForm.taskLevel" readonly></el-input>
+                <el-form-item label="标注类型" class="formItems">
+                    <el-input v-model="taskData.tagType" readonly></el-input>
                 </el-form-item>
-                <el-form-item label="奖励积分" prop="totalPoint" class="formItems">
-                    <el-input v-model="ruleForm.totalPoint" readonly></el-input>
+                <el-form-item label="任务级别" class="formItems">
+                    <el-input v-model="taskData.taskLevel" readonly></el-input>
                 </el-form-item>
-                <el-form-item label="任务进度" prop="process" class="formItems">
+                <el-form-item label="奖励积分" class="formItems">
+                    <el-input v-model="taskData.totalPoint" readonly></el-input>
+                </el-form-item>
+                <el-form-item label="任务进度" class="formItems">
                     <el-progress type="circle" :percentage="0"></el-progress>
                 </el-form-item>
                 
@@ -55,28 +58,9 @@
         </el-row>
 
         <el-row>
-            <el-button type="primary">接受任务</el-button>
+            <el-button type="primary" @click="getTask()">接受任务</el-button>
             <el-button type="success">开始标注</el-button>
         </el-row>
-
-
-        <!-- <div class="block">
-            <h2>上传结果</h2>
-            <div id="result">
-                <p>hash: {{hashes}}</p>
-                <p>key: {{keys}}</p>
-            </div>
-            <div>
-                <img :src="item" alt="hashes" class="viewimg" v-for="item of hashes" :key="item">
-            </div>
-            <div>
-                <img :src="item" alt="keys" class="viewimg" v-for="item of keys" :key="item">
-            </div>
-        </div>
-        <div class="block" id="ajaxErr" v-show="uploadMsg.length">
-            <h4>uploadMsg: </h4>
-            <p v-for="(item, index) in uploadMsg" :key="index">{{item}}</p>
-        </div> -->
 
     </div>
 
@@ -85,6 +69,7 @@
 
 <script>
 import upload from '../../common/upload.vue'
+import axios from 'axios'
 export default {
     name: 'app',
     components: {
@@ -99,20 +84,16 @@ export default {
                 'http://p0.ifengimg.com/pmop/2017/0925/2D6C95104267D4F27325E7502509FF0BCB67304F_size1443_w479_h314.gif',
                 'https://up.enterdesk.com/edpic_360_360/23/c5/a5/23c5a544259db587a535efaaba046187.jpg'
             ],
-            task: {
-                name: '任务1',
-                sponsor: 'tony马'
-
-            },
             value5: '',
-            ruleForm: {
-                name: '任务1',
+            taskData: {
+                taskname: '任务1',
                 sponsorName: 'tony王',
-                startTime: '2018/4/6 10:27',
-                endTime: '2018/5/6 10:27',
+                beginDate: '2018/4/6 10:27',
+                endDate: '2018/5/6 10:27',
                 tagType: '标框标注',
                 taskLevel: 2,
-                totalPoint: 20
+                totalPoint: 20,
+                taskId: '2'
             },
             rules: {
 
@@ -120,8 +101,15 @@ export default {
         }
     },
     methods: {
-
+        getTask() {
+            var userId = localStorage.getItem("userId")
+            var taskId = this.taskData.taskId
+            axios.post("http://localhost:8080/taskOrder/createTaskOrder", {"userId": userId, "taskId": taskId})
+            .then(response => {
+                console.log(response.data)
+            })
         }
+    }
 }
 </script>
 

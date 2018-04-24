@@ -16,8 +16,13 @@ public class TaskOrderServiceImpl implements TaskOrderService{
 
 
     @Override
-    public List<TaskOrder> getAllTaskOrder(String username) {
-        System.out.println("inService" + username);
-        return taskOrderDao.getAllTaskOrder(username);
+    public List<TaskOrder> getAllTaskOrder(long userId) {
+
+        return taskOrderDao.getAllTaskOrder(userId);
+    }
+
+    @Override
+    public void createTaskOrder(TaskOrder taskOrder) {
+        taskOrderDao.createTaskOrder(taskOrder);
     }
 }

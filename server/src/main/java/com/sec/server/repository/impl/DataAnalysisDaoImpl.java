@@ -22,7 +22,7 @@ import java.util.List;
 public class DataAnalysisDaoImpl implements DataAnalysisDao {
     @Override
     public List<TaskOrder> getAnalysisResult(String username) {
-        File file = new File("server/src/data/taskOrder_" + username + ".json");
+        File file = new File("src/data/taskOrder_" + username + ".json");
         String content = null;
 
         List<TaskOrder> taskOrderList = new ArrayList();
@@ -45,7 +45,7 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
         List<Task> currentTasks = new ArrayList<>();
         List<User> currentUsers = new ArrayList<>();
         List<Long> participantIdList = new ArrayList<>();
-        File file = new File("server/src/data/task.json");
+        File file = new File("src/data/task.json");
         String content = null;
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
@@ -64,7 +64,7 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
         }
 
         //read the user.json file
-        File userFile = new File("server/src/data/user.json");
+        File userFile = new File("src/data/user.json");
         try {
             content = FileUtils.readFileToString(userFile, "UTF-8");
             JSONArray array = new JSONArray(content);
@@ -113,10 +113,10 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
         for (TaskOrder taskOrder : taskOrderList){
             averageRate += taskOrder.getRate();
             long taskId = taskOrder.getTaskId();
-            int point = ReadFile.getPointFromTask("server/src/data/task.json", taskId);
+            int point = ReadFile.getPointFromTask("src/data/task.json", taskId);
             totalPoints += point;
 
-            int numOfPics = ReadFile.getNumOfPics("server/src/data/task.json", taskId);
+            int numOfPics = ReadFile.getNumOfPics("src/data/task.json", taskId);
             degreeOfCompletion = taskOrder.getDegreeOfCompletion() / (double) numOfPics;
 
         }
@@ -152,7 +152,7 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
         int totalPoints = 0;
         for(TaskOrder taskOrder : taskOrderList){
             long taskId = taskOrder.getTaskId();
-            int point = ReadFile.getPointFromTask("server/src/data/task.json", taskId);
+            int point = ReadFile.getPointFromTask("src/data/task.json", taskId);
             totalPoints += point;
         }
 
@@ -166,7 +166,7 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
      */
     private double getCOD(TaskOrder taskOrder) {
         long taskId = taskOrder.getTaskId();
-        int numOfPics = ReadFile.getNumOfPics("server/src/data/task.json", taskId);
+        int numOfPics = ReadFile.getNumOfPics("src/data/task.json", taskId);
         if(numOfPics == 0){
             throw new ResultException(ResultCode.NO_IMAGE_ERROR);
         }

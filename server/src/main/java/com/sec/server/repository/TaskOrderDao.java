@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface TaskOrderDao {
 
-    List<TaskOrder> getAllTaskOrder(String username);
+    List<TaskOrder> getAllTaskOrder(long userId);
+
+    void createTaskOrder(TaskOrder taskOrder);
 }

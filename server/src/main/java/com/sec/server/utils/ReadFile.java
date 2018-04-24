@@ -1,5 +1,7 @@
 package com.sec.server.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.sec.server.domain.Task;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
 import org.apache.commons.io.FileUtils;
@@ -91,5 +93,32 @@ public class ReadFile {
         }
 
         return -1;
+    }
+
+    /**
+     * 根据任务ID从文件中获取任务对象的方法
+     * @param taskId 任务ID
+     * @return 对应ID的任务对象
+     */
+    public static Task getTask(long taskId){
+        File file = new File("src/data/task.json");
+        String content = null;
+
+        try {
+            content = FileUtils.readFileToString(file, "UTF-8");
+            JSONArray array = new JSONArray(content);
+
+            List<Task> taskList = JSON.parseArray(array.toString(), Task.class);
+            for(Task task : taskList){
+                if(task.getTaskId() == taskId){
+                    return task;
+                }
+            }
+
+            throw new ResultException(ResultCode.TASK_NOT_FOUND);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ResultException(ResultCode.UNKNOWN_ERROR);
+        }
     }
 }

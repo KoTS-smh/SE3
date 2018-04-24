@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface TaskOrderService {
     //获取全部taskOrder方法
-    List<TaskOrder> getAllTaskOrder(String username);
+    List<TaskOrder> getAllTaskOrder(long userId);
+
+    void createTaskOrder(TaskOrder taskOrder);
 }

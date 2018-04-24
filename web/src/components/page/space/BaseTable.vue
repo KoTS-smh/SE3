@@ -203,7 +203,8 @@
 
             placeTheData() {
                 var username = localStorage.getItem('username')
-                axios.post('http://localhost:8080/taskOrder/getAll', {"username": username, "password": ''})
+                var userId = localStorage.getItem('userId')
+                axios.post('http://localhost:8080/taskOrder/getAll', {"username": username, "password": '', "userId": userId})
                 .then(response => {
                     console.log(response.data.data);
                     var list = response.data.data;
