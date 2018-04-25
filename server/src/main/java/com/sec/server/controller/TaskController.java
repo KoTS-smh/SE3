@@ -3,6 +3,7 @@ package com.sec.server.controller;
 import com.sec.server.domain.Task;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
+import com.sec.server.model.UserModel;
 import com.sec.server.service.TaskService;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class TaskController {
@@ -24,9 +26,12 @@ public class TaskController {
     private TaskService taskService;
 
     @RequestMapping("/task/getAllPost")
-    public Result getAllPostTask(long userId){
-        // todo
-        return ResultUtils.success();
+    public Result getAllPostTask(@RequestBody UserModel userModel){
+        System.out.println("here");
+        long userId = userModel.getUserId();
+        List<Task> list = taskService.getAllPost(userId);
+
+        return ResultUtils.success(list);
     }
 
     @RequestMapping("/task/getAllAccept")

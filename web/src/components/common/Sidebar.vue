@@ -32,34 +32,38 @@
                     {
                         icon: 'el-icon-menu',
                         index: '2',
-                        title: '表格',
+                        title: '任务',
                         subs: [
                             {
                                 index: 'basetable',
-                                title: '任务列表'
+                                title: '已接取任务列表'
                             },
+                            // {
+                            //     index: 'getTask',
+                            //     title: '接取任务'
+                            // },
+                            // {
+                            //     index: 'createTask',
+                            //     title: '创建任务'
+                            // },
+                            // {
+                            //     index: 'checkTask',
+                            //     title: '查看任务'
+                            // },
+                            // {
+                            //     index: 'vuetable',
+                            //     title: 'Vue表格组件'
+                            // }
                             {
-                                index: 'getTask',
-                                title: '接取任务'
-                            },
-                            {
-                                index: 'createTask',
-                                title: '创建任务'
-                            },
-                            {
-                                index: 'checkTask',
-                                title: '查看任务'
-                            },
-                            {
-                                index: 'vuetable',
-                                title: 'Vue表格组件'
+                                index: 'publishedTasks',
+                                title: '已发布任务列表'
                             }
                         ]
                     },
                     {
                         icon: 'el-icon-date',
                         index: '3',
-                        title: '表单',
+                        title: '数据统计',
                         subs: [
                             {
                                 index: 'baseform',
@@ -82,12 +86,7 @@
                     {
                         icon: 'el-icon-star-on',
                         index: 'basecharts',
-                        title: '图表'
-                    },
-                    {
-                        icon: 'el-icon-upload2',
-                        index: 'drag',
-                        title: '拖拽'
+                        title: '个人中心'
                     }
                 ]
             }

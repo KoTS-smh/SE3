@@ -2,8 +2,8 @@
     <div class="table">
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-menu"></i> 表格</el-breadcrumb-item>
-                <el-breadcrumb-item>任务列表</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-menu"></i> 任务</el-breadcrumb-item>
+                <el-breadcrumb-item>已接取任务列表</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="handle-box">
@@ -207,8 +207,6 @@
                 axios.post('http://localhost:8080/taskOrder/getAll', {"username": username, "password": '', "userId": userId})
                 .then(response => {
                     console.log(response.data.data);
-                    var list = response.data.data;
-                    
                     var j;
                     for(j = 0;j < response.data.data.length; j++){
                         if(response.data.data[j].submited == false){
@@ -234,6 +232,7 @@
                         }
 
                     }
+                    var list = response.data.data;
                     this.tableData = list;
                 }
                     

@@ -54,6 +54,10 @@ export default new Router({
                     component: resolve => require(['../components/page/space/GetTask.vue'], resolve)
                 },
                 {
+                    path: '/publishedTasks',
+                    component: resolve => require(['../components/page/space/PublishedTasks.vue'], resolve)
+                },
+                {
                     path: '/createTask',
                     component: resolve => require(['../components/page/space/CreateTask.vue'], resolve)
                 },

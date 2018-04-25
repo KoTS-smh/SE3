@@ -6,6 +6,7 @@ import com.sec.server.service.TaskService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service(value = "taskService")
 public class TaskServiceImpl implements TaskService {
@@ -30,5 +31,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task getTaskInfo(long taskId) {
         return taskDao.getTaskInfo(taskId);
+    }
+
+    @Override
+    public List<Task> getAllPost(long userId) {
+        return taskDao.getAllPost(userId);
     }
 }

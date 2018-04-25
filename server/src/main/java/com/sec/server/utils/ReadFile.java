@@ -121,4 +121,25 @@ public class ReadFile {
             throw new ResultException(ResultCode.UNKNOWN_ERROR);
         }
     }
+
+    public static List<Task> getAllPost(long userId){
+        File file = new File("src/data/task.json");
+        String content = null;
+        List<Task> retTaskList = new ArrayList<>();
+
+        try {
+            content = FileUtils.readFileToString(file, "UTF-8");
+            JSONArray array = new JSONArray(content);
+
+            List<Task> taskList = JSON.parseArray(array.toString(), Task.class);
+            for(Task task : taskList){
+                if(task.getPostUserId() == userId)
+                    retTaskList.add(task);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return retTaskList;
+    }
 }

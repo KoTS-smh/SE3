@@ -5,6 +5,7 @@ import com.sec.server.domain.Task;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
 import com.sec.server.repository.TaskDao;
+import com.sec.server.utils.ReadFile;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @Repository("taskDao")
 public class TaskDaoImpl implements TaskDao{
@@ -106,5 +108,10 @@ public class TaskDaoImpl implements TaskDao{
             e.printStackTrace();
             throw new ResultException(ResultCode.UNKNOWN_ERROR);
         }
+    }
+
+    @Override
+    public List<Task> getAllPost(long userId) {
+        return ReadFile.getAllPost(userId);
     }
 }

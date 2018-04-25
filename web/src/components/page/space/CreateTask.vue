@@ -202,6 +202,7 @@ export default {
         onSubmit() {
             const self = this
             this.form.annotationType = this.annotationType
+            this.form.postUserId = localStorage.getItem("userId");
             axios.post('http://localhost:8080/task/create', this.form).then(function (response) {
 
                 console.log(response);

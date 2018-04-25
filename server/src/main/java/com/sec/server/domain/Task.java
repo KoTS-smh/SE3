@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Task {
     private long taskId;
-    //private long postUserId;
+    private long postUserId;
 
     private String taskname;
     private String taskInfo;
@@ -30,13 +30,13 @@ public class Task {
         this.taskId = taskId;
     }
 
-//    public long getPostUserId() {
-//        return postUserId;
-//    }
-//
-//    public void setPostUserId(long postUserId) {
-//        this.postUserId = postUserId;
-//    }
+    public long getPostUserId() {
+        return postUserId;
+    }
+
+    public void setPostUserId(long postUserId) {
+        this.postUserId = postUserId;
+    }
 
     public String getTaskInfo() {
         return taskInfo;
