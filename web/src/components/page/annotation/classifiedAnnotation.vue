@@ -52,15 +52,7 @@
                         <i class="el-icon-edit"></i>
                         <span style="font-weight: bold">标注信息</span>
                     </div>
-                    <div style="display: flex;align-items:center;justify-content: center">
-                        <el-input
-                            type="textarea"
-                            :rows="6"
-                            placeholder="请输入标注信息"
-                            resize="none"
-                            style="width: 380px;margin-top: 20px"
-                            v-model="textarea">
-                        </el-input>
+                    <div id="annotationField" style="width: 100%">
                     </div>
                     <el-row>
                         <el-button-group style="margin-left: 150px;margin-top: 20px">
@@ -86,10 +78,12 @@
     import axios from 'axios'
     let taskOrder;
     let task;
+    let classifiedInfo;
+    let classifiedLen;
     let thisPage;
-    let sentence = '';
     let annotated;
     let annotationInfo;
+    let sentence;
     let annotationMap;
     let annotations=[];
     let thisAnnotation;
@@ -126,6 +120,15 @@
                     }
                 }).then((response) => {
                     task = response.data.data;
+                    //classifiedInfo = task.classifiedInfo;
+                    classifiedInfo = ['ddfs','sasfsa','sfdsds'];
+                    let str = '';
+                    classifiedLen = classifiedInfo.length;
+                    for(let i = 0;i <classifiedLen;i++){
+                        str = str+'<span style="margin-top: 12px;margin-left: 20px">'+
+                            classifiedInfo[i]+':</span><input style="margin-left: 10px;margin-top: 12px;width: 240px;height: 24px" id="text'+i+'"><br>'
+                    }
+                    document.getElementById('annotationField').innerHTML = str;
                     this.totalNum = task.imgUrlList.length;
                     this.process = annotated / this.totalNum*100;
                     img.addEventListener('load',() =>{
@@ -141,16 +144,19 @@
                     },
                 }).then((response) => {
                     annotationInfo = response.data.data;
-                        annotationMap = annotationInfo.annotationMap;
-                        annotations = annotationMap[thisPage];
-                        thisAnnotation = annotations[0];
-                        if(thisAnnotation ===null){
-                            isNew = true;
-                        }else {
-                            this.textarea = thisAnnotation.sentence;
-                            coordinates = thisAnnotation.coordinates;
-                            this.showAnnotation();
+                    annotationMap = annotationInfo.annotationMap;
+                    annotations = annotationMap[thisPage];
+                    thisAnnotation = annotations[0];
+                    if(thisAnnotation ===null){
+                        isNew = true;
+                    }else {
+                        words = thisAnnotation.words;
+                        for(let i =0;i<classifiedLen;i++){
+                            document.getElementById('text'+i).value = words[i];
                         }
+                        coordinates = thisAnnotation.coordinates;
+                        this.showAnnotation();
+                    }
                     this.fullscreenLoading = false;
                 })
             }).catch(function (error) {
@@ -171,7 +177,7 @@
                 imgY:null,
                 imgUrl: '',
                 fullscreenLoading:true,
-                process:0
+                process:0,
             };
         },
         methods: {
@@ -195,21 +201,25 @@
                 if(thisAnnotation ===null){
                     isNew = true;
                 }else {
-                    this.textarea = thisAnnotation.sentence;
+                    words = thisAnnotation.words;
+                    for(let i =0;i<classifiedLen;i++){
+                        document.getElementById('text'+i).value = words[i];
+                    }
                     coordinates = thisAnnotation.coordinates;
                     this.showAnnotation();
                 }
                 this.fullscreenLoading = false;
             },
             save(){
-                sentence = this.textarea;
-                words =sentence.trim().split(/\s+|\.|,/);
+                for(let i =0;i<classifiedLen;i++){
+                    words.push(document.getElementById('text'+i).value);
+                }
                 thisAnnotation =new Annotation(sentence,words,coordinates);
                 annotations[0] = thisAnnotation;
                 annotationMap[thisPage] = annotations;
                 annotationInfo.annotationMap=annotationMap;
-                axios.patch('http://localhost:8080/annotation/update',{
-                        annotationInfo:JSON.stringify(annotationInfo)
+                axios.post('http://localhost:8080/annotation/save',{
+                    annotationInfo:JSON.stringify(annotationInfo)
                 }).then((response)=>{
                     if(response.data.code!==0){
                         this.$message.error(response.data.msg)
@@ -246,7 +256,7 @@
                     annotations = [];
                     annotationMap[thisPage] = annotations;
                     annotationInfo.annotationMap=annotationMap;
-                    axios.patch('http://localhost:8080/annotation/update',{
+                    axios.post('http://localhost:8080/annotation/deleteOne',{
                         annotationInfo:JSON.stringify(annotationInfo)
                     }).then((response)=>{
                         if(response.data.code!==0){
@@ -279,46 +289,48 @@
                 });
             },
             reAnnotation(){
-                sentence = '';
-                this.textarea = '';
+                for(let i =0;i<classifiedLen;i++){
+                    document.getElementById('text'+i).value = '';
+                }
+                words = [];
                 draw.refresh();
             },
             leave(){
                 taskOrder.lastPic = thisPage;
                 taskOrder.degreeOfCompletion = annotated;
-              axios.patch('http://localhost:8080/taskOrder/update',{
-                      taskOrder:JSON.stringify(taskOrder)
-              }).then((response)=>{
-                  if(response.data.code!==0){
-                      this.$confirm('网络异常，信息未正常保存, 是否继续?', '提示', {
-                          confirmButtonText: '确定',
-                          cancelButtonText: '取消',
-                          type: 'warning'
-                      }).then(() => {
-                          this.$router.push('/readme');
-                      }).catch(() => {
-                          this.$message({
-                              type: 'info',
-                              message: '已取消离开'
-                          });
-                      });
-                  }else {
-                      this.$router.push('/readme');
-                  }
-              }) .catch((error)=>{
-                  this.$confirm('网络异常，信息未正常保存, 是否继续?', '提示', {
-                      confirmButtonText: '确定',
-                      cancelButtonText: '取消',
-                      type: 'warning'
-                  }).then(() => {
-                      this.$router.push('/readme');
-                  }).catch(() => {
-                      this.$message({
-                          type: 'info',
-                          message: '已取消离开'
-                      });
-                  });
-              })
+                axios.post('http://localhost:8080/taskOrder/update',{
+                    taskOrder:JSON.stringify(taskOrder)
+                }).then((response)=>{
+                    if(response.data.code!==0){
+                        this.$confirm('网络异常，信息未正常保存, 是否继续?', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(() => {
+                            this.$router.push('/readme');
+                        }).catch(() => {
+                            this.$message({
+                                type: 'info',
+                                message: '已取消离开'
+                            });
+                        });
+                    }else {
+                        this.$router.push('/readme');
+                    }
+                }) .catch((error)=>{
+                    this.$confirm('网络异常，信息未正常保存, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$router.push('/readme');
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消离开'
+                        });
+                    });
+                })
             },
             showAnnotation(){
                 draw = new Draw();
@@ -334,7 +346,7 @@
                     taskOrder.lastPic = thisPage;
                     taskOrder.degreeOfCompletion = annotated;
                     axios.post('http://localhost:8080/taskOrder/update',{
-                            taskOrder:JSON.stringify(taskOrder)
+                        taskOrder:JSON.stringify(taskOrder)
                     }).then((response)=>{
                         if(response.data.code!==0){
                             this.$message({
@@ -371,7 +383,7 @@
                         params:{
                             taskOrderId:taskOrder.taskOrderId
                         }
-                        }).then((response)=>{
+                    }).then((response)=>{
                         if(response.data.code!==0){
                             this.$message({
                                 type: 'error',
@@ -398,7 +410,7 @@
                 });
             }
         },
-        name: "rectAnnotation"
+        name: "classifiedAnnotation"
     };
 
     window.addEventListener('load',()=>{
@@ -413,42 +425,42 @@
     };
 
     Draw.prototype.init = ()=>{
-      let originX = null;
-      let originY = null;
-      this.penal.addEventListener('mousedown',(event)=>{
-          if(canDraw) {
-              this.isDraw = true;
-              let rect =this.penal.getBoundingClientRect();
-              originX = (event.clientX - rect.left)*(this.penal.width/rect.width);
-              originY = (event.clientY - rect.top)*(this.penal.height/rect.height);
-              coordinates[0] = new Coordinate(originX,originY);
-              this.pen.moveTo(originX, originY);
-              this.pen.strokeStyle = 'black';
-              this.pen.lineWidth = 1;
-          }
-      },false);
-      this.penal.addEventListener('mousemove',(event)=>{
-          if(this.isDraw){
-              let rect =this.penal.getBoundingClientRect();
-              let x = (event.clientX - rect.left)*(this.penal.width/rect.width);
-              let y = (event.clientY - rect.top)*(this.penal.height/rect.height);
-              let newOriginX = originX;
-              let newOriginY = originY;
-              coordinates[1]=new Coordinate(x,y);
-              this.pen.clearRect(0,0,this.penal.width,this.penal.height);
-              this.pen.lineWidth = 1;
-              this.pen.beginPath();
-              if(x < originX){
-                  newOriginX = x;
-              }
-              if(y < originY){
-                  newOriginY = y;
-              }
-              this.pen.rect(newOriginX,newOriginY,Math.abs(x-originX),Math.abs(y-originY));
-              this.pen.stroke();
-              this.pen.closePath();
-          }
-      },false);
+        let originX = null;
+        let originY = null;
+        this.penal.addEventListener('mousedown',(event)=>{
+            if(canDraw) {
+                this.isDraw = true;
+                let rect =this.penal.getBoundingClientRect();
+                originX = (event.clientX - rect.left)*(this.penal.width/rect.width);
+                originY = (event.clientY - rect.top)*(this.penal.height/rect.height);
+                coordinates[0] = new Coordinate(originX,originY);
+                this.pen.moveTo(originX, originY);
+                this.pen.strokeStyle = 'black';
+                this.pen.lineWidth = 1;
+            }
+        },false);
+        this.penal.addEventListener('mousemove',(event)=>{
+            if(this.isDraw){
+                let rect =this.penal.getBoundingClientRect();
+                let x = (event.clientX - rect.left)*(this.penal.width/rect.width);
+                let y = (event.clientY - rect.top)*(this.penal.height/rect.height);
+                let newOriginX = originX;
+                let newOriginY = originY;
+                coordinates[1]=new Coordinate(x,y);
+                this.pen.clearRect(0,0,this.penal.width,this.penal.height);
+                this.pen.lineWidth = 1;
+                this.pen.beginPath();
+                if(x < originX){
+                    newOriginX = x;
+                }
+                if(y < originY){
+                    newOriginY = y;
+                }
+                this.pen.rect(newOriginX,newOriginY,Math.abs(x-originX),Math.abs(y-originY));
+                this.pen.stroke();
+                this.pen.closePath();
+            }
+        },false);
         this.penal.addEventListener('mouseleave',(event)=>{
             if(this.isDraw) {
                 this.isDraw = false;
@@ -514,3 +526,4 @@
 
 
 </style>
+

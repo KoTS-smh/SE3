@@ -141,16 +141,16 @@
                     },
                 }).then((response) => {
                     annotationInfo = response.data.data;
-                        annotationMap = annotationInfo.annotationMap;
-                        annotations = annotationMap[thisPage];
-                        thisAnnotation = annotations[0];
-                        if(thisAnnotation ===null){
-                            isNew = true;
-                        }else {
-                            this.textarea = thisAnnotation.sentence;
-                            coordinates = thisAnnotation.coordinates;
-                            this.showAnnotation();
-                        }
+                    annotationMap = annotationInfo.annotationMap;
+                    annotations = annotationMap[thisPage];
+                    thisAnnotation = annotations[0];
+                    if(thisAnnotation ===null){
+                        isNew = true;
+                    }else {
+                        this.textarea = thisAnnotation.sentence;
+                        coordinates = thisAnnotation.coordinates;
+                        this.showAnnotation();
+                    }
                     this.fullscreenLoading = false;
                 })
             }).catch(function (error) {
@@ -208,8 +208,8 @@
                 annotations[0] = thisAnnotation;
                 annotationMap[thisPage] = annotations;
                 annotationInfo.annotationMap=annotationMap;
-                axios.patch('http://localhost:8080/annotation/update',{
-                        annotationInfo:JSON.stringify(annotationInfo)
+                axios.post('http://localhost:8080/annotation/save',{
+                    annotationInfo:JSON.stringify(annotationInfo)
                 }).then((response)=>{
                     if(response.data.code!==0){
                         this.$message.error(response.data.msg)
@@ -246,7 +246,7 @@
                     annotations = [];
                     annotationMap[thisPage] = annotations;
                     annotationInfo.annotationMap=annotationMap;
-                    axios.patch('http://localhost:8080/annotation/update',{
+                    axios.post('http://localhost:8080/annotation/deleteOne',{
                         annotationInfo:JSON.stringify(annotationInfo)
                     }).then((response)=>{
                         if(response.data.code!==0){
@@ -286,39 +286,39 @@
             leave(){
                 taskOrder.lastPic = thisPage;
                 taskOrder.degreeOfCompletion = annotated;
-              axios.patch('http://localhost:8080/taskOrder/update',{
-                      taskOrder:JSON.stringify(taskOrder)
-              }).then((response)=>{
-                  if(response.data.code!==0){
-                      this.$confirm('网络异常，信息未正常保存, 是否继续?', '提示', {
-                          confirmButtonText: '确定',
-                          cancelButtonText: '取消',
-                          type: 'warning'
-                      }).then(() => {
-                          this.$router.push('/readme');
-                      }).catch(() => {
-                          this.$message({
-                              type: 'info',
-                              message: '已取消离开'
-                          });
-                      });
-                  }else {
-                      this.$router.push('/readme');
-                  }
-              }) .catch((error)=>{
-                  this.$confirm('网络异常，信息未正常保存, 是否继续?', '提示', {
-                      confirmButtonText: '确定',
-                      cancelButtonText: '取消',
-                      type: 'warning'
-                  }).then(() => {
-                      this.$router.push('/readme');
-                  }).catch(() => {
-                      this.$message({
-                          type: 'info',
-                          message: '已取消离开'
-                      });
-                  });
-              })
+                axios.post('http://localhost:8080/taskOrder/update',{
+                    taskOrder:JSON.stringify(taskOrder)
+                }).then((response)=>{
+                    if(response.data.code!==0){
+                        this.$confirm('网络异常，信息未正常保存, 是否继续?', '提示', {
+                            confirmButtonText: '确定',
+                            cancelButtonText: '取消',
+                            type: 'warning'
+                        }).then(() => {
+                            this.$router.push('/readme');
+                        }).catch(() => {
+                            this.$message({
+                                type: 'info',
+                                message: '已取消离开'
+                            });
+                        });
+                    }else {
+                        this.$router.push('/readme');
+                    }
+                }) .catch((error)=>{
+                    this.$confirm('网络异常，信息未正常保存, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$router.push('/readme');
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消离开'
+                        });
+                    });
+                })
             },
             showAnnotation(){
                 draw = new Draw();
@@ -334,7 +334,7 @@
                     taskOrder.lastPic = thisPage;
                     taskOrder.degreeOfCompletion = annotated;
                     axios.post('http://localhost:8080/taskOrder/update',{
-                            taskOrder:JSON.stringify(taskOrder)
+                        taskOrder:JSON.stringify(taskOrder)
                     }).then((response)=>{
                         if(response.data.code!==0){
                             this.$message({
@@ -371,7 +371,7 @@
                         params:{
                             taskOrderId:taskOrder.taskOrderId
                         }
-                        }).then((response)=>{
+                    }).then((response)=>{
                         if(response.data.code!==0){
                             this.$message({
                                 type: 'error',
@@ -398,7 +398,7 @@
                 });
             }
         },
-        name: "rectAnnotation"
+        name: "regionAnnotation"
     };
 
     window.addEventListener('load',()=>{
@@ -413,57 +413,54 @@
     };
 
     Draw.prototype.init = ()=>{
-      let originX = null;
-      let originY = null;
-      this.penal.addEventListener('mousedown',(event)=>{
-          if(canDraw) {
-              this.isDraw = true;
-              let rect =this.penal.getBoundingClientRect();
-              originX = (event.clientX - rect.left)*(this.penal.width/rect.width);
-              originY = (event.clientY - rect.top)*(this.penal.height/rect.height);
-              coordinates[0] = new Coordinate(originX,originY);
-              this.pen.moveTo(originX, originY);
-              this.pen.strokeStyle = 'black';
-              this.pen.lineWidth = 1;
-          }
-      },false);
-      this.penal.addEventListener('mousemove',(event)=>{
-          if(this.isDraw){
-              let rect =this.penal.getBoundingClientRect();
-              let x = (event.clientX - rect.left)*(this.penal.width/rect.width);
-              let y = (event.clientY - rect.top)*(this.penal.height/rect.height);
-              let newOriginX = originX;
-              let newOriginY = originY;
-              coordinates[1]=new Coordinate(x,y);
-              this.pen.clearRect(0,0,this.penal.width,this.penal.height);
-              this.pen.lineWidth = 1;
-              this.pen.beginPath();
-              if(x < originX){
-                  newOriginX = x;
-              }
-              if(y < originY){
-                  newOriginY = y;
-              }
-              this.pen.rect(newOriginX,newOriginY,Math.abs(x-originX),Math.abs(y-originY));
-              this.pen.stroke();
-              this.pen.closePath();
-          }
-      },false);
+        let originX = null;
+        let originY = null;
+        this.penal.addEventListener('mousedown',(event)=>{
+            if(canDraw) {
+                this.isDraw = true;
+                let rect =this.penal.getBoundingClientRect();
+                originX = (event.clientX - rect.left)*(this.penal.width/rect.width);
+                originY = (event.clientY - rect.top)*(this.penal.height/rect.height);
+                coordinates.push(new Coordinate(originX,originY));
+                this.pen.beginPath();
+                this.pen.moveTo(originX, originY);
+                this.pen.strokeStyle = 'black';
+                this.pen.lineWidth = 1;
+            }
+        },false);
+        this.penal.addEventListener('mousemove',(event)=>{
+            if(this.isDraw){
+                let rect =this.penal.getBoundingClientRect();
+                let x = (event.clientX - rect.left)*(this.penal.width/rect.width);
+                let y = (event.clientY - rect.top)*(this.penal.height/rect.height);
+                coordinates.push(new Coordinate(x,y));
+                this.pen.lineTo(x,y);
+                this.pen.stroke();
+            }
+        },false);
         this.penal.addEventListener('mouseleave',(event)=>{
             if(this.isDraw) {
                 this.isDraw = false;
                 canDraw = false;
+                coordinates.push(new Coordinate(originX,originY));
+                this.pen.lineTo(originX,originY);
+                this.pen.stroke();
                 this.pen.closePath();
             }
         },false);
         this.penal.addEventListener('mouseup',(event)=>{
             this.isDraw = false;
             canDraw = false;
+            coordinates.push(new Coordinate(originX,originY));
+            this.pen.lineTo(originX,originY);
+            this.pen.stroke();
+            this.pen.closePath();
         },false)
     };
 
     Draw.prototype.refresh = ()=>{
         canDraw = true;
+        coordinates = [];
         this.pen.clearRect(0,0,this.penal.width,this.penal.height);
     };
 
@@ -471,20 +468,11 @@
         if(thisAnnotation.coordinates !==null){
             canDraw = false;
             this.pen.beginPath();
-            let x = thisAnnotation.coordinates[1].x;
-            let y = thisAnnotation.coordinates[1].y;
-            let originX =thisAnnotation.coordinates[0].x;
-            let originY =thisAnnotation.coordinates[0].y;
-            let newOriginX = originX;
-            let newOriginY = originY;
-            if(x < originX){
-                newOriginX = x;
+            this.pen.moveTo(coordinates[0].x,coordinates[0].y);
+            for(let i = 1;i<coordinates.length;i++){
+                this.pen.lineTo(coordinates[i].x,coordinates[i].y);
+                this.pen.stroke();
             }
-            if(y < originY){
-                newOriginY = y;
-            }
-            this.pen.rect(newOriginX,newOriginY,Math.abs(x-originX),Math.abs(y-originY));
-            this.pen.stroke();
             this.pen.closePath();
         }
     }

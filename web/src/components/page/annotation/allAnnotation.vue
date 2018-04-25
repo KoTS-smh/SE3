@@ -4,18 +4,11 @@
     <el-header style="text-align: right; font-size: 15px">
       <el-menu :default-active="activeIndex" class="el-menu" mode="horizontal" @select="handleSelect">
       <el-menu-item index="1">标注中心</el-menu-item>
-      <el-submenu index="2">
-      <template slot="title">我的工作台</template>
-      <el-menu-item index="2-1">选项1</el-menu-item>
-      <el-menu-item index="2-2">选项2</el-menu-item>
-      <el-menu-item index="2-3">选项3</el-menu-item>
-      <el-submenu index="2-4">
-      <template slot="title">选项4</template>
-      <el-menu-item index="2-4-1">选项1</el-menu-item>
-      <el-menu-item index="2-4-2">选项2</el-menu-item>
-      <el-menu-item index="2-4-3">选项3</el-menu-item>
-      </el-submenu>
-      </el-submenu>
+          <el-submenu index="2">
+              <template slot="title">我的任务</template>
+              <el-menu-item index="2-1" @click="submitTask">提交</el-menu-item>
+              <el-menu-item index="2-2" @click="removeTask">移除</el-menu-item>
+          </el-submenu>
         <span style="color: dodgerblue">孙铭辉</span>
         <el-dropdown>
           <i class="el-icon-arrow-down" style="margin-right: 10px"></i>
@@ -27,8 +20,8 @@
     </el-header>
     <el-container style="height: 656px">
       <el-container style="height: 656px">
-        <el-main style="height: 596px;display: flex;align-items:center;justify-content: center">
-            <div style="width: 100%;height: 100%">
+        <el-main style="height: 596px;display: flex;align-items:center;justify-content: center" v-loading.fullscreen.lock="fullscreenLoading">
+            <div style="width: 100%;height: 100%" >
               <canvas id="canvas" :style="{backgroundImage:imgUrl,width:imgX+'px',height:imgY+'px'}">
               </canvas>
             </div>
@@ -41,7 +34,7 @@
               :page-size="1"
               background
               layout="prev, pager, next, jumper"
-              :total="1000"
+              :total="totalNum"
               style="margin-top: 15px; margin-right: 10px">
             </el-pagination>
         </el-footer>
@@ -52,7 +45,7 @@
             <span>任务进度:</span>
           </el-col>
           <el-col :span="18">
-            <el-progress :text-inside="true" :stroke-width="18" :percentage="70" style="width: 280px"></el-progress>
+            <el-progress :text-inside="true" :stroke-width="18" :percentage="process" style="width: 280px"></el-progress>
           </el-col>
         </el-row>
         <div style="margin-top: 20px;display: flex;align-items:center;justify-content: center">
@@ -72,14 +65,14 @@
         <el-row>
           <el-button-group style="margin-left: 230px;margin-top: 20px">
             <el-tooltip content="保存" placement="bottom">
-              <el-button type="primary" icon="el-icon-upload" style="width: 80px"></el-button>
+              <el-button type="primary" icon="el-icon-upload" style="width: 80px" @click="save"></el-button>
             </el-tooltip>
             <el-tooltip content="删除" placement="bottom">
-              <el-button type="primary" icon="el-icon-delete" style="width: 80px"></el-button>
+              <el-button type="primary" icon="el-icon-delete" style="width: 80px" @click="remove"></el-button>
             </el-tooltip>
           </el-button-group>
         </el-row>
-        <el-button type="primary" style="position: relative; left: 295px; top: 300px">离 开 <i class="el-icon-d-arrow-right"></i></el-button>
+        <el-button type="primary" style="position: relative; left: 295px; top: 300px" @click="leave">离 开 <i class="el-icon-d-arrow-right"></i></el-button>
       </el-aside>
     </el-container>
   </el-container>
@@ -87,20 +80,80 @@
 </template>
 
 <script>
-  let img =new Image();
-  img.src='https://p.upyun.com/docs/cloud/demo.jpg';
+    import axios from 'axios'
+    let taskOrder;
+    let task;
+    let thisPage;
+    let sentence = '';
+    let annotated;
+    let annotationInfo;
+    let annotationMap;
+    let annotations=[];
+    let thisAnnotation;
+    let img =new Image();
+    let isNew = false;
     export default {
       created(){
-
+          axios.get('http://localhost:8080/taskOrder/orderInfo',{
+              params:{
+                  //taskOrderId:sessionStorage.getItem('taskOrderId')
+                  taskOrderId:111
+              }
+          }).then((response) => {
+              taskOrder=response.data.data;
+              thisPage = taskOrder.lastPic;
+              annotated = taskOrder.degreeOfCompletion;
+              this.currentPage = thisPage;
+              axios.get('http://localhost:8080/task/taskInfo',{
+                  params:{
+                      taskId:taskOrder.taskId
+                  }
+              }).then((response) => {
+                  task = response.data.data;
+                  this.totalNum = task.imgUrlList.length;
+                  this.process = annotated / this.totalNum*100;
+                  img.addEventListener('load',() =>{
+                     this.imgX =img.width;
+                     this.imgY = img.height;
+                  });
+                  img.src = task.imgUrlList[thisPage - 1];
+                  this.imgUrl = "url('"+img.src+"')";
+              });
+              axios.get('http://localhost:8080/annotation/getAll',{
+                  params:{
+                      annotationId:taskOrder.annotationId
+                  }
+              }).then((response) => {
+                  annotationInfo = response.data.data;
+                  annotationMap = annotationInfo.annotationMap;
+                  annotations = annotationMap[thisPage];
+                  thisAnnotation = annotations[0];
+                  if(thisAnnotation ===null){
+                      isNew = true;
+                  }else {
+                      this.textarea = thisAnnotation.sentence;
+                  }
+                  this.fullscreenLoading = false;
+              })
+          }).catch(function () {
+              this.$message({
+                  showClose:true,
+                  message:'网络异常!',
+                  type:'error'
+              })
+          });
       },
       data() {
         return {
           activeIndex: '1',
           currentPage: 1,
           textarea:'',
-          imgX:img.width,
-          imgY:img.height,
-          imgUrl: "url('https://p.upyun.com/docs/cloud/demo.jpg')"
+          totalNum:null,
+          imgX:null,
+          imgY:null,
+          imgUrl: '',
+          fullscreenLoading:true,
+          process:0
         };
       },
       methods: {
@@ -111,29 +164,217 @@
           console.log(`每页 ${val} 条`);
         },
         handleCurrentChange(val) {
-          console.log(`当前页: ${val}`);
+          this.fullscreenLoading = true;
+            img.addEventListener('load',() =>{
+                this.imgX =img.width;
+                this.imgY = img.height;
+                this.fullscreenLoading = false;
+            });
+            img.src = task.imgUrlList[val - 1];
+            this.imgUrl = "url('"+img.src+"')";
+            thisPage = val;
+            annotations = annotationMap[thisPage];
+            thisAnnotation = annotations[0];
+            if(thisAnnotation ===null){
+                isNew = true;
+            }else {
+                this.textarea = thisAnnotation.sentence;
+            }
+            this.fullscreenLoading = false;
         },
-        fetchData(){
-            axios.get('http://localhost:8080/annotation/getAll',{
-                params:{
-                    annotationId: localStorage.getItem('')
-                }
-            })
-        }
+          save(){
+              sentence = this.textarea;
+              words =sentence.trim().split(/\s+|\.|,/);
+              thisAnnotation =new Annotation(sentence,words,[]);
+              annotations[0] = thisAnnotation;
+              annotationMap[thisPage] = annotations;
+              annotationInfo.annotationMap=annotationMap;
+              axios.patch('http://localhost:8080/annotation/update',{
+                  annotationInfo:JSON.stringify(annotationInfo)
+              }).then((response)=>{
+                  if(response.data.code!==0){
+                      this.$message.error(response.data.msg)
+                  }else {
+                      if(isNew){
+                          isNew=false;
+                          annotated++;
+                          this.process = annotated / this.totalNum*100;
+                      }
+                      this.$message({
+                          showClose: true,
+                          message: '保存成功！',
+                          type: 'success'
+                      });
+                  }
+              }).catch((error)=>{
+                  annotated--;
+                  this.$message({
+                      showClose:true,
+                      message:'网络异常!',
+                      type:'error'
+                  })
+              })
+          },
+          remove(){
+              this.$confirm('此操作将永久删除该标注信息, 是否继续?', '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning'
+              }).then(() => {
+                  sentence = '';
+                  this.textarea = '';
+                  thisAnnotation = {};
+                  annotations = [];
+                  annotationMap[thisPage] = annotations;
+                  annotationInfo.annotationMap=annotationMap;
+                  axios.patch('http://localhost:8080/annotation/update',{
+                      annotationInfo:JSON.stringify(annotationInfo)
+                  }).then((response)=>{
+                      if(response.data.code!==0){
+                          this.$message.error(response.data.msg)
+                      }else {
+                          if(!isNew){
+                              isNew = true;
+                              annotated--;
+                              this.process = annotated / this.totalNum*100;
+                          }
+                          this.$message({
+                              showClose: true,
+                              message: '删除成功！',
+                              type: 'success'
+                          });
+                      }
+                  }).catch((error)=>{
+                      this.$message({
+                          showClose:true,
+                          type: 'error',
+                          message: '网络异常!'
+                      });
+                  });
+              }).catch(() => {
+                  this.$message({
+                      showClose:true,
+                      type: 'info',
+                      message: '已取消删除'
+                  });
+              });
+          },
+          leave(){
+              taskOrder.lastPic = thisPage;
+              taskOrder.degreeOfCompletion = annotated;
+              axios.patch('http://localhost:8080/taskOrder/update',{
+                  taskOrder:JSON.stringify(taskOrder)
+              }).then((response)=>{
+                  if(response.data.code!==0){
+                      this.$confirm('网络异常，信息未正常保存, 是否继续?', '提示', {
+                          confirmButtonText: '确定',
+                          cancelButtonText: '取消',
+                          type: 'warning'
+                      }).then(() => {
+                          this.$router.push('/readme');
+                      }).catch(() => {
+                          this.$message({
+                              type: 'info',
+                              message: '已取消离开'
+                          });
+                      });
+                  }else {
+                      this.$router.push('/readme');
+                  }
+              }) .catch((error)=>{
+                  this.$confirm('网络异常，信息未正常保存, 是否继续?', '提示', {
+                      confirmButtonText: '确定',
+                      cancelButtonText: '取消',
+                      type: 'warning'
+                  }).then(() => {
+                      this.$router.push('/readme');
+                  }).catch(() => {
+                      this.$message({
+                          type: 'info',
+                          message: '已取消离开'
+                      });
+                  });
+              })
+          },
+          submitTask(){
+              this.$confirm('此操作将提交该标注任务，之后无法更改, 是否继续?', '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning'
+              }).then(() => {
+                  taskOrder.isSubmited = true;
+                  taskOrder.lastPic = thisPage;
+                  taskOrder.degreeOfCompletion = annotated;
+                  axios.post('http://localhost:8080/taskOrder/update',{
+                      taskOrder:JSON.stringify(taskOrder)
+                  }).then((response)=>{
+                      if(response.data.code!==0){
+                          this.$message({
+                              type: 'error',
+                              message: '提交失败!'
+                          });
+                      }else{
+                          this.$message({
+                              type: 'success',
+                              message: '提交成功!'
+                          });
+                          // todo leave
+                      }
+                  }).catch(()=>{
+                      this.$message({
+                          type: 'error',
+                          message: '提交失败!'
+                      });
+                  })
+              }).catch(() => {
+                  this.$message({
+                      type: 'info',
+                      message: '已取消提交'
+                  });
+              });
+          },
+          removeTask(){
+              this.$confirm('此操作将移除该标注任务, 是否继续?', '提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'warning'
+              }).then(() => {
+                  axios.get('http://localhost:8080/taskOrder/delete',{
+                      params:{
+                          taskOrderId:taskOrder.taskOrderId
+                      }
+                  }).then((response)=>{
+                      if(response.data.code!==0){
+                          this.$message({
+                              type: 'error',
+                              message: '移除失败!'
+                          });
+                      }else {
+                          this.$message({
+                              type: 'success',
+                              message: '移除成功!'
+                          });
+                          //todo leave
+                      }
+                  }).catch(()=>{
+                      this.$message({
+                          type: 'error',
+                          message: '移除失败!'
+                      });
+                  })
+              }).catch(() => {
+                  this.$message({
+                      type: 'info',
+                      message: '已取消提交'
+                  });
+              });
+          }
       },
         name: "allAnnotation"
     }
 
-    // window.onload = function() {
-    //   let can = document.getElementById('canvas');
-    //    let img = new Image();
-    //    img.src="https://p.upyun.com/docs/cloud/demo.jpg";
-    //
-    //    let ctx = can.getContext('2d');
-    //    img.onload=function () {
-    //       ctx.drawImage(img,0,0,img.width,img.height);
-    //     };
-    // };
+
+
 </script>
 
 <style scoped>

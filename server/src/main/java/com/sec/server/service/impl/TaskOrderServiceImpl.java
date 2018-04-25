@@ -25,4 +25,14 @@ public class TaskOrderServiceImpl implements TaskOrderService{
     public void createTaskOrder(TaskOrder taskOrder) {
         taskOrderDao.createTaskOrder(taskOrder);
     }
+
+    @Override
+    public void updateTaskOrder(String taskOrder) {
+
+    }
+
+    @Override
+    public void deleteTaskOrder(long taskOrderId) {
+
+    }
 }

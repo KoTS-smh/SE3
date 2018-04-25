@@ -9,4 +9,8 @@ public interface TaskOrderService {
     List<TaskOrder> getAllTaskOrder(long userId);
 
     void createTaskOrder(TaskOrder taskOrder);
+
+    void updateTaskOrder(String taskOrder);
+
+    void deleteTaskOrder(long taskOrderId);
 }

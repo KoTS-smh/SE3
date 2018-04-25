@@ -88,4 +88,14 @@ public class TaskOrderDaoImpl implements TaskOrderDao{
         }
     }
 
+    @Override
+    public void updateTaskOrder(String string) {
+
+    }
+
+    @Override
+    public void deleteTaskOrder(long taskOrderId) {
+
+    }
+
 }
