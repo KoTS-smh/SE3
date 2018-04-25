@@ -9,4 +9,8 @@ public interface TaskOrderDao {
     List<TaskOrder> getAllTaskOrder(long userId);
 
     void createTaskOrder(TaskOrder taskOrder);
+
+    void updateTaskOrder(String string);
+
+    void deleteTaskOrder(long taskOrderId);
 }

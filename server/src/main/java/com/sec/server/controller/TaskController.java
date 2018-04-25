@@ -6,17 +6,14 @@ import com.sec.server.exception.ResultException;
 import com.sec.server.service.TaskService;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
-import org.apache.commons.io.FileUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class TaskController {
@@ -37,8 +34,15 @@ public class TaskController {
 
     @RequestMapping("/task/taskInfo")
     public Result getTaskInfo(long taskId){
-        Task task = taskService.getTaskInfo(taskId);
+        System.out.print(taskId);
+        Task task = new Task();
+        List<String> s = new ArrayList<>();
+        s.add("https://p.upyun.com/docs/cloud/demo.jpg");
+        task.setTaskInfo("121324");
+        task.setImgUrlList(s);
         return ResultUtils.success(task);
+        //Task task = taskService.getTaskInfo(taskId);
+        //return ResultUtils.success(task);
     }
 
     @RequestMapping("/task/create")

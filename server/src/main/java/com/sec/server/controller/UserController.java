@@ -53,4 +53,11 @@ public class UserController {
     public Result delete(long userId){
         return ResultUtils.success();
     }
+
+    @RequestMapping("/user/getById")
+    public Result getCommonUserInfo(long userId){
+        User user = new User();
+        user.setUsername("蛤");
+        return ResultUtils.success(user);
+    }
 }

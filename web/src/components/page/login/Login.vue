@@ -12,7 +12,7 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </div>
-                
+
             </el-form>
         </div>
     </div>
@@ -49,21 +49,21 @@
                         return false;
                     }
                 });
-                var username = this.ruleForm.username
+                var username = this.ruleForm.username;
                 console.log(username)
                 axios.post('http://localhost:8080/user/login', this.ruleForm).then(function(response){
                    console.log(response);
                    console.log(response.data.code);
                    localStorage.setItem("username", username);
                    localStorage.setItem("userId", response.data.data.userId);
-                   if(response.data.code != 0){
+                   if(response.data.code !== 0){
                        self.open();
                    }else{
                        self.$router.push('/readme');
                    }
                 }).catch(function(err){
                     console.log(err);
-                }) 
+                })
             },
             open() {
                 this.$message('用户名或密码错误');

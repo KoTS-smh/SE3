@@ -1,5 +1,7 @@
 package com.sec.server.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.sec.server.domain.TaskOrder;
 import com.sec.server.model.TaskOrderModel;
 import com.sec.server.model.UserModel;
@@ -19,8 +21,17 @@ public class TaskOrderController {
     private TaskOrderService taskOrderService;
 
     @RequestMapping("/taskOrder/orderInfo")
-    public Result getTaskOrder(long taskOrderId){
-        return ResultUtils.success();
+    public Result getAllTaskOrder(long taskOrderId){
+        System.out.print(taskOrderId);
+        TaskOrder taskOrder = new TaskOrder();
+        taskOrder.setLastPic(1);
+        taskOrder.setAcceptUserId(1000);
+        taskOrder.setAnnotationId(100);
+        taskOrder.setSubmited(false);
+        taskOrder.setDegreeOfCompletion(1);
+        taskOrder.setTaskId(10000);
+        taskOrder.setTaskOrderId(111);
+        return ResultUtils.success(taskOrder);
     }
 
     @RequestMapping("/taskOrder/getAll")
@@ -38,6 +49,19 @@ public class TaskOrderController {
         long userId = taskOrderModel.getUserId();
         TaskOrder taskOrder = new TaskOrder(taskId, userId);
         taskOrderService.createTaskOrder(taskOrder);
+        return ResultUtils.success();
+    }
+
+    @RequestMapping("taskOrder/update")
+    public Result updateTaskOrder(@RequestBody String taskOrder){
+        JSONObject jsonObject = JSON.parseObject(taskOrder);
+        System.out.print(jsonObject.getJSONObject("taskOrder"));
+        return ResultUtils.success();
+    }
+
+    @RequestMapping("taskOrder/delete")
+    public Result deleteTaskOrder(long taskOrderId){
+        System.out.print(taskOrderId);
         return ResultUtils.success();
     }
 }
