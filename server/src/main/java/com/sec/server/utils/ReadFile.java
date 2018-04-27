@@ -2,6 +2,7 @@ package com.sec.server.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.sec.server.domain.Task;
+import com.sec.server.domain.TaskOrder;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
 import org.apache.commons.io.FileUtils;
@@ -122,6 +123,11 @@ public class ReadFile {
         }
     }
 
+    /**
+     * 从task.json文件中获取所有已经发布的任务的方法
+     * @param userId 用户编号
+     * @return task列表
+     */
     public static List<Task> getAllPost(long userId){
         File file = new File("src/data/task.json");
         String content = null;
@@ -130,6 +136,7 @@ public class ReadFile {
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
             JSONArray array = new JSONArray(content);
+
 
             List<Task> taskList = JSON.parseArray(array.toString(), Task.class);
             for(Task task : taskList){
@@ -141,5 +148,103 @@ public class ReadFile {
         }
 
         return retTaskList;
+    }
+
+    public static List<Task> getAllFinished(long userId) {
+        File file = new File("src/data/task.json");
+        String content = null;
+        List<Task> retTaskList = new ArrayList<>();
+
+        try {
+            content = FileUtils.readFileToString(file, "UTF-8");
+            JSONArray array = new JSONArray(content);
+
+            List<Task> taskList = JSON.parseArray(array.toString(), Task.class);
+
+            for(Task tmpTask : taskList) {
+                if(tmpTask.getPostUserId() == userId && tmpTask.isFinished()) {
+                    retTaskList.add(tmpTask);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ResultException(ResultCode.TASK_NOT_FOUND);
+        }
+
+        return retTaskList;
+    }
+
+    public static List<Task> getAllunFinished(long userId){
+        File file = new File("src/data/task.json");
+        String content = null;
+        List<Task> retTaskList = new ArrayList<>();
+
+        try {
+            content = FileUtils.readFileToString(file, "UTF-8");
+            JSONArray array = new JSONArray(content);
+
+            List<Task> taskList = JSON.parseArray(array.toString(), Task.class);
+
+            for(Task tmpTask : taskList) {
+                if(tmpTask.getPostUserId() == userId && !tmpTask.isFinished()) {
+                    retTaskList.add(tmpTask);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ResultException(ResultCode.TASK_NOT_FOUND);
+        }
+
+        return retTaskList;
+    }
+
+    public static List<TaskOrder> getAllSubmited(long userId){
+        File file = new File("src/data/taskOrder_" + userId + ".json");
+        String content = null;
+        List<TaskOrder> retList = new ArrayList<>();
+
+        try {
+            content = FileUtils.readFileToString(file, "UTF-8");
+            JSONArray array = new JSONArray(content);
+
+            List<TaskOrder> taskOrderList = JSON.parseArray(array.toString(), TaskOrder.class);
+
+            for(TaskOrder tmpTaskOrder : taskOrderList) {
+
+                if(tmpTaskOrder.isSubmited()){
+                    retList.add(tmpTaskOrder);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ResultException(ResultCode.TASK_NOT_FOUND);
+        }
+
+        return retList;
+    }
+
+    public static List<TaskOrder> getAllunSubmited(long userId) {
+        File file = new File("src/data/taskOrder_" + userId + ".json");
+        String content = null;
+        List<TaskOrder> retList = new ArrayList<>();
+
+        try {
+            content = FileUtils.readFileToString(file, "UTF-8");
+            JSONArray array = new JSONArray(content);
+
+            List<TaskOrder> taskOrderList = JSON.parseArray(array.toString(), TaskOrder.class);
+
+            for(TaskOrder tmpTaskOrder : taskOrderList) {
+
+                if(!tmpTaskOrder.isSubmited()){
+                    retList.add(tmpTaskOrder);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ResultException(ResultCode.TASK_NOT_FOUND);
+        }
+
+        return retList;
     }
 }

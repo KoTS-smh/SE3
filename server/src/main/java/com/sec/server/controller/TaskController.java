@@ -5,6 +5,7 @@ import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
 import com.sec.server.model.UserModel;
 import com.sec.server.service.TaskService;
+import com.sec.server.utils.ReadFile;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
 import org.apache.commons.io.FileUtils;
@@ -27,11 +28,28 @@ public class TaskController {
 
     @RequestMapping("/task/getAllPost")
     public Result getAllPostTask(@RequestBody UserModel userModel){
-        System.out.println("here");
         long userId = userModel.getUserId();
         List<Task> list = taskService.getAllPost(userId);
+        JSONArray array = new JSONArray(list);
 
-        return ResultUtils.success(list);
+        return ResultUtils.success(array.toString());
+    }
+
+    @RequestMapping("/task/getAllFinished")
+    public Result getAllFinishedTask(@RequestBody UserModel userModel) {
+        long userId = userModel.getUserId();
+        List<Task> list  = ReadFile.getAllFinished(userId);
+
+        JSONArray array = new JSONArray(list);
+        return ResultUtils.success(array.toString());
+    }
+
+    @RequestMapping("/task/getAllunFinished")
+    public Result getAllunFinishedTask(@RequestBody UserModel userModel) {
+        long userId = userModel.getUserId();
+        List<Task> list  = ReadFile.getAllunFinished(userId);
+        JSONArray array = new JSONArray(list);
+        return ResultUtils.success(array.toString());
     }
 
     @RequestMapping("/task/getAllAccept")
@@ -60,8 +78,8 @@ public class TaskController {
     }
 
     @RequestMapping("/task/update")
-    public Result updateTask(String task){
-
+    public Result updateTask(@RequestBody String task){
+        task = task.substring(1, task.length() - 1);
         try {
             taskService.updateTask(task);
         }catch (Exception e){

@@ -36,7 +36,7 @@
                         subs: [
                             {
                                 index: 'basetable',
-                                title: '已接取任务列表'
+                                title: '接取任务列表'
                             },
                             // {
                             //     index: 'getTask',
@@ -56,7 +56,11 @@
                             // }
                             {
                                 index: 'publishedTasks',
-                                title: '已发布任务列表'
+                                title: '发布任务列表'
+                            },
+                            {
+                                index: 'createTask',
+                                title: '新建任务'
                             }
                         ]
                     },

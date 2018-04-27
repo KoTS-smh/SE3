@@ -5,6 +5,7 @@ import com.sec.server.domain.Task;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
 import com.sec.server.repository.TaskDao;
+import com.sec.server.utils.DateFormatConverter;
 import com.sec.server.utils.ReadFile;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
@@ -38,6 +39,7 @@ public class TaskDaoImpl implements TaskDao{
 
     @Override
     public void updateTask(String task) {
+        System.out.println(task);
         JSONObject object = new JSONObject(task);
         long inId = object.getLong("taskId");
         File file = new File("src/data/task.json");
@@ -53,6 +55,21 @@ public class TaskDaoImpl implements TaskDao{
                    array.remove(i);
                }
             }
+
+            //修改时间格式
+            String beginDate = object.getString("beginDate");
+//            beginDate = DateFormatConverter.simpleDateConvert(beginDate);
+            beginDate = DateFormatConverter.convert(beginDate);
+            object.remove("beginDate");
+            System.out.println("beginDate " + beginDate);
+            object.put("beginDate", beginDate);
+            String endDate = object.getString("endDate");
+            //endDate = DateFormatConverter.simpleDateConvert(endDate);
+            endDate = DateFormatConverter.convert(endDate);
+            object.remove("endDate");
+            System.out.println("endDate " + endDate);
+            object.put("endDate", endDate);
+
             array.put(object);
             FileUtils.write(file, array.toString(2));
         } catch (IOException e) {
@@ -101,6 +118,8 @@ public class TaskDaoImpl implements TaskDao{
                     return task;
                 }
             }
+
+
 
             throw new ResultException(ResultCode.TASK_NOT_FOUND);
         } catch (IOException e) {

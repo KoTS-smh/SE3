@@ -17,10 +17,10 @@ public class Task {
     private Date beginDate;
     private Date endDate;
     private int totalPoints;
-//    private List<Long> acceptUserIds;
+    private List<Long> acceptUserIds;
     private int taskLevel;
     private int maxParticipator;
-    private List<Long> acceptUserIds;
+    private boolean isFinished;
 
     public long getTaskId() {
         return taskId;
@@ -102,14 +102,8 @@ public class Task {
         this.totalPoints = totalPoints;
     }
 
-//    public List<Long> getAcceptUserIds() {
-//        return acceptUserIds;
-//    }
-//
-//    public void setAcceptUserIds(List<Long> acceptUserIds) {
-//        this.acceptUserIds = acceptUserIds;
-//    }
-//
+
+
     public int getTaskLevel() {
         return taskLevel;
     }
@@ -132,5 +126,13 @@ public class Task {
 
     public void setAcceptUserIds(List<Long> acceptUserIds) {
         this.acceptUserIds = acceptUserIds;
+    }
+
+    public boolean isFinished() {
+        return isFinished;
+    }
+
+    public void setFinished(boolean finished) {
+        isFinished = finished;
     }
 }
