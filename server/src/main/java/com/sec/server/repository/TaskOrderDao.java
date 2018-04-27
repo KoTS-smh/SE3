@@ -10,7 +10,7 @@ public interface TaskOrderDao {
 
     void createTaskOrder(TaskOrder taskOrder);
 
-    void updateTaskOrder(String string);
+    void updateTaskOrder(String taskOrder);
 
     void deleteTaskOrder(long taskOrderId);
 }

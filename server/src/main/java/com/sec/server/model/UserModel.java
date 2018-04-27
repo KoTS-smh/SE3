@@ -1,12 +1,22 @@
 package com.sec.server.model;
 
+import com.sec.server.enums.Education;
+import com.sec.server.enums.Sex;
+import com.sec.server.enums.UserLevel;
+
 import javax.validation.constraints.NotBlank;
 
 public class UserModel {
-    private String username;
     private long userId;
+    private String username;
     private String password;
-    private String tel_number;
+    private String tel_phone;
+    private long point;
+    private Sex sex;
+    private Education education;
+    private String description;
+    private String Email;
+    private UserLevel userLevel;
 
     @NotBlank(message = "用户名不能为空")
     public String getUsername() {
@@ -27,12 +37,60 @@ public class UserModel {
     }
 
     @NotBlank(message = "电话号码不能为空")
-    public String getTel_number() {
-        return tel_number;
+    public String getTel_phone() {
+        return tel_phone;
     }
 
-    public void setTel_number(String tel_number) {
-        this.tel_number = tel_number;
+    public Sex getSex() {
+        return sex;
+    }
+
+    public void setSex(Sex sex) {
+        this.sex = sex;
+    }
+
+    public Education getEducation() {
+        return education;
+    }
+
+    public void setEducation(Education education) {
+        this.education = education;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getEmail() {
+        return Email;
+    }
+
+    public void setEmail(String email) {
+        Email = email;
+    }
+
+    public long getPoint() {
+        return point;
+    }
+
+    public void setPoint(long point) {
+        this.point = point;
+    }
+
+    public UserLevel getUserLevel() {
+        return userLevel;
+    }
+
+    public void setUserLevel(UserLevel userLevel) {
+        this.userLevel = userLevel;
+    }
+
+    public void setTel_phone(String tel_phone) {
+        this.tel_phone = tel_phone;
     }
 
     @NotBlank(message = "用户Id不能为空")

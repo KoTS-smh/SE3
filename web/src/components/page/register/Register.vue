@@ -2,27 +2,6 @@
     <div class="register-wrap">
         <div class="ms-title">后台管理系统</div>
         <div class="ms-register" id="register-father">
-            <!--&lt;!&ndash;图标区域&ndash;&gt;-->
-            <!--<div class="register-icon">-->
-                <!--&lt;!&ndash;留白区域&ndash;&gt;-->
-                <!--<div style="height: 10px"></div>-->
-                <!--&lt;!&ndash;用户图标&ndash;&gt;-->
-                <!--<div class="user-icon" style="height: 63px">-->
-                    <!--<i class="icon-user-tie"></i>-->
-                <!--</div>-->
-                <!--&lt;!&ndash;密码图标&ndash;&gt;-->
-                <!--<div class="key-icon" style="height:63px">-->
-                    <!--<i class="icon-key"></i>-->
-                <!--</div>-->
-                <!--&lt;!&ndash;确认密码图标&ndash;&gt;-->
-                <!--<div class="certain-icon" style="height:63px">-->
-                    <!--<i class="icon-lock"></i>-->
-                <!--</div>-->
-                <!--&lt;!&ndash;手机图标&ndash;&gt;-->
-                <!--<div class="phone-icon">-->
-                    <!--<i class="icon-phone_android"></i>-->
-                <!--</div>-->
-            <!--</div>-->
             <!--信息填写区域-->
             <div class="register-field">
                 <!--表单-->
@@ -97,7 +76,7 @@ import axios from 'axios'
                 if(value===''){
                     callback(new Error('请输入手机号'))
                 }
-            }
+            };
             return {
                 ruleForm: {
                     username: '',
@@ -125,23 +104,23 @@ import axios from 'axios'
             register() {
                 const self = this;
                 //judge before register
-                
+
                 axios.post('http://localhost:8080/user/register', this.ruleForm).then(function(response){
                     console.log(response);
                     self.success();
                     self.sleep(1000).then(() => {
                         self.$router.push('/login')
                     });
-                    
+
                 }).catch(function(err){
                     console.log(err);
                     self.failed();
                 })
-                
+
             },
 
             goBack(){
-                this.$confirm('您将返回离开登录界面，是否确定？','提示',{
+                this.$confirm('您将返回离开注册界面，是否确定？','提示',{
                     confirmButtonText:'确定',
                     cancelButtonText:'取消',
                     type:'warning'

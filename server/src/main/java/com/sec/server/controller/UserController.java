@@ -44,8 +44,15 @@ public class UserController {
         return ResultUtils.success();
     }
 
+    @RequestMapping("/user/getUser")
+    public Result getUser(long userId){
+        User user = userService.get(userId);
+        System.out.print(user.getUserId());
+        return ResultUtils.success(user);
+    }
     @RequestMapping("/user/update")
     public Result update(@RequestBody UserModel userModel){
+        User user = userService.updateUser(userModel);
         return ResultUtils.success();
     }
 
@@ -57,7 +64,7 @@ public class UserController {
     @RequestMapping("/user/getById")
     public Result getCommonUserInfo(long userId){
         User user = new User();
-        user.setUsername("蛤");
+        user.setUsername("");
         return ResultUtils.success(user);
     }
 }

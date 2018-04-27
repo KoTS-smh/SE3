@@ -85,7 +85,8 @@
                     },
                     {
                         icon: 'el-icon-star-on',
-                        index: 'basecharts',
+                        // index: 'basecharts',
+                        index:'readme',
                         title: '个人中心'
                     }
                 ]

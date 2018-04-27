@@ -9,7 +9,9 @@ public interface UserService {
     //注册方法
     void register(UserModel userModel);
     //更新用户信息
-    void updateUser(User user);
+    User updateUser(UserModel userModel);
     //注销用户
     void deleteUser(Long userId);
+    //获取当今登录用户信息
+    User get(Long userId);
 }

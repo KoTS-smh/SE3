@@ -8,4 +8,7 @@ public interface UserDao {
 
     void register(User user);
 
+    User upate(User user);
+
+    User getUserById(Long ID);
 }
