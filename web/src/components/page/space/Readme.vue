@@ -2,7 +2,7 @@
     <div class="all" id="all">
             <div class="crumbs">
                 <el-breadcrumb separator="/">
-                    <el-breadcrumb-item><i class="el-icon-date"></i> 个人信息</el-breadcrumb-item>
+                    <el-breadcrumb-item>个人信息</el-breadcrumb-item>
                 </el-breadcrumb>
             </div>
             <div class="form-box">
@@ -49,7 +49,7 @@
                     </el-form-item>
                     <!--等级显示区域-->
                     <el-form-item label="等级">
-                        {{form.level}}
+                        {{form.userLevel}}
                     </el-form-item>
                     <!--修改按钮区域-->
                     <el-form-item label="修改信息">
@@ -102,8 +102,6 @@
                 }).then(response => {
                     console.log(response.data.data);
                     this.form = response.data.data;
-
-                    self.$message('获取成功');
                 }).catch(()=>{
                     this.$message('获取失败');
                 })

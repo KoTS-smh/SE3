@@ -17,14 +17,14 @@ export default new Router({
                     path: '/',
                     component: resolve => require(['../components/page/space/Readme.vue'], resolve)
                 },
-                {
-                    path:'/picktable',
-                    component: resolve => require(['../components/page/space/PickTable.vue'],resolve)
-                },
-                {
-                    path:'/releaseTable',
-                    component:resolve => require(['../components/page/space/ReleaseTable.vue'],resolve)
-                },
+                // {
+                //     path:'/picktable',
+                //     component: resolve => require(['../components/page/space/PickTable.vue'],resolve)
+                // },
+                // {
+                //     path:'/releaseTable',
+                //     component:resolve => require(['../components/page/space/ReleaseTable.vue'],resolve)
+                // },
                 {
                     path: '/basetable',
                     component: resolve => require(['../components/page/space/BaseTable.vue'], resolve)
@@ -77,6 +77,14 @@ export default new Router({
                 //     path: '/analysis',
                 //     component: resolve => require(['../components/page/space/Analysis.vue'], resolve)
                 // }
+                {
+                    path: '/publishedTasks',
+                    component: resolve => require(['../components/page/space/PublishedTasks.vue'], resolve)
+                },
+                {
+                    path: '/CheckTask',
+                    component: resolve => require(['../components/page/space/CheckTask.vue'], resolve)
+                }
             ]
         },
         {

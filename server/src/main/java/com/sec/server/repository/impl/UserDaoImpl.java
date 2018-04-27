@@ -22,7 +22,7 @@ public class UserDaoImpl implements UserDao {
 //    ios todo
 //    private String pathname = "src/data/user.json";
 //    windows
-    private String pathname = "server/src/data/user.json";
+    private String pathname = "src/data/user.json";
     private File file = new File(pathname);
     @Override
     public User login(String username, String password) {
