@@ -57,4 +57,21 @@ public class TaskOrderController {
         taskOrderService.createTaskOrder(taskOrder);
         return ResultUtils.success();
     }
+
+    @RequestMapping("/taskOrder/getAllSubmited")
+    public Result getAllSubmited(@RequestBody UserModel userModel){
+        long userId = userModel.getUserId();
+        List<TaskOrder> list = ReadFile.getAllSubmited(userId);
+        JSONArray array = new JSONArray(list);
+        return ResultUtils.success(array.toString());
+    }
+
+    @RequestMapping("/taskOrder/getAllunSubmited")
+    public Result getAllunSubmited(@RequestBody UserModel userModel) {
+        long userId = userModel.getUserId();
+        List<TaskOrder> list = ReadFile.getAllunSubmited(userId);
+        JSONArray array = new JSONArray(list);
+        return ResultUtils.success(array.toString());
+
+    }
 }

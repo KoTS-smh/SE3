@@ -3,18 +3,15 @@
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-menu"></i> 任务</el-breadcrumb-item>
-                <el-breadcrumb-item>已接取任务列表</el-breadcrumb-item>
+                <el-breadcrumb-item>接取任务列表</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="handle-box">
-            <el-button type="primary" icon="delete" class="handle-del mr10" @click="delAll">批量删除</el-button>
-            <el-select v-model="select_cate" placeholder="筛选任务" class="handle-select mr10">
+            <el-select v-model="select_cate" placeholder="筛选任务" class="handle-select mr10" @change="handleChange()">
                 <el-option key="1" label="已完成" value="已完成"></el-option>
                 <el-option key="2" label="未完成" value="未完成"></el-option>
                 <el-option key="3" label="草稿" value="草稿"></el-option>
             </el-select>
-            <el-input v-model="select_word" placeholder="筛选关键词" class="handle-input mr10"></el-input>
-            <el-button type="primary" icon="search" @click="search">搜索</el-button>
             <el-button type="primary"  @click="newTask">新建</el-button>
         </div>
         <el-table :data="tableData" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange">
@@ -42,47 +39,24 @@
             </el-pagination>
         </div>
 
-        <el-dialog title="修改任务信息" :visible.sync="dialogVisible">
+        <el-dialog title="任务详情" :visible.sync="dialogVisible">
             <el-form :model="selectTable">
-                <el-form-item label="任务名称" label-width="100px">
-                    <el-input v-model="selectTable.name" auto-complete="off"></el-input>
+                <el-form-item label="任务ID" label-width="100px">
+                    <el-input v-model="selectTable.taskId" auto-complete="off" readonly="true"></el-input>
                 </el-form-item>
-                <el-form-item label="日期" label-width="100px">
-                    <el-input v-model="selectTable.date" auto-complete="off"></el-input>
+                <el-form-item label="截止时间" label-width="100px">
+                    <el-input v-model="selectTable.endDate" auto-complete="off" readonly="true"></el-input>
+                    
                 </el-form-item>
                 <el-form-item label="状态" label-width="100px">
-                    <el-input v-model="selectTable.state" auto-complete="off"></el-input>
+                    <el-input v-model="selectTable.submited" auto-complete="off" readonly="true"></el-input>
                 </el-form-item>
-                <el-form-item label="备注" label-width="100px">
-                    <el-input v-model="selectTable.address" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item>
-
-                <div class="content-title">支持拖拽</div>
-                <el-upload
-                    class="upload-demo"
-                    drag
-                    action="/api/posts/"
-                    multiple>
-                    <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                    <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-                </el-upload>
-
-                <img class="pre-img" :src="src" alt="">
-                <!-- <vue-core-image-upload :class="['pure-button','pure-button-primary','js-btn-crop']"
-                                    :crop="true"
-                                    text="上传图片"
-                                    url="/api/posts/"
-                                    extensions="png,gif,jpeg,jpg"
-                                    @:imageuploaded="imageuploaded"
-                                    @:errorhandle="handleError"></vue-core-image-upload> -->
-
-                </el-form-item>
+                
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                <el-button type="primary" @click="saveChange()">确 定</el-button>
+                <el-button type="success" @click="startTag()">开始标注</el-button>
             </div>
         </el-dialog>
     </div>
@@ -152,6 +126,8 @@
                 // };
                 self.$axios.get(self.url, {page:self.cur_page}).then((res) => {
                     self.tableData = res.data.list;
+                }).catch(err => {
+                    console.log(err)
                 })
             },
             search(){
@@ -165,13 +141,62 @@
             },
             handleEdit(index, row) {
                 //this.$message('编辑第'+(index+1)+'行');
+                var date = this.tableData[0].endDate
                 this.selectTable = row;
+
+                //this.selectTable.endDate = new Date(date)
+                
                 this.address = row.address;
                 this.dialogVisible = true;
+               
 
             },
             handleDelete(index, row) {
                 this.$message.error('删除第'+(index+1)+'行');
+                tableData[index + 1] = "";
+            },
+            handleChange() {
+                var selection = this.select_cate;
+                var userId = localStorage.getItem("userId")
+                var mydata;
+                if(selection === "已完成"){
+                    axios.post("http://localhost:8080/taskOrder/getAllSubmited", {"userId": userId, "password": ""})
+                    .then(response => {
+                        console.log(response)
+                        mydata = JSON.parse(response.data.data)
+                        var i = 0
+                        for(i = 0;i < mydata.length;++i){
+                            mydata[i].endDate = this.convertDate(mydata[i].endDate)
+                            mydata[i].beginDate = this.convertDate(mydata[i].beginDate)
+                            var tmprate = mydata[i].rate;
+                            if(tmprate != null && tmprate != undefined && tmprate != -1){
+                                //donothing
+                            }else{
+                                mydata[i].rate = '未评分';
+                            }
+                        }
+                        this.tableData = mydata;
+                    })
+                }else if(selection === "未完成"){
+                    axios.post("http://localhost:8080/taskOrder/getAllunSubmited", {"userId": userId, "password": ""})
+                    .then(response => {
+                        console.log(response)
+                        mydata = JSON.parse(response.data.data)
+                        var i = 0
+                        for(i = 0;i < mydata.length;++i){
+                            mydata[i].endDate = this.convertDate(mydata[i].endDate)
+                            mydata[i].beginDate = this.convertDate(mydata[i].beginDate)
+
+                            var tmprate = mydata[i].rate;
+                            if(tmprate != null && tmprate != undefined && tmprate != -1){
+                                //donothing
+                            }else{
+                                mydata[i].rate = '未评分';
+                            }
+                        }
+                        this.tableData = mydata;
+                    })
+                }
             },
             delAll(){
                 const self = this,
@@ -186,6 +211,15 @@
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
+            },
+            saveChange() {
+                //向后端传送数据
+                console.log("now date " + this.selectTable.endDate)
+                this.tableData[0].endDate = this.selectTable.endDate
+                this.dialogVisible = false
+            },
+            startTag() {
+
             },
 
             imageuploaded(res) {
@@ -215,15 +249,7 @@
                             response.data.data[j].submited = "已提交";
                         }
 
-                        var date = new Date(response.data.data[j].endDate);
-                        var year = date.getFullYear() + '-';
-                        var month = date.getMonth() + '-';
-                        var day = date.getDay() + ' ';
-                        var hour = date.getHours() + ':';
-                        var minute = date.getMinutes();
-
-                        response.data.data[j].endDate = year + month + day + hour + minute;
-
+                        response.data.data[j].endDate = this.convertDate(response.data.data[j].endDate)
                         var tmprate = response.data.data[j].rate;
                         if(tmprate != null && tmprate != undefined && tmprate != -1){
                             //donothing
@@ -234,12 +260,32 @@
                     }
                     var list = response.data.data;
                     this.tableData = list;
+                   
                 }
                     
-                ).catch(function(err) {
-                    console.log(err);
+                ).catch(err => {
+                    console.log(err)
                 })
                 
+            },
+            convertDate(indate) {
+                var date = new Date(indate)
+                var year = date.getFullYear() + '-';
+                var month = (date.getMonth() + 1) + '-';
+                var day = date.getDate() - 1;
+                            
+                var hour = date.getUTCHours();
+                            
+                hour = hour - 6;
+                if(hour <= 0){
+                    hour = hour + 24;
+                    day = day - 1;
+                }
+                    day = day + ' ';
+                    hour = hour + ':';
+                    var minute = date.getMinutes();
+                            
+                return year + month + day + hour + minute;
             }
         },
         

@@ -1,8 +1,12 @@
 package com.sec.server.utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class DateFormatConverter {
+    private static final String DATE_FORMAT = "EEE MMM dd HH:mm:ss z yyyy";
 
     public static String convert(String nativeDate){
         StringBuffer sb = new StringBuffer();
@@ -106,7 +110,33 @@ public class DateFormatConverter {
 
     }
 
+    //用于类似"2018-3-3 15:45"这样的时间转换
+    public static String simpleDateConvert(String nativeTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = null;
+        try {
+            date = sdf.parse(nativeTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date.toString();
+    }
+
+    public static String complexDataConvert(String nativeTime){
+
+
+        Date date = null;
+        try {
+            date = new SimpleDateFormat(DATE_FORMAT, Locale.US).parse(nativeTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return String.valueOf(date);
+    }
+
     public static void main(String[] args){
-        System.out.println(DateFormatConverter.convert("Wed Apr 18 15:45:37 CST 2018"));
+        String d1 = DateFormatConverter.simpleDateConvert("2018-3-3 15:45");
+        System.out.println(DateFormatConverter.convert(d1));
     }
 }
