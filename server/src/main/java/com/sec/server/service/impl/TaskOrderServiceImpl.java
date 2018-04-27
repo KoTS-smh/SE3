@@ -28,11 +28,11 @@ public class TaskOrderServiceImpl implements TaskOrderService{
 
     @Override
     public void updateTaskOrder(String taskOrder) {
-
+        taskOrderDao.updateTaskOrder(taskOrder);
     }
 
     @Override
-    public void deleteTaskOrder(long taskOrderId) {
-
+    public void deleteTaskOrder(long taskOrderId,long userId) {
+        taskOrderDao.deleteTaskOrder(taskOrderId,userId);
     }
 }
