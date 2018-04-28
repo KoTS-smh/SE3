@@ -17,9 +17,6 @@ import java.util.List;
 
 public class ReadFile {
 
-    private static String taskPath = "src/data/task.json";
-    private static String taskOrderPath = "src/data/taskOrder_";
-    private static String userPath = "src/data/user.json";
     /**
      * 读取json文件，返回文件内容
      */
@@ -31,7 +28,7 @@ public class ReadFile {
             throw new FileNotFoundException();
         }
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         try {
             InputStreamReader reader = new InputStreamReader(new FileInputStream(file), "UTF-8");
@@ -54,8 +51,8 @@ public class ReadFile {
      */
     public static int getPointFromTask(String path, long taskId){
         File file = new File(path);
-        String content = null;
-        List<Integer> list = new ArrayList();
+        String content;
+        List<Integer> list = new ArrayList<>();
 
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
@@ -79,8 +76,7 @@ public class ReadFile {
 
     public static int getNumOfPics(String path, long taskId){
         File file = new File(path);
-        String content = null;
-
+        String content;
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
             JSONArray array = new JSONArray(content);
@@ -108,9 +104,17 @@ public class ReadFile {
      * @return 对应ID的任务对象
      */
     public static Task getTask(long taskId){
-        File file = new File(taskPath);
-        String content = null;
-
+        File file = new File(Path.taskPath);
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+                JSONArray array = new JSONArray();
+                FileUtils.write(file, array.toString(2));
+            } catch (IOException e) {
+                throw new ResultException(ResultCode.UNKNOWN_ERROR);
+            }
+        }
+        String content;
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
             JSONArray array = new JSONArray(content);
@@ -124,7 +128,6 @@ public class ReadFile {
 
             throw new ResultException(ResultCode.TASK_NOT_FOUND);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new ResultException(ResultCode.UNKNOWN_ERROR);
         }
     }
@@ -135,8 +138,17 @@ public class ReadFile {
      * @return task列表
      */
     public static List<Task> getAllPost(long userId){
-        File file = new File(taskPath);
-        String content = null;
+        File file = new File(Path.taskPath);
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+                JSONArray array = new JSONArray();
+                FileUtils.write(file, array.toString(2));
+            } catch (IOException e) {
+                throw new ResultException(ResultCode.UNKNOWN_ERROR);
+            }
+        }
+        String content;
         List<Task> retTaskList = new ArrayList<>();
 
         try {
@@ -157,8 +169,8 @@ public class ReadFile {
     }
 
     public static List<Task> getAllFinished(long userId) {
-        File file = new File(taskPath);
-        String content = null;
+        File file = new File(Path.taskPath);
+        String content;
         List<Task> retTaskList = new ArrayList<>();
 
         try {
@@ -181,7 +193,7 @@ public class ReadFile {
     }
 
     public static List<Task> getAllunFinished(long userId){
-        File file = new File(taskPath);
+        File file = new File(Path.taskPath);
         String content = null;
         List<Task> retTaskList = new ArrayList<>();
 
@@ -205,8 +217,8 @@ public class ReadFile {
     }
 
     public static List<TaskOrder> getAllSubmited(long userId){
-        File file = new File(taskOrderPath + userId + ".json");
-        String content = null;
+        File file = new File(Path.taskOrderPath + userId + ".json");
+        String content;
         List<TaskOrder> retList = new ArrayList<>();
 
         try {
@@ -230,8 +242,8 @@ public class ReadFile {
     }
 
     public static List<TaskOrder> getAllunSubmited(long userId) {
-        File file = new File(taskOrderPath + userId + ".json");
-        String content = null;
+        File file = new File(Path.taskOrderPath + userId + ".json");
+        String content;
         List<TaskOrder> retList = new ArrayList<>();
 
         try {
@@ -255,8 +267,8 @@ public class ReadFile {
     }
 
     public static int getUserPoint(long userId) {
-        File file = new File(userPath);
-        String content = null;
+        File file = new File(Path.userPath);
+        String content;
         int retPoint = -1;
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
@@ -276,8 +288,8 @@ public class ReadFile {
     }
 
     public static int getNumberOfTaskInProcess(long userId) {
-        File file = new File(taskOrderPath + userId + ".json");
-        String content = null;
+        File file = new File(Path.taskOrderPath + userId + ".json");
+        String content;
         int taskNumber = 0;
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
@@ -301,8 +313,8 @@ public class ReadFile {
      */
 
     public static String getRank(long userId) {
-        File file = new File(userPath);
-        String content = null;
+        File file = new File(Path.userPath);
+        String content;
         List<User> userList = new ArrayList<>();
         List<Integer> pointList = new ArrayList<>();
         try {
@@ -322,8 +334,8 @@ public class ReadFile {
             }
         }
 
-        for(int i = 0;i < userList.size();++i) {
-            pointList.add(userList.get(i).getPoint());
+        for (User anUserList : userList) {
+            pointList.add(anUserList.getPoint());
         }
 
         if(userList.size() <= 1) {

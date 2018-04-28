@@ -23,6 +23,15 @@ public class TaskOrderDaoImpl implements TaskOrderDao{
     @Override
     public List<TaskOrder> getAllTaskOrder(long userId) {
         File file = new File(Path.taskOrderPath + userId + ".json");
+        if(!file.exists()){
+            try {
+                file.createNewFile();
+                JSONArray array = new JSONArray();
+                FileUtils.write(file, array.toString(2));
+            } catch (IOException e) {
+                throw new ResultException(ResultCode.UNKNOWN_ERROR);
+            }
+        }
         String content;
         List<TaskOrder> list;
         try {
