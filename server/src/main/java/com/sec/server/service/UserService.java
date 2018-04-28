@@ -13,5 +13,5 @@ public interface UserService {
     //注销用户
     void deleteUser(Long userId);
     //获取当今登录用户信息
-    User get(Long userId);
+    User get(long userId);
 }

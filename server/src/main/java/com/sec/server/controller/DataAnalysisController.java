@@ -34,10 +34,10 @@ public class DataAnalysisController {
      * taskRateMessage 包括 acceptUserId 工人ID，acceptUserName 工人姓名, rate 工人进度
      */
     @RequestMapping("/getTaskMessage")
-    public List<TaskRateMessage> getTaskMessage(long taskId){
+    public Result getTaskMessage(long taskId){
         List<TaskRateMessage> list = new ArrayList<>();
         list = dataAnalysisService.getTaskMessage(taskId);
-        return list;
+        return ResultUtils.success(list);
     }
 
     /**
@@ -49,8 +49,9 @@ public class DataAnalysisController {
      *      unfinishedTaskNumber 未完成任务数
      */
     @RequestMapping("/getSystemMessage")
-    public SystemAdministratorMessage getSystemMessage(){
-        return dataAnalysisService.getSystemMessage();
+    public Result getSystemMessage(){
+        SystemAdministratorMessage message = dataAnalysisService.getSystemMessage();
+        return ResultUtils.success(message);
     }
 
     @RequestMapping("/analysis")

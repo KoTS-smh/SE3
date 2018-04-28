@@ -73,7 +73,7 @@
                     {
                         icon: 'el-icon-star-on',
                         // index: 'basecharts',
-                        index:'readme',
+                        index:'personalSpace',
                         title: '个人中心'
                     }
                 ]

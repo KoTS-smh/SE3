@@ -10,5 +10,5 @@ public interface UserDao {
 
     User upate(User user);
 
-    User getUserById(Long ID);
+    User getUserById(long ID);
 }

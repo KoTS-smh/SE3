@@ -212,7 +212,6 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
      *
      */
     public List<TaskRateMessage> getTaskMessage(long taskId){
-
         //获取所有的userId
         long userNumber = getTotalAmount("server/src/data/user.json");
 
