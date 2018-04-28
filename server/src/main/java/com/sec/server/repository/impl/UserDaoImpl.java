@@ -115,7 +115,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User getUserById(Long ID) {
+    public User getUserById(long ID) {
         String content = null;
         try {
             content = FileUtils.readFileToString(file);
@@ -136,18 +136,10 @@ public class UserDaoImpl implements UserDao {
                 }
             }
 
-            //一个新的用户
-            User user = new User();
-            user.setUserLevel(translateToUserLevel("LEVEL1"));
-            user.setEducation(null);
-            user.setPoint(0);
-            user.setUsername(null);
-            user.setTel_phone(null);//todo
-            user.setSex(null);
-            user.setDescription(null);
-            user.setUserId(ID);
+
         } catch (IOException e) {
             e.printStackTrace();
+            throw new ResultException(ResultCode.UNKNOWN_USER_ERROR);
         }
         return null;
     }

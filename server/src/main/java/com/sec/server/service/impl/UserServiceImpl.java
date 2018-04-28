@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User get(Long userId) {
+    public User get(long userId) {
         return userDao.getUserById(userId);
     }
 }
