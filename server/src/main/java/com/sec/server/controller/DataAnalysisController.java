@@ -65,4 +65,9 @@ public class DataAnalysisController {
         PersonalDataModel personalDataModel = dataAnalysisService.getPersonalData(userId);
         return ResultUtils.success(personalDataModel);
     }
+
+    @RequestMapping("/annotation/tags")
+    public Result getTags(long taskId){
+        return ResultUtils.success(dataAnalysisService.getAnnotationTag(taskId));
+    }
 }

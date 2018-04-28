@@ -1,31 +1,36 @@
 package com.sec.server.repository.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.sec.server.domain.Task;
+import com.sec.server.domain.TaskOrder;
+import com.sec.server.domain.User;
 import com.sec.server.domain.*;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
 import com.sec.server.model.PersonalDataModel;
 import com.sec.server.repository.DataAnalysisDao;
+import com.sec.server.utils.Path;
 import com.sec.server.utils.ReadFile;
+import com.sec.server.utils.Stopwords;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.regex.Pattern;
 
 @Repository("dataAnalysisDao")
 public class DataAnalysisDaoImpl implements DataAnalysisDao {
 
     @Override
     public List<TaskOrder> getAnalysisResult(String username) {
-        File file = new File("src/data/taskOrder_" + username + ".json");
+        File file = new File(Path.taskOrderPath + username + ".json");
         String content = null;
 
-        List<TaskOrder> taskOrderList = new ArrayList();
+        List<TaskOrder> taskOrderList = new ArrayList<>();
 
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
@@ -45,8 +50,8 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
         List<Task> currentTasks = new ArrayList<>();
         List<User> currentUsers = new ArrayList<>();
         List<Long> participantIdList = new ArrayList<>();
-        File file = new File("src/data/task.json");
-        String content = null;
+        File file = new File(Path.taskPath);
+        String content;
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
             JSONArray array = new JSONArray(content);
@@ -62,9 +67,8 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
                 participantIdList = task.getAcceptUserIds();
             }
         }
-
         //read the user.json file
-        File userFile = new File("src/data/user.json");
+        File userFile = new File(Path.userPath);
         try {
             content = FileUtils.readFileToString(userFile, "UTF-8");
             JSONArray array = new JSONArray(content);
@@ -91,7 +95,7 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
     @Override
     public int getTotalAmount(String path) {
         File file = new File(path);
-        String content = null;
+        String content;
         int totalAmount = 0;
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
@@ -104,6 +108,115 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
         return totalAmount;
     }
 
+    @Override
+    public HashMap<Integer, HashMap<String, Integer>> getAnnotationTag(long taskId) {
+        File file = new File(Path.taskPath);
+        String content;
+        List<Long> userIds = new ArrayList<>();
+        List<Long> annotationIds = new ArrayList<>();
+        int len = 0;
+        try {
+            content = FileUtils.readFileToString(file, "UTF-8");
+            JSONArray array = new JSONArray(content);
+            for(int i=0;i<array.length();i++){
+                if(taskId == array.getJSONObject(i).getLong("taskId")){
+                    userIds = JSON.parseArray(array.getJSONObject(i).getJSONArray("acceptUserIds").toString(),Long.class);
+                    len = array.getJSONObject(i).getJSONArray("imgUrlList").length();
+                    break;
+                }
+            }
+            for(int i=0;i<userIds.size();i++){
+                File thisFile = new File(Path.taskOrderPath+ userIds.get(i) + ".json");
+                String temp = FileUtils.readFileToString(thisFile, "UTF-8");
+                JSONArray taskOrders = new JSONArray(temp);
+                for(int j = 0;j<taskOrders.length();j++){
+                    if(taskId == taskOrders.getJSONObject(i).getLong("taskId")){
+                        annotationIds.add(taskOrders.getJSONObject(i).getLong("annotationId"));
+                        break;
+                    }
+                }
+            }
+            HashMap<Integer,HashMap<String,Integer>> result = getOneAnnotationTag(annotationIds.get(0),len);
+            HashMap<Integer,HashMap<String,Integer>> temp = new HashMap<>();
+            for(int i=1;i<len;i++){
+                temp = getOneAnnotationTag(annotationIds.get(i),len);
+                for(int j=1;j<=len;j++){
+                    Set<String> keys = temp.get(j).keySet();
+                    for(String s:keys){
+                        if(!result.get(j).containsKey(s)){
+                            result.get(i).put(s,temp.get(j).get(s));
+                        }else {
+                            result.get(j).put(s,result.get(j).get(s)+temp.get(j).get(s));
+                        }
+                    }
+                }
+            }
+            for(int i=1;i<=len;i++){
+                List<Map.Entry<String,Integer>> list = new ArrayList<>(result.get(i).entrySet());
+                list.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+            }
+            return result;
+        } catch (IOException e) {
+            throw new ResultException(ResultCode.UNKNOWN_ERROR);
+        }
+    }
+
+    private HashMap<Integer,HashMap<String,Integer>> getOneAnnotationTag(long annotationId,int len){
+        File file = new File(Path.annotationPath+"/"+annotationId+".txt");
+        HashMap<Integer,HashMap<String,Integer>> result = new HashMap<>();
+        try {
+            String content = FileUtils.readFileToString(file,"utf-8");
+            JSONObject jsonObject = JSON.parseObject(content);
+            HashMap<String,Integer> tags;
+            for(int i=1;i<=len;i++){
+                List<String> words = JSON.parseArray(JSON.toJSONString(jsonObject.getJSONObject("annotationMap").getJSONObject(i+"")),String.class);
+                tags = getTags(words);
+                result.put(i,tags);
+            }
+            return result;
+        } catch (IOException e) {
+            throw new ResultException(ResultCode.UNKNOWN_ERROR);
+        }
+    }
+
+    private HashMap<String,Integer> getTags(List<String> words){
+        HashMap<String,Integer> result =new HashMap<>();
+        for (String word : words) {
+            String temp = isValue(word);
+            if (temp != null) {
+                if (!result.containsKey(temp)) {
+                    result.put(temp, 1);
+                } else {
+                    result.put(temp, result.get(temp) + 1);
+                }
+            }
+        }
+        return result;
+    }
+
+    private String isValue(String word){
+        word=word.toLowerCase();
+        if(word.length()>20){
+            return null;
+        }else {
+                if(word.startsWith("'")){
+                    word = word.substring(1);
+                }
+                if(word.endsWith("'")){
+                    word = word.substring(0,word.length()-1);
+                }
+                if(Pattern.matches("^[a-z]+[']?[-]?[a-z]+$",word)) {
+                    String pattern = new Stopwords().getStopwordsRegex();
+                    if (Pattern.matches(pattern, word)) {
+                        return null;
+                    } else {
+                        return word;
+                    }
+                }else {
+                    return null;
+                }
+        }
+    }
     @Override
     public PersonalDataModel getPersonalData(long userId) {
         int point = ReadFile.getUserPoint(userId);
@@ -184,28 +297,8 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
         if(numOfPics == 0){
             throw new ResultException(ResultCode.NO_IMAGE_ERROR);
         }
-        double degreeOfCompletion = taskOrder.getDegreeOfCompletion() / (double) numOfPics;
 
-        return degreeOfCompletion;
-    }
-
-
-
-    public static void main(String[] args){
-        String username = "illiant";
-        DataAnalysisDao test = new DataAnalysisDaoImpl();
-
-
-        //测试点1：userId能否取出
-        //测试点2：能否遍历所有的json文件
-
-        //测试点3：
-
-        //测试点4：
-
-        //测试点5：
-
-        //System.out.println(test.getParticipant(3).get(0).getUserId());
+        return taskOrder.getDegreeOfCompletion() / (double) numOfPics;
     }
 
     /**
@@ -213,18 +306,18 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
      */
     public List<TaskRateMessage> getTaskMessage(long taskId){
         //获取所有的userId
-        long userNumber = getTotalAmount("server/src/data/user.json");
+        long userNumber = getTotalAmount(Path.userPath);
 
         //遍历所有的json文件，找出对应的jsonObject信息
         List<JSONObject> jsonObjectList = new ArrayList<>();
         for (int i = 0;i<userNumber;i++) {
-            File file = new File("server/src/data/taskOrder_" + i + ".json");
+            File file = new File(Path.taskOrderPath + i + ".json");
             if (file.exists()) {
                 String content = null;
                 try {
                     content = FileUtils.readFileToString(file, "UTF-8");
-                    JSONArray array = new JSONArray(content);
-                    for (int j = 0; j < array.length(); j++) {
+                    com.alibaba.fastjson.JSONArray array = JSON.parseArray(content);
+                    for (int j = 0; j < array.size(); j++) {
                         JSONObject object = array.getJSONObject(j);
                         long id = 0;
                         id = object.getLong("taskId");
@@ -261,7 +354,7 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
 
         //计算用户数目
         long userNumber = 0;
-        userNumber = getTotalAmount("server/src/data/user.json");
+        userNumber = getTotalAmount(Path.userPath);
         systemAdministratorMessage.setUserNumber(userNumber);
 
         //计算任务数目
@@ -271,14 +364,14 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
         //遍历所有的json文件，找出任务信息
         List<Long> list = new ArrayList<>();
         for (int i = 0;i<userNumber;i++) {
-            File file = new File("server/src/data/taskOrder_" + i + ".json");
+            File file = new File(Path.taskOrderPath + i + ".json");
             if (file.exists()) {
                 String content = null;
                 try {
                     content = FileUtils.readFileToString(file, "UTF-8");
                     JSONArray array = new JSONArray(content);
                     for(int j = 0;j<array.length();j++){
-                        JSONObject object = array.getJSONObject(i);
+                        org.json.JSONObject object = array.getJSONObject(i);
                         long taskId = object.getLong("taskId");//todo
                         if(!list.contains(taskId)){
                             list.add(taskId);

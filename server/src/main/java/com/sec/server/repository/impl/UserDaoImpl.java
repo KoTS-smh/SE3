@@ -8,6 +8,7 @@ import com.sec.server.enums.Sex;
 import com.sec.server.enums.UserLevel;
 import com.sec.server.exception.ResultException;
 import com.sec.server.repository.UserDao;
+import com.sec.server.utils.Path;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,11 +23,10 @@ public class UserDaoImpl implements UserDao {
 //    ios todo
 //    private String pathname = "src/data/user.json";
 //    windows
-    private String pathname = "src/data/user.json";
-    private File file = new File(pathname);
+    private File file = new File(Path.userPath);
     @Override
     public User login(String username, String password) {
-        String content = null;
+        String content;
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
             JSONArray array = new JSONArray(content);
@@ -50,7 +50,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void register(User user){
-        String content = null;
+        String content;
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
         } catch (IOException e) {
@@ -85,8 +85,8 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User upate(User user) {
-        String content = null;
+    public User update(User user) {
+        String content;
         try {
             content = FileUtils.readFileToString(file,"UTF-8");
             JSONArray array = new JSONArray(content);
@@ -116,7 +116,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getUserById(long ID) {
-        String content = null;
+        String content;
         try {
             content = FileUtils.readFileToString(file);
             JSONArray array = new JSONArray(content);
@@ -135,13 +135,26 @@ public class UserDaoImpl implements UserDao {
                     return user;
                 }
             }
-
-
         } catch (IOException e) {
             e.printStackTrace();
             throw new ResultException(ResultCode.UNKNOWN_USER_ERROR);
         }
         return null;
+    }
+
+    @Override
+    public void deleteUser(long userId) {
+        try {
+            JSONArray array = new JSONArray(FileUtils.readFileToString(file,"utf-8"));
+            for(int i=0;i<array.length();i++){
+                if(array.getJSONObject(i).getLong("userId")==userId){
+                    array.remove(i);
+                }
+            }
+            FileUtils.write(file,array.toString(2));
+        } catch (IOException e) {
+           throw new ResultException(ResultCode.UNKNOWN_ERROR);
+        }
     }
 
     //将String转化为Education枚举类
@@ -206,4 +219,6 @@ public class UserDaoImpl implements UserDao {
         jsonObject.put("userLevel",user.getUserLevel());
         return jsonObject;
     }
+
+
 }

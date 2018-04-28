@@ -32,8 +32,6 @@ public class UserServiceImpl implements UserService {
         user.setSex(Sex.Man);
         user.setEducation(Education.undergraduate);
         user.setEmail("");
-
-        System.out.println("Service" + user.getUsername());
         userDao.register(user);
 
     }
@@ -50,17 +48,17 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userModel.getUsername());
         user.setPoint(userModel.getPoint());
         user.setUserLevel(userModel.getUserLevel());
-//        System.out.println(userModel.getEmail());
-        return userDao.upate(user);
+        return userDao.update(user);
     }
 
     @Override
     public void deleteUser(Long userId) {
-
+        userDao.deleteUser(userId);
     }
 
     @Override
     public User get(long userId) {
         return userDao.getUserById(userId);
     }
+
 }

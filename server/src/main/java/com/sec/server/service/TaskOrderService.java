@@ -13,4 +13,6 @@ public interface TaskOrderService {
     void updateTaskOrder(String taskOrder);
 
     void deleteTaskOrder(long taskOrderId,long userId);
+
+    TaskOrder getTaskOrderById(long taskOrderId,long userId);
 }

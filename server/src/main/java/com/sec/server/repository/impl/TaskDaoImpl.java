@@ -6,6 +6,7 @@ import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
 import com.sec.server.repository.TaskDao;
 import com.sec.server.utils.DateFormatConverter;
+import com.sec.server.utils.Path;
 import com.sec.server.utils.ReadFile;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
@@ -20,10 +21,9 @@ import java.util.List;
 public class TaskDaoImpl implements TaskDao{
     @Override
     public void createTask(String task) {
-        //System.out.println(task);
         JSONObject object = new JSONObject(task);
 
-        File file = new File("src/data/task.json");
+        File file = new File(Path.taskPath);
         String content = null;
 
         try {
@@ -42,7 +42,7 @@ public class TaskDaoImpl implements TaskDao{
         System.out.println(task);
         JSONObject object = new JSONObject(task);
         long inId = object.getLong("taskId");
-        File file = new File("src/data/task.json");
+        File file = new File(Path.taskPath);
         String content = null;
 
         try {
@@ -80,8 +80,8 @@ public class TaskDaoImpl implements TaskDao{
 
     @Override
     public void deleteTask(long taskId) {
-        File file = new File("src/data/task.json");
-        String content = null;
+        File file = new File(Path.taskPath);
+        String content;
 
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
@@ -104,7 +104,7 @@ public class TaskDaoImpl implements TaskDao{
 
     @Override
     public Task getTaskInfo(long taskId) {
-        File file = new File("src/data/task.json");
+        File file = new File(Path.taskPath);
         String content = null;
 
         try {
@@ -114,13 +114,9 @@ public class TaskDaoImpl implements TaskDao{
             for(int i = 0;i < array.length();++i){
                 JSONObject tmp = (JSONObject) array.get(i);
                 if(tmp.getLong("taskId") == taskId){
-                    Task task = (Task) JSON.parse(tmp.toString());
-                    return task;
+                    return (Task) JSON.parse(tmp.toString());
                 }
             }
-
-
-
             throw new ResultException(ResultCode.TASK_NOT_FOUND);
         } catch (IOException e) {
 
