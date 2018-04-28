@@ -33,20 +33,20 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
         return dataAnalysisDao.getPersonalData(userId);
     }
 
-    @Override
-    public List getAnalysisResult(String username) {
-        return null;
-    }
-
-    @Override
-    public List<User> getParticipant(long taskId) {
-        return null;
-    }
-
-    @Override
-    public int getTotalAmount(String path) {
-        return 0;
-    }
+//    @Override
+//    public List getAnalysisResult(String username) {
+//        return null;
+//    }
+//
+//    @Override
+//    public List<User> getParticipant(long taskId) {
+//        return null;
+//    }
+//
+//    @Override
+//    public int getTotalAmount(String path) {
+//        return 0;
+//    }
 
     @Override
     public HashMap<Integer, HashMap<String, Integer>> getAnnotationTag(long taskId) {

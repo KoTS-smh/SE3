@@ -103,10 +103,10 @@ export default new Router({
             path:'/guide',
             component:resolve => require(['../components/page/guide/Guide.vue'],resolve)
         },
-        {
-            path: '/mainPage',
-            component: resolve => require(['../components/page/mainPage/MainPage.vue'], resolve)
-        },
+        // {
+        //     path: '/mainPage',
+        //     component: resolve => require(['../components/page/mainPage/MainPage.vue'], resolve)
+        // },
         {
                     path: '/checkTask',
                     component: resolve => require(['../components/page/space/CheckTask.vue'], resolve)

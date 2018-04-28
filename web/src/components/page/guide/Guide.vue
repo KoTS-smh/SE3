@@ -7,7 +7,7 @@
                         <h1 style="margin-top: 200px;font-size: 50px;color:whitesmoke;"  >欢迎访问众包标注系统</h1>
                         <h2 style="font-size: 20px;font-weight: lighter;color:white" >用有限的时间创造无限的未来</h2>
                         <el-tooltip effect="dark" content="将以游客身份进入" placement="bottom">
-                            <el-button round style="margin-top:50px;background-color:Transparent;font-size: 30px;color: honeydew" icon="el-icon-d-arrow-right" @click="">立即体验</el-button>
+                            <el-button round style="margin-top:50px;background-color:Transparent;font-size: 30px;color: honeydew" icon="el-icon-d-arrow-right" @click="toHome">立即体验</el-button>
                         </el-tooltip>
                         <br>
                         <el-button round icon="el-icon-d-arrow-right" style="margin-top:50px;background-color:Transparent;font-size: 30px;color: honeydew;font-family: '微软雅黑'" @click="login">登录注册</el-button>
@@ -48,6 +48,9 @@
         methods:{
             login(){
                 this.$router.push('/login')
+            },
+            toHome(){
+                this.$router.push('/homepage')
             }
         }
     }
