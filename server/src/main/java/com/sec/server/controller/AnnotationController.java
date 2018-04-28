@@ -16,12 +16,21 @@ public class AnnotationController {
     @Resource(name = "annotationService")
     private AnnotationService annotationService;
 
+    /**
+     * 获得一个所有图片的标注信息
+     * @param annotationId 标注ID
+     * @return 所有图片标注信息
+     */
     @RequestMapping("annotation/getAll")
     public Result getAllAnnotation(long annotationId){
         String annotationInfo = annotationService.getAnnotation(annotationId);
         return ResultUtils.success(JSON.parse(annotationInfo));
     }
 
+    /**
+     * 更改一个图片的标注信息
+     * @param annotationInfo 图片标注信息
+     */
     @RequestMapping("annotation/update")
     public Result saveAnnotation(@RequestBody String annotationInfo){
         JSONObject jsonObject = JSON.parseObject(annotationInfo);

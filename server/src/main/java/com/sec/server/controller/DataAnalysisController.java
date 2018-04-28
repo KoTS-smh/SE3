@@ -21,13 +21,6 @@ public class DataAnalysisController {
     private DataAnalysisService dataAnalysisService;
 
     /**
-     * 获取工人积分信息
-     * @param userId 众包工人ID
-     * @return workerMessage 该工人的信息
-     * 包括 point 积分 rank 排名
-     */
-
-    /**
      * 众包发起者获取任务的完成情况
      * @param taskId 任务ID
      * @return List<taskRateMessage> 任务完成信息
@@ -36,25 +29,25 @@ public class DataAnalysisController {
     @RequestMapping("/getTaskMessage")
     public Result getTaskMessage(long taskId){
         List<TaskRateMessage> list = new ArrayList<>();
-//        list = dataAnalysisService.getTaskMessage(taskId);
-        TaskRateMessage taskRateMessage = new TaskRateMessage();
-        taskRateMessage.setAcceptUserId(0);
-        taskRateMessage.setAcceptUserName("wrs000");
-        taskRateMessage.setRate(0.9);
-
-        TaskRateMessage taskRateMessage1 = new TaskRateMessage();
-        taskRateMessage1.setAcceptUserId(1);
-        taskRateMessage1.setAcceptUserName("wrs111");
-        taskRateMessage1.setRate(0.8);
-
-        TaskRateMessage taskRateMessage2 = new TaskRateMessage();
-        taskRateMessage2.setAcceptUserId(2);
-        taskRateMessage2.setAcceptUserName("wrs222");
-        taskRateMessage2.setRate(1);
-
-        list.add(taskRateMessage);
-        list.add(taskRateMessage1);
-        list.add(taskRateMessage2);
+        list = dataAnalysisService.getTaskMessage(taskId);
+//        TaskRateMessage taskRateMessage = new TaskRateMessage();
+//        taskRateMessage.setAcceptUserId(0);
+//        taskRateMessage.setAcceptUserName("wrs000");
+//        taskRateMessage.setRate(0.9);
+//
+//        TaskRateMessage taskRateMessage1 = new TaskRateMessage();
+//        taskRateMessage1.setAcceptUserId(1);
+//        taskRateMessage1.setAcceptUserName("wrs111");
+//        taskRateMessage1.setRate(0.8);
+//
+//        TaskRateMessage taskRateMessage2 = new TaskRateMessage();
+//        taskRateMessage2.setAcceptUserId(2);
+//        taskRateMessage2.setAcceptUserName("wrs222");
+//        taskRateMessage2.setRate(1);
+//
+//        list.add(taskRateMessage);
+//        list.add(taskRateMessage1);
+//        list.add(taskRateMessage2);
         return ResultUtils.success(list);
     }
 
@@ -72,11 +65,16 @@ public class DataAnalysisController {
         return ResultUtils.success(message);
     }
 
-    @RequestMapping("/analysis")
-    public Result getAnalysisResult(@RequestBody UserModel userModel){
-        return ResultUtils.success();
-    }
+//    @RequestMapping("/analysis")
+//    public Result getAnalysisResult(@RequestBody UserModel userModel){
+//        return ResultUtils.success();
+//    }
 
+    /**
+     * 获取用户相关统计数据
+     * @param userModel 用户信息
+     * @return 用户统计数据
+     */
     @RequestMapping("/personalData")
     public Result getPersonalData(@RequestBody UserModel userModel) {
         long userId = userModel.getUserId();
@@ -84,6 +82,11 @@ public class DataAnalysisController {
         return ResultUtils.success(personalDataModel);
     }
 
+    /**
+     * 获取一个任务中每张图片被标注的tag信息
+     * @param taskId 任务ID
+     * @return 一个任务每张图片被标注的tag信息
+     */
     @RequestMapping("/annotation/tags")
     public Result getTags(long taskId){
         return ResultUtils.success(dataAnalysisService.getAnnotationTag(taskId));

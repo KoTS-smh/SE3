@@ -75,6 +75,18 @@
                             v-model="textarea">
                         </el-input>
                     </div>
+                    <div style="margin-top: 10px">
+                        <span style="color: #242f42;margin-left: 12px">大家将本图标注为：</span>
+                    </div>
+                    <div style="width: 100%">
+                        <el-tag
+                            :key="tag"
+                            v-for="tag in Tags"
+                            :disable-transitions="false"
+                            style="margin-top: 10px;margin-left: 12px">
+                            <span style="color: royalblue">{{tag.split(/\s+/)[0]}}</span><span style="color: #8c939d">{{tag.split(/\s+/)[1]}}</span>
+                        </el-tag>
+                    </div>
                     <el-button-group style="position: relative; left: 180px; top: 220px" >
                         <el-button type="primary" @click="finishRate">完成评分<i class="el-icon-circle-check-outline"></i></el-button>
                         <el-button type="primary" @click="leave">离 开 <i class="el-icon-d-arrow-right"></i></el-button>
@@ -90,7 +102,6 @@
     let taskOrder;
     let task;
     let thisPage;
-    let sentence = '';
     let annotated;
     let annotationInfo;
     let annotationMap;
@@ -100,24 +111,20 @@
     let isNew = false;
     let draw;
     let canDraw = true;
-    function Coordinate(x,y) {
-        this.x=x;
-        this.y=y;
-    }
-    function Annotation(sentence, words, coordinates) {
-        this.sentence=sentence;
-        this.words=words;
-        this.coordinates=coordinates;
-    }
+    let tag;
+    let thisTag;
     let coordinates = [];
-    let words = [];
     export default {
         created(){
-            this.myName = '孙铭辉';
+            this.myName = localStorage.getItem("username");
+            if(this.$router.query == null){
+                this.$router.go(-1)
+            }else if(this.$router.query.taskOrderId == null){
+                this.$router.go(-1)
+            }
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
-                    //taskOrderId:sessionStorage.getItem('taskOrderId')
-                    taskOrderId:111
+                    taskOrderId:this.$router.query.taskOrderId
                 }
             }).then((response) => {
                 taskOrder=response.data.data;
@@ -126,9 +133,13 @@
                 annotated = taskOrder.degreeOfCompletion;
                 if(taskOrder.rate !==null){
                     this.ratePoint = taskOrder.rate;
+                    this.canNotRate = true;
                 }
                 this.currentPage = thisPage;
-                axios.get('http://localhost:8080/user/getById',{
+                if(localStorage.getItem("userId") ===taskOrder.acceptUserId){
+                    this.rateBtn = false;
+                }
+                axios.get('http://localhost:8080/user/getUser',{
                     params:{
                         userId:taskOrder.acceptUserId
                     }
@@ -155,6 +166,27 @@
                     });
                     img.src = task.imgUrlList[thisPage - 1];
                     this.imgUrl = "url('"+img.src+"')";
+                });
+                axios.get('http://localhost:8080//annotation/tags',{
+                    params:{
+                        taskId:taskOrder.taskId
+                    }
+                }).then((response)=>{
+                    tag  = response.data.data;
+                    thisTag = tag[thisTag];
+                    let temp = [];
+                    for(let k in thisTag){
+                        if(thisTag.hasOwnProperty(k)){
+                            temp.push(k+' '+thisTag[k]);
+                        }
+                    }
+                    this.Tags = temp;
+                }).catch(()=>{
+                    this.$message({
+                        showClose:true,
+                        message:'tag加载异常!',
+                        type:'error'
+                    })
                 });
                 axios.get('http://localhost:8080/annotation/getAll',{
                     params:{
@@ -184,6 +216,7 @@
         },
         data() {
             return {
+                Tags:[],
                 activeIndex: '1',
                 currentPage: 1,
                 textarea:'',
@@ -197,6 +230,8 @@
                 toRateName:'',
                 toRateId:'',
                 myName:'',
+                canNotRate:false,
+                rateBtn:true
             };
         },
         methods: {
@@ -225,6 +260,14 @@
                     coordinates = thisAnnotation.coordinates;
                     this.showAnnotation();
                 }
+                thisTag = tag[thisTag];
+                let temp = [];
+                for(let k in thisTag){
+                    if(thisTag.hasOwnProperty(k)){
+                        temp.push(k+' '+thisTag[k]);
+                    }
+                }
+                this.Tags = temp;
                 this.fullscreenLoading = false;
             },
             leave(){
@@ -238,7 +281,7 @@
                             cancelButtonText: '取消',
                             type: 'warning'
                         }).then(() => {
-                            this.$router.push('/readme');
+                            this.$router.go(-1);
                         }).catch(() => {
                             this.$message({
                                 type: 'info',
@@ -246,7 +289,7 @@
                             });
                         });
                     }else {
-                        this.$router.push('/readme');
+                        this.$router.go(-1);
                     }
                 }) .catch(()=>{
                     this.$confirm('网络异常，信息未正常保存, 是否继续?', '提示', {
@@ -254,7 +297,7 @@
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(() => {
-                        this.$router.push('/readme');
+                        this.$router.go(-1);
                     }).catch(() => {
                         this.$message({
                             type: 'info',
@@ -264,44 +307,51 @@
                 })
             },
             finishRate(){
-                this.$confirm('评分一旦提交，就无法修改，是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(()=>{
-                    taskOrder.rate = this.ratePoint;
-                    axios.patch('http://localhost:8080/taskOrder/update',{
-                        taskOrder:JSON.stringify(taskOrder)
-                    }).then((response)=>{
-                        if(response.data.code!==0) {
+                if(this.ratePoint == null){
+                    this.$message({
+                        type: 'error',
+                        message: '还未评分！'
+                    });
+                }else {
+                    this.$confirm('评分一旦提交，就无法修改，是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        taskOrder.rate = this.ratePoint;
+                        axios.patch('http://localhost:8080/taskOrder/update', {
+                            taskOrder: JSON.stringify(taskOrder)
+                        }).then((response) => {
+                            if (response.data.code !== 0) {
+                                this.$confirm('网络异常，评分未正常保存, 是否继续?', '提示', {
+                                    confirmButtonText: '确定',
+                                    cancelButtonText: '取消',
+                                    type: 'warning'
+                                }).then(() => {
+                                    this.$router.go(-1);
+                                }).catch(() => {
+                                    this.$message({
+                                        type: 'info',
+                                        message: '已取消'
+                                    });
+                                });
+                            }
+                        }).catch(() => {
                             this.$confirm('网络异常，评分未正常保存, 是否继续?', '提示', {
                                 confirmButtonText: '确定',
                                 cancelButtonText: '取消',
                                 type: 'warning'
                             }).then(() => {
-                                this.$router.push('/readme');
+                                this.$router.go(-1);
                             }).catch(() => {
                                 this.$message({
                                     type: 'info',
                                     message: '已取消'
                                 });
                             });
-                        }
-                    }).catch(()=>{
-                        this.$confirm('网络异常，评分未正常保存, 是否继续?', '提示', {
-                            confirmButtonText: '确定',
-                            cancelButtonText: '取消',
-                            type: 'warning'
-                        }).then(() => {
-                            this.$router.push('/readme');
-                        }).catch(() => {
-                            this.$message({
-                                type: 'info',
-                                message: '已取消'
-                            });
-                        });
+                        })
                     })
-                })
+                }
             },
             showAnnotation(){
                 draw = new Draw();

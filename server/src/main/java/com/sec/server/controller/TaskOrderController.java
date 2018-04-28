@@ -32,7 +32,6 @@ public class TaskOrderController {
     public Result getAllTaskOrder(@RequestBody UserModel userModel) {
         String username = userModel.getUsername();
         long userId = userModel.getUserId();
-        System.out.println("inController" + username);
         List<TaskOrder> list = taskOrderService.getAllTaskOrder(userId);
         JSONArray array = new JSONArray(list);
 

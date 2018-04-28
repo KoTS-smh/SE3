@@ -69,7 +69,7 @@ public class UserDaoImpl implements UserDao {
             int lastid = lastObject.getInt("userId");
             object.put("userId", lastid + 1);
         }else
-            object.put("userId", 0);
+            object.put("userId", 1);
 
         array.put(object);
 

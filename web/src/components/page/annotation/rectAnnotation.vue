@@ -126,12 +126,15 @@
     let words = [];
     export default {
         created(){
-            //this.myName = localStorage.getItem("userId");
-            this.myName = '什么鬼';
+            this.myName = localStorage.getItem("userId");
+            if(this.$router.query == null){
+                this.$router.go(-1)
+            }else if(this.$router.query.taskOrderId == null){
+                this.$router.go(-1)
+            }
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
-                    //taskOrderId:sessionStorage.getItem('taskOrderId')
-                    taskOrderId:111
+                    taskOrderId:this.$router.query.taskOrderId
                 }
             }).then((response) => {
                 taskOrder=response.data.data;
@@ -176,8 +179,7 @@
                 });
                 axios.get('http://localhost:8080/annotation/getAll',{
                     params:{
-                        //annotationId:taskOrder.annotationId
-                        annotationId:2
+                        annotationId:taskOrder.annotationId
                     },
                 }).then((response) => {
                     annotationInfo = response.data.data;
@@ -193,7 +195,7 @@
                         }
                     this.fullscreenLoading = false;
                 })
-            }).catch(function (error) {
+            }).catch(function () {
                 this.$message({
                     showClose:true,
                     message:'网络异常!',
@@ -203,14 +205,14 @@
         },
         data() {
             return {
-                Tags:['131231 :1','213123',"123132131","2131","ewwedwe","qweq"],
+                Tags:[],
                 activeIndex: '1',
                 currentPage: 1,
                 textarea:'',
                 totalNum:null,
                 imgX:null,
                 imgY:null,
-                imgUrl: '',
+                imgUrl:'',
                 fullscreenLoading:true,
                 process:0,
                 myName:'',
@@ -252,6 +254,7 @@
                 this.fullscreenLoading = false;
             },
             save(){
+                words = [];
                 sentence = this.textarea;
                 let temp =sentence.trim().split(/\s+|\.|,|\(|\)|;|:|"|\?|!/);
                 for(let i=0;i<temp.length;i++){
@@ -260,7 +263,6 @@
                     }
                 }
                 thisAnnotation =new Annotation(sentence,words,coordinates);
-                words = [];
                 annotations[0] = thisAnnotation;
                 annotationMap[thisPage] = annotations;
                 annotationInfo.annotationMap=annotationMap;
@@ -280,8 +282,9 @@
                             message: '保存成功！',
                             type: 'success'
                         });
+                        this.autoSave();
                     }
-                }).catch((error)=>{
+                }).catch(()=>{
                     annotated--;
                     this.$message({
                         showClose:true,
@@ -318,8 +321,9 @@
                                 message: '删除成功！',
                                 type: 'success'
                             });
+                            this.autoSave();
                         }
-                    }).catch((error)=>{
+                    }).catch(()=>{
                         this.$message({
                             showClose:true,
                             type: 'error',
@@ -351,7 +355,7 @@
                           cancelButtonText: '取消',
                           type: 'warning'
                       }).then(() => {
-                          this.$router.push('/readme');
+                          this.$router.go(-1);
                       }).catch(() => {
                           this.$message({
                               type: 'info',
@@ -359,15 +363,15 @@
                           });
                       });
                   }else {
-                      this.$router.push('/readme');
+                      this.$router.go(-1);
                   }
-              }) .catch((error)=>{
+              }) .catch(()=>{
                   this.$confirm('网络异常，信息未正常保存, 是否继续?', '提示', {
                       confirmButtonText: '确定',
                       cancelButtonText: '取消',
                       type: 'warning'
                   }).then(() => {
-                      this.$router.push('/readme');
+                      this.$router.go(-1);
                   }).catch(() => {
                       this.$message({
                           type: 'info',
@@ -381,41 +385,48 @@
                 draw.drawFirst();
             },
             submitTask(){
-                this.$confirm('此操作将提交该标注任务，之后无法更改, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    taskOrder.isSubmited = true;
-                    taskOrder.lastPic = thisPage;
-                    taskOrder.degreeOfCompletion = annotated;
-                    axios.post('http://localhost:8080/taskOrder/update',{
-                            taskOrder:JSON.stringify(taskOrder)
-                    }).then((response)=>{
-                        if(response.data.code!==0){
+                if(this.process !== 1){
+                    this.$message({
+                        type: 'error',
+                        message: '未完成，无法提交！'
+                    });
+                }else {
+                    this.$confirm('此操作将提交该标注任务，之后无法更改, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        taskOrder.isSubmited = true;
+                        taskOrder.lastPic = thisPage;
+                        taskOrder.degreeOfCompletion = annotated;
+                        axios.post('http://localhost:8080/taskOrder/update', {
+                            taskOrder: JSON.stringify(taskOrder)
+                        }).then((response) => {
+                            if (response.data.code !== 0) {
+                                this.$message({
+                                    type: 'error',
+                                    message: '提交失败!'
+                                });
+                            } else {
+                                this.$message({
+                                    type: 'success',
+                                    message: '提交成功!'
+                                });
+                                this.$router.go(-1);
+                            }
+                        }).catch(() => {
                             this.$message({
                                 type: 'error',
                                 message: '提交失败!'
                             });
-                        }else{
-                            this.$message({
-                                type: 'success',
-                                message: '提交成功!'
-                            });
-                            // todo leave
-                        }
-                    }).catch(()=>{
+                        })
+                    }).catch(() => {
                         this.$message({
-                            type: 'error',
-                            message: '提交失败!'
+                            type: 'info',
+                            message: '已取消提交'
                         });
-                    })
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消提交'
                     });
-                });
+                }
             },
             removeTask(){
                 this.$confirm('此操作将移除该标注任务, 是否继续?', '提示', {
@@ -425,7 +436,8 @@
                 }).then(() => {
                     axios.get('http://localhost:8080/taskOrder/delete',{
                         params:{
-                            taskOrderId:taskOrder.taskOrderId
+                            taskOrderId:taskOrder.taskOrderId,
+                            userId:localStorage.getItem("userId")
                         }
                         }).then((response)=>{
                         if(response.data.code!==0){
@@ -438,7 +450,7 @@
                                 type: 'success',
                                 message: '移除成功!'
                             });
-                            //todo leave
+                            this.$router.go(-1);
                         }
                     }).catch(()=>{
                         this.$message({
@@ -452,6 +464,13 @@
                         message: '已取消提交'
                     });
                 });
+            },
+            autoSave(){
+                taskOrder.lastPic = thisPage;
+                taskOrder.degreeOfCompletion = annotated;
+                axios.patch('http://localhost:8080/taskOrder/update',{
+                    taskOrder:JSON.stringify(taskOrder),
+                })
             }
         },
         name: "rectAnnotation"
@@ -505,14 +524,14 @@
               this.pen.closePath();
           }
       },false);
-        this.penal.addEventListener('mouseleave',(event)=>{
+        this.penal.addEventListener('mouseleave',()=>{
             if(this.isDraw) {
                 this.isDraw = false;
                 canDraw = false;
                 this.pen.closePath();
             }
         },false);
-        this.penal.addEventListener('mouseup',(event)=>{
+        this.penal.addEventListener('mouseup',()=>{
             this.isDraw = false;
             canDraw = false;
         },false)
