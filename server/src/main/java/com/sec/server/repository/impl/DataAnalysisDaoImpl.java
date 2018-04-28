@@ -1,9 +1,7 @@
 package com.sec.server.repository.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.sec.server.domain.Task;
-import com.sec.server.domain.TaskOrder;
-import com.sec.server.domain.User;
+import com.sec.server.domain.*;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
 import com.sec.server.model.PersonalDataModel;
@@ -21,6 +19,7 @@ import java.util.List;
 
 @Repository("dataAnalysisDao")
 public class DataAnalysisDaoImpl implements DataAnalysisDao {
+
     @Override
     public List<TaskOrder> getAnalysisResult(String username) {
         File file = new File("src/data/taskOrder_" + username + ".json");
@@ -196,6 +195,110 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
         String username = "illiant";
         DataAnalysisDao test = new DataAnalysisDaoImpl();
 
-        System.out.println(test.getParticipant(3).get(0).getUserId());
+
+        //测试点1：userId能否取出
+        //测试点2：能否遍历所有的json文件
+
+        //测试点3：
+
+        //测试点4：
+
+        //测试点5：
+
+        //System.out.println(test.getParticipant(3).get(0).getUserId());
     }
+
+    /**
+     *
+     */
+    public List<TaskRateMessage> getTaskMessage(long taskId){
+
+        //获取所有的userId
+        long userNumber = getTotalAmount("server/src/data/user.json");
+
+        //遍历所有的json文件，找出对应的jsonObject信息
+        List<JSONObject> jsonObjectList = new ArrayList<>();
+        for (int i = 0;i<userNumber;i++) {
+            File file = new File("server/src/data/taskOrder_" + i + ".json");
+            if (file.exists()) {
+                String content = null;
+                try {
+                    content = FileUtils.readFileToString(file, "UTF-8");
+                    JSONArray array = new JSONArray(content);
+                    for (int j = 0; j < array.length(); j++) {
+                        JSONObject object = array.getJSONObject(j);
+                        long id = 0;
+                        id = object.getLong("taskId");
+                        if (id == taskId) {
+                            jsonObjectList.add(object);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        //将jsonObject信息转为taskMessage返回
+        List<TaskRateMessage> list = new ArrayList<>();
+        for (JSONObject aJsonObjectList : jsonObjectList) {
+            TaskRateMessage taskRateMessage = new TaskRateMessage();
+            taskRateMessage.setAcceptUserId(aJsonObjectList.getLong("acceptUserId"));
+            taskRateMessage.setAcceptUserName(aJsonObjectList.getString("acceptUserName"));
+            taskRateMessage.setRate(getCOD(new TaskOrder(aJsonObjectList.getLong("taskId"), aJsonObjectList.getLong("acceptUserId"))));
+            list.add(taskRateMessage);
+        }
+
+        return list;
+    }
+
+    /**
+     *
+     * @return systemAdministratorMessage 系统信息
+     */
+    @Override
+    public SystemAdministratorMessage getSystemMessage() {
+        SystemAdministratorMessage systemAdministratorMessage = new SystemAdministratorMessage();
+
+        //计算用户数目
+        long userNumber = 0;
+        userNumber = getTotalAmount("server/src/data/user.json");
+        systemAdministratorMessage.setUserNumber(userNumber);
+
+        //计算任务数目
+        long taskNumber = 0;
+        long unfinishedTaskNumber = 0;
+
+        //遍历所有的json文件，找出任务信息
+        List<Long> list = new ArrayList<>();
+        for (int i = 0;i<userNumber;i++) {
+            File file = new File("server/src/data/taskOrder_" + i + ".json");
+            if (file.exists()) {
+                String content = null;
+                try {
+                    content = FileUtils.readFileToString(file, "UTF-8");
+                    JSONArray array = new JSONArray(content);
+                    for(int j = 0;j<array.length();j++){
+                        JSONObject object = array.getJSONObject(i);
+                        long taskId = object.getLong("taskId");//todo
+                        if(!list.contains(taskId)){
+                            list.add(taskId);
+                            taskNumber++;
+                            if(!object.getBoolean("isFinished"))
+                                unfinishedTaskNumber++;
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        systemAdministratorMessage.setFinishedTaskNumber(taskNumber-unfinishedTaskNumber);
+        systemAdministratorMessage.setTaskNumber(taskNumber);
+        systemAdministratorMessage.setUnfinishedTaskNumber(unfinishedTaskNumber);
+
+        return systemAdministratorMessage;
+    }
+
 }
