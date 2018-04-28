@@ -16,6 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReadFile {
+
+    private static String taskPath = "src/data/task.json";
+    private static String taskOrderPath = "src/data/taskOrder_";
+    private static String userPath = "src/data/user.json";
     /**
      * 读取json文件，返回文件内容
      */
@@ -104,7 +108,7 @@ public class ReadFile {
      * @return 对应ID的任务对象
      */
     public static Task getTask(long taskId){
-        File file = new File("src/data/task.json");
+        File file = new File(taskPath);
         String content = null;
 
         try {
@@ -131,7 +135,7 @@ public class ReadFile {
      * @return task列表
      */
     public static List<Task> getAllPost(long userId){
-        File file = new File("src/data/task.json");
+        File file = new File(taskPath);
         String content = null;
         List<Task> retTaskList = new ArrayList<>();
 
@@ -153,7 +157,7 @@ public class ReadFile {
     }
 
     public static List<Task> getAllFinished(long userId) {
-        File file = new File("src/data/task.json");
+        File file = new File(taskPath);
         String content = null;
         List<Task> retTaskList = new ArrayList<>();
 
@@ -177,7 +181,7 @@ public class ReadFile {
     }
 
     public static List<Task> getAllunFinished(long userId){
-        File file = new File("src/data/task.json");
+        File file = new File(taskPath);
         String content = null;
         List<Task> retTaskList = new ArrayList<>();
 
@@ -201,7 +205,7 @@ public class ReadFile {
     }
 
     public static List<TaskOrder> getAllSubmited(long userId){
-        File file = new File("src/data/taskOrder_" + userId + ".json");
+        File file = new File(taskOrderPath + userId + ".json");
         String content = null;
         List<TaskOrder> retList = new ArrayList<>();
 
@@ -226,7 +230,7 @@ public class ReadFile {
     }
 
     public static List<TaskOrder> getAllunSubmited(long userId) {
-        File file = new File("src/data/taskOrder_" + userId + ".json");
+        File file = new File(taskOrderPath + userId + ".json");
         String content = null;
         List<TaskOrder> retList = new ArrayList<>();
 
@@ -251,7 +255,7 @@ public class ReadFile {
     }
 
     public static int getUserPoint(long userId) {
-        File file = new File("src/data/user.json");
+        File file = new File(userPath);
         String content = null;
         int retPoint = -1;
         try {
@@ -272,7 +276,7 @@ public class ReadFile {
     }
 
     public static int getNumberOfTaskInProcess(long userId) {
-        File file = new File("src/data/taskOrder_" + userId + ".json");
+        File file = new File(taskOrderPath + userId + ".json");
         String content = null;
         int taskNumber = 0;
         try {
@@ -297,7 +301,7 @@ public class ReadFile {
      */
 
     public static String getRank(long userId) {
-        File file = new File("src/data/user.json");
+        File file = new File(userPath);
         String content = null;
         List<User> userList = new ArrayList<>();
         List<Integer> pointList = new ArrayList<>();

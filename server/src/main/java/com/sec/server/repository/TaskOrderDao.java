@@ -13,4 +13,6 @@ public interface TaskOrderDao {
     void updateTaskOrder(String taskOrder);
 
     void deleteTaskOrder(long taskOrderId,long userId);
+
+    TaskOrder getTaskOrderById(long taskOrder,long userId);
 }

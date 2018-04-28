@@ -54,18 +54,18 @@ public class UserController {
     @RequestMapping("/user/update")
     public Result update(@RequestBody UserModel userModel){
         User user = userService.updateUser(userModel);
-        return ResultUtils.success();
+        return ResultUtils.success(user);
     }
 
     @RequestMapping("/user/delete")
     public Result delete(long userId){
+        userService.deleteUser(userId);
         return ResultUtils.success();
     }
 
     @RequestMapping("/user/getById")
     public Result getCommonUserInfo(long userId){
-        User user = new User();
-        user.setUsername("");
+        User user=userService.get(userId);
         return ResultUtils.success(user);
     }
 }

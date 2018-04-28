@@ -47,6 +47,7 @@
                         </el-col>
                         <el-col :span="18">
                             <el-rate
+                                :disabled="canNotRate"
                                 v-model="ratePoint"
                                 :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
                             </el-rate>
@@ -100,9 +101,10 @@
     export default {
         created(){
             this.myName = '孙铭辉';
+            //this.myName = localStorage.getItem("username");
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
-                    //taskOrderId:sessionStorage.getItem('taskOrderId')
+                    //taskOrderId:this.$router.query.taskOrderId
                     taskOrderId:111
                 }
             }).then((response) => {
@@ -133,6 +135,13 @@
                     }
                 }).then((response) => {
                     task = response.data.data;
+                    if(task.postUserId === localStorage.getItem("userId")){
+                        if(this.ratePoint != null){
+                            this.canNotRate = true;
+                        }
+                    }else {
+                        this.canNotRate = true
+                    }
                     this.totalNum = task.imgUrlList.length;
                     this.process = annotated / this.totalNum*100;
                     img.addEventListener('load',() =>{
@@ -151,7 +160,7 @@
                     annotationMap = annotationInfo.annotationMap;
                     annotations = annotationMap[thisPage];
                     thisAnnotation = annotations[0];
-                    if(thisAnnotation ===null){
+                    if(thisAnnotation ==null){
                         isNew = true;
                     }else {
                         this.textarea = thisAnnotation.sentence;
@@ -181,6 +190,7 @@
                 toRateName:'',
                 toRateId:'',
                 myName:'',
+                canNotRate:true
             };
         },
         methods: {
@@ -202,7 +212,7 @@
                 thisPage = val;
                 annotations = annotationMap[thisPage];
                 thisAnnotation = annotations[0];
-                if(thisAnnotation ===null){
+                if(thisAnnotation ==null){
                     isNew = true;
                 }else {
                     this.textarea = thisAnnotation.sentence;
