@@ -86,7 +86,6 @@
     let thisPage;
     let annotated;
     let annotationInfo;
-    let sentence;
     let annotationMap;
     let annotations=[];
     let thisAnnotation;
@@ -94,24 +93,19 @@
     let isNew = false;
     let draw;
     let canDraw = true;
-    function Coordinate(x,y) {
-        this.x=x;
-        this.y=y;
-    }
-    function Annotation(sentence, words, coordinates) {
-        this.sentence=sentence;
-        this.words=words;
-        this.coordinates=coordinates;
-    }
     let coordinates = [];
     let words = [];
     export default {
         created(){
-            this.myName = '孙铭辉';
+            this.myName = localStorage.getItem("username");
+            if(this.$router.query == null){
+                this.$router.go(-1)
+            }else if(this.$router.query.taskOrderId == null){
+                this.$router.go(-1)
+            }
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
-                    //taskOrderId:sessionStorage.getItem('taskOrderId')
-                    taskOrderId:111
+                    taskOrderId:this.$router.query.taskOrderId
                 }
             }).then((response) => {
                 taskOrder=response.data.data;
@@ -120,9 +114,13 @@
                 annotated = taskOrder.degreeOfCompletion;
                 if(taskOrder.rate !==null){
                     this.ratePoint = taskOrder.rate;
+                    this.canNotRate = true;
                 }
                 this.currentPage = thisPage;
-                axios.get('http://localhost:8080/user/getById',{
+                if(localStorage.getItem("userId") ===taskOrder.acceptUserId){
+                    this.rateBtn = false;
+                }
+                axios.get('http://localhost:8080/user/getUser',{
                     params:{
                         userId:taskOrder.acceptUserId
                     }
@@ -141,8 +139,7 @@
                     }
                 }).then((response) => {
                     task = response.data.data;
-                    //classifiedInfo = task.classifiedInfo;
-                    classifiedInfo = ['ddfs','sasfsa','sfdsds'];
+                    classifiedInfo = task.classifiedInfo;
                     let str = '';
                     classifiedLen = classifiedInfo.length;
                     for(let i = 0;i <classifiedLen;i++){
@@ -190,6 +187,7 @@
         },
         data() {
             return {
+                Tags:[],
                 activeIndex: '1',
                 currentPage: 1,
                 textarea:'',
@@ -203,6 +201,8 @@
                 toRateName:'',
                 toRateId:'',
                 myName:'',
+                canNotRate:false,
+                rateBtn:true
             };
         },
         methods: {
@@ -247,7 +247,7 @@
                             cancelButtonText: '取消',
                             type: 'warning'
                         }).then(() => {
-                            this.$router.push('/readme');
+                            this.$router.go(-1);
                         }).catch(() => {
                             this.$message({
                                 type: 'info',
@@ -255,7 +255,7 @@
                             });
                         });
                     }else {
-                        this.$router.push('/readme');
+                        this.$router.go(-1);
                     }
                 }) .catch(()=>{
                     this.$confirm('网络异常，信息未正常保存, 是否继续?', '提示', {
@@ -263,7 +263,7 @@
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(() => {
-                        this.$router.push('/readme');
+                        this.$router.go(-1);
                     }).catch(() => {
                         this.$message({
                             type: 'info',
@@ -273,44 +273,51 @@
                 })
             },
             finishRate(){
-                this.$confirm('评分一旦提交，就无法修改，是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(()=>{
-                    taskOrder.rate = this.ratePoint;
-                    axios.patch('http://localhost:8080/taskOrder/update',{
-                        taskOrder:JSON.stringify(taskOrder)
-                    }).then((response)=>{
-                        if(response.data.code!==0) {
+                if(this.ratePoint == null){
+                    this.$message({
+                        type: 'error',
+                        message: '还未评分！'
+                    });
+                }else {
+                    this.$confirm('评分一旦提交，就无法修改，是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        taskOrder.rate = this.ratePoint;
+                        axios.patch('http://localhost:8080/taskOrder/update', {
+                            taskOrder: JSON.stringify(taskOrder)
+                        }).then((response) => {
+                            if (response.data.code !== 0) {
+                                this.$confirm('网络异常，评分未正常保存, 是否继续?', '提示', {
+                                    confirmButtonText: '确定',
+                                    cancelButtonText: '取消',
+                                    type: 'warning'
+                                }).then(() => {
+                                    this.$router.go(-1);
+                                }).catch(() => {
+                                    this.$message({
+                                        type: 'info',
+                                        message: '已取消'
+                                    });
+                                });
+                            }
+                        }).catch(() => {
                             this.$confirm('网络异常，评分未正常保存, 是否继续?', '提示', {
                                 confirmButtonText: '确定',
                                 cancelButtonText: '取消',
                                 type: 'warning'
                             }).then(() => {
-                                this.$router.push('/readme');
+                                this.$router.go(-1);
                             }).catch(() => {
                                 this.$message({
                                     type: 'info',
                                     message: '已取消'
                                 });
                             });
-                        }
-                    }).catch(()=>{
-                        this.$confirm('网络异常，评分未正常保存, 是否继续?', '提示', {
-                            confirmButtonText: '确定',
-                            cancelButtonText: '取消',
-                            type: 'warning'
-                        }).then(() => {
-                            this.$router.push('/readme');
-                        }).catch(() => {
-                            this.$message({
-                                type: 'info',
-                                message: '已取消'
-                            });
-                        });
+                        })
                     })
-                })
+                }
             },
             showAnnotation(){
                 draw = new Draw();

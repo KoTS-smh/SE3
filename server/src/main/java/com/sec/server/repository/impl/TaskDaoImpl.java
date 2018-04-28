@@ -24,7 +24,7 @@ public class TaskDaoImpl implements TaskDao{
         JSONObject object = new JSONObject(task);
 
         File file = new File(Path.taskPath);
-        String content = null;
+        String content;
 
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
@@ -32,7 +32,6 @@ public class TaskDaoImpl implements TaskDao{
             array.put(object);
             FileUtils.write(file, array.toString(2));
         } catch (IOException e) {
-            e.printStackTrace();
             throw new ResultException(ResultCode.UNKNOWN_ERROR);
         }
     }
@@ -43,7 +42,7 @@ public class TaskDaoImpl implements TaskDao{
         JSONObject object = new JSONObject(task);
         long inId = object.getLong("taskId");
         File file = new File(Path.taskPath);
-        String content = null;
+        String content;
 
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
@@ -105,7 +104,7 @@ public class TaskDaoImpl implements TaskDao{
     @Override
     public Task getTaskInfo(long taskId) {
         File file = new File(Path.taskPath);
-        String content = null;
+        String content;
 
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
