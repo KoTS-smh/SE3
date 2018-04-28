@@ -10,7 +10,7 @@ public class User {
     private String username;
     private String password;
     private UserLevel userLevel;
-    private long point;
+    private int point;
     private String tel_phone;
     private Sex sex;
     private Education education;
@@ -51,11 +51,11 @@ public class User {
         this.userLevel = userLevel;
     }
 
-    public long getPoint() {
+    public int getPoint() {
         return point;
     }
 
-    public void setPoint(long point) {
+    public void setPoint(int point) {
         this.point = point;
     }
 

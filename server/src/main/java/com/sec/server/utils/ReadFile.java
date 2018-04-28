@@ -3,6 +3,7 @@ package com.sec.server.utils;
 import com.alibaba.fastjson.JSON;
 import com.sec.server.domain.Task;
 import com.sec.server.domain.TaskOrder;
+import com.sec.server.domain.User;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
 import org.apache.commons.io.FileUtils;
@@ -10,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -246,5 +248,98 @@ public class ReadFile {
         }
 
         return retList;
+    }
+
+    public static int getUserPoint(long userId) {
+        File file = new File("src/data/user.json");
+        String content = null;
+        int retPoint = -1;
+        try {
+            content = FileUtils.readFileToString(file, "UTF-8");
+            JSONArray array = new JSONArray(content);
+
+            List<User> userList = JSON.parseArray(array.toString(), User.class);
+
+            for(User tmpUser : userList) {
+                if(tmpUser.getUserId() == userId)
+                    retPoint = tmpUser.getPoint();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return retPoint;
+    }
+
+    public static int getNumberOfTaskInProcess(long userId) {
+        File file = new File("src/data/taskOrder_" + userId + ".json");
+        String content = null;
+        int taskNumber = 0;
+        try {
+            content = FileUtils.readFileToString(file, "UTF-8");
+            JSONArray array = new JSONArray(content);
+
+            List<TaskOrder> taskOrderList = JSON.parseArray(array.toString(), TaskOrder.class);
+
+            for(TaskOrder tmpTaskOrder : taskOrderList) {
+                if(tmpTaskOrder.getAcceptUserId() == userId)
+                    taskNumber++;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return taskNumber;
+    }
+
+    /**
+     * 计算众包工人群体排名
+     */
+
+    public static String getRank(long userId) {
+        File file = new File("src/data/user.json");
+        String content = null;
+        List<User> userList = new ArrayList<>();
+        List<Integer> pointList = new ArrayList<>();
+        try {
+            content = FileUtils.readFileToString(file, "UTF-8");
+            JSONArray array = new JSONArray(content);
+            String tmpstr = array.toString();
+            userList = JSON.parseArray(tmpstr, User.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //get current user point
+        int currentPoint = 0;
+        for(User tmpuser : userList) {
+            if(tmpuser.getUserId() == userId){
+                currentPoint = tmpuser.getPoint();
+            }
+        }
+
+        for(int i = 0;i < userList.size();++i) {
+            pointList.add(userList.get(i).getPoint());
+        }
+
+        if(userList.size() <= 1) {
+            return "1";
+        }
+
+        //排名
+        double rank = 0;
+
+        for(User tmpUser : userList) {
+            if(tmpUser.getPoint() > currentPoint)
+                rank++;
+        }
+
+        if(userList.size() < 10) {
+            return rank + "";
+        }else {
+            double percentage = rank / userList.size();
+            DecimalFormat df = new DecimalFormat("0.00");
+            return "前" + df.format(percentage * 100) + " %";
+        }
     }
 }

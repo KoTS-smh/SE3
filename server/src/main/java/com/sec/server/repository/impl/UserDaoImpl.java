@@ -126,7 +126,7 @@ public class UserDaoImpl implements UserDao {
                     User user = new User();
                     user.setUserLevel(translateToUserLevel(object.getString("userLevel")));
                     user.setEducation(translateToEducation(object.getString("education")));
-                    user.setPoint(object.getLong("point"));
+                    user.setPoint(object.getInt("point"));
                     user.setUsername(object.getString("username"));
                     user.setTel_phone(object.getString("tel_phone"));
                     user.setEmail(object.getString("email"));

@@ -82,8 +82,12 @@ export default new Router({
                     component: resolve => require(['../components/page/space/PublishedTasks.vue'], resolve)
                 },
                 {
-                    path: '/CheckTask',
-                    component: resolve => require(['../components/page/space/CheckTask.vue'], resolve)
+                    path: '/personalSpace',
+                    component: resolve => require(['../components/page/space/PersonalSpace.vue'], resolve)
+                },
+                {
+                    path: '/dataCheck',
+                    component: resolve => require(['../components/page/space/DataCheck.vue'], resolve)
                 }
             ]
         },
@@ -107,5 +111,9 @@ export default new Router({
         //     path: '/mainPage',
         //     component: resolve => require(['../components/page/mainPage/MainPage.vue'], resolve)
         // }
+        {
+                    path: '/CheckTask',
+                    component: resolve => require(['../components/page/space/CheckTask.vue'], resolve)
+        }
     ]
 })

@@ -6,6 +6,7 @@ import com.sec.server.domain.TaskOrder;
 import com.sec.server.domain.User;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
+import com.sec.server.model.PersonalDataModel;
 import com.sec.server.repository.DataAnalysisDao;
 import com.sec.server.utils.ReadFile;
 import org.apache.commons.io.FileUtils;
@@ -102,6 +103,20 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
             throw new ResultException(ResultCode.UNKNOWN_ERROR);
         }
         return totalAmount;
+    }
+
+    @Override
+    public PersonalDataModel getPersonalData(long userId) {
+        int point = ReadFile.getUserPoint(userId);
+        int taskNumber = ReadFile.getNumberOfTaskInProcess(userId);
+        //todo 算排名
+        String rank = ReadFile.getRank(userId);
+
+        PersonalDataModel personalDataModel = new PersonalDataModel();
+        personalDataModel.setPoint(point);
+        personalDataModel.setTasknumber(taskNumber);
+        personalDataModel.setRank(rank);
+        return personalDataModel;
     }
 
 

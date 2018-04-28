@@ -1,137 +1,73 @@
-<<template>
-    <div class="all" id="all">
-            <div class="crumbs">
-                <el-breadcrumb separator="/">
-                    <el-breadcrumb-item>个人信息</el-breadcrumb-item>
-                </el-breadcrumb>
-            </div>
-            <div class="form-box">
-                <!--头像显示修改区域-->
-                <el-form ref="form" :model="form" label-width="80px">
-                    <!--ID显示区域-->
-                    <el-form-item label="ID">
-                        {{form.userId}}
-                    </el-form-item>
-                    <!--用户名的显示修改区域-->
-                    <el-form-item label="用户名">
-                        <el-input v-model="form.username" :disabled="true" style="width:50%"></el-input>
-                    </el-form-item>
-                    <!--性别选择区域-->
-                    <el-form-item label="性别">
-                        <el-radio-group v-model="form.sex">
-                            <el-radio label="Man"></el-radio>
-                            <el-radio label="Woman"></el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-                    <!--学历选择区域-->
-                    <el-form-item label="学历">
-                        <el-select v-model="form.education" placeholder="请选择">
-                            <el-option key="juniorMiddle" label="初中" value="juniorMiddle"></el-option>
-                            <el-option key="seniorMiddle" label="高中" value="seniorMiddle"></el-option>
-                            <el-option key="juniorCollege" label="大学专科" value="junior"></el-option>
-                            <el-option key="undergraduate" label="大学本科" value="undergraduate"></el-option>
-                            <el-option key="master" label="硕士" value="master"></el-option>
-                            <el-option key="doctor" label="博士" value="doctor"></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <!--手机号修改区域-->
-                    <el-form-item label="手机号">
-                        <el-input v-model="form.tel_phone"></el-input>
-                    </el-form-item>
-                    <!--邮箱输入区域-->
-                    <el-form-item label="邮箱">
-                        <el-input v-model="form.Email">
-                        </el-input>
-                    </el-form-item>
-                    <!--积分显示区域-->
-                    <el-form-item label="积分">
-                        {{form.point}}
-                    </el-form-item>
-                    <!--等级显示区域-->
-                    <el-form-item label="等级">
-                        {{form.userLevel}}
-                    </el-form-item>
-                    <!--修改按钮区域-->
-                    <el-form-item label="修改信息">
-                        <el-switch v-model="form.delivery"></el-switch>
-                    </el-form-item>
-                    <!--个人简历填写区域-->
-                    <el-form-item label="个人简介">
-                    <el-input type="textarea" v-model="form.description"></el-input>
-                    </el-form-item>
-                    <el-form-item>
-                    <el-button type="primary" @click="saveUserMessage">保存修改</el-button>
-                    <el-button>取消修改</el-button>
-                    </el-form-item>
-                </el-form>
-            </div>
+<template>
+    <div>
+        <div class="crumbs">
+            <el-breadcrumb separator="/">
+                <el-breadcrumb-item><i class="el-icon-setting"></i> 自述</el-breadcrumb-item>
+            </el-breadcrumb>
         </div>
+        <div class="ms-doc">
+            <h3>README.md</h3>
+            <article>
+                <h1>MRGS COUNT manage-system</h1>
+                <p>众包标注系统的后台管理系统</p>
+                <p>----by MRGS小组</p>
+            </article>
+        </div>
+
+    </div>
 </template>
 
 <script>
-    import axios from 'axios'
     export default {
         data: function(){
-            return {
-                form: {
-                    userId:'',
-                    username: '',
-                    education: '',
-                    sex: '',
-                    description: '',
-                    tel_phone:'',
-                    Email:'',
-                    point:'',
-                    userLevel:'',
-                }
-            }
-        },
-        mounted:function(){
-            this.getUserMessage();
-        },
-        methods: {
-            //todo 加载当前登录用户信息
-            getUserMessage(){
-                const self = this;
-               // var user = localStorage.getItem("userId");
-                console.log("获取中...");
-                axios.get('http://localhost:8080/user/getUser',{
-                    params:{
-                        userId:0
-                    }
-                }).then(response => {
-                    console.log(response.data.data);
-                    this.form = response.data.data;
-                }).catch(()=>{
-                    this.$message('获取失败');
-                })
-            },
-            saveUserMessage(){
-                const self = this;
-
-                axios.post('http://localhost:8080/user/update',this.form).then(response => {
-                    self.$message('修改成功');
-                }).catch( (err)=> {
-                    self.$message('修改失败');
-                })
-            },
-            onSubmit() {
-                this.$message.success('提交成功！');
-            }
-        //  todo 点击switch会更改输入框的禁止状态
-        //  todo
+            return {}
         }
     }
 </script>
 
 <style scoped>
-    #all{
-        display:flex;
+    .ms-doc{
+        width:100%;
+        max-width: 980px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     }
-    .form-box{
-        width:600px;
+    .ms-doc h3{
+        padding: 9px 10px 10px;
+        margin: 0;
+        font-size: 14px;
+        line-height: 17px;
+        background-color: #f5f5f5;
+        border: 1px solid #d8d8d8;
+        border-bottom: 0;
+        border-radius: 3px 3px 0 0;
     }
-    .el-select{
-        width:130px;
+    .ms-doc article{
+        padding: 45px;
+        word-wrap: break-word;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-bottom-right-radius: 3px;
+        border-bottom-left-radius: 3px;
+    }
+    .ms-doc article h1{
+        font-size:32px;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #ddd;
+    }
+    .ms-doc article h2 {
+        margin: 24px 0 16px;
+        font-weight: 600;
+        line-height: 1.25;
+        padding-bottom: 7px;
+        font-size: 24px;
+        border-bottom: 1px solid #eee;
+    }
+    .ms-doc article p{
+        margin-bottom: 15px;
+        line-height: 1.5;
+    }
+    .ms-doc article .el-checkbox{
+        margin-bottom: 5px;
     }
 </style>

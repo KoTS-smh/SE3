@@ -1,5 +1,6 @@
 package com.sec.server.controller;
 
+import com.sec.server.model.PersonalDataModel;
 import com.sec.server.model.UserModel;
 import com.sec.server.service.DataAnalysisService;
 import com.sec.server.utils.Result;
@@ -20,5 +21,12 @@ public class DataAnalysisController {
     @RequestMapping("/analysis")
     public Result getAnalysisResult(@RequestBody UserModel userModel){
         return ResultUtils.success();
+    }
+
+    @RequestMapping("/personalData")
+    public Result getPersonalData(@RequestBody UserModel userModel) {
+        long userId = userModel.getUserId();
+        PersonalDataModel personalDataModel = dataAnalysisService.getPersonalData(userId);
+        return ResultUtils.success(personalDataModel);
     }
 }

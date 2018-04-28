@@ -173,7 +173,7 @@ export default {
         action: 'http://upload.qiniu.com/', // 替换自己的上传链接
         accept: 'image/png, image/jpeg, image/gif',
         multiple: true,
-        token: 'Ujh0-lp7Hk_fUrta0DWEQeBR4sWlavb3firT_Ivd:iTd2eMcBrkdGxw6Sw_mIxV7g0bM=:eyJzY29wZSI6Im1yZ3MtYnVja2V0IiwiZGVhZGxpbmUiOjE1MjQwNjA0OTh9',
+        token: 'Ujh0-lp7Hk_fUrta0DWEQeBR4sWlavb3firT_Ivd:ivbJf_EUfDZjFjgRwhLAVCcPLEQ=:eyJzY29wZSI6Im1yZ3MtYnVja2V0IiwiZGVhZGxpbmUiOjE1MjQ4Njk1NDR9',
         hashes: [],
         keys: [],
         uploadMsg: [],

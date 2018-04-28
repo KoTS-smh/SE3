@@ -66,26 +66,9 @@
                     },
                     {
                         icon: 'el-icon-date',
-                        index: '3',
+                        index: 'dataCheck',
                         title: '数据统计',
-                        subs: [
-                            {
-                                index: 'baseform',
-                                title: '基本表单'
-                            },
-                            {
-                                index: 'vueeditor',
-                                title: '编辑器'
-                            },
-                            {
-                                index: 'markdown',
-                                title: 'markdown'
-                            },
-                            {
-                                index: 'upload',
-                                title: '文件上传'
-                            }
-                        ]
+                    
                     },
                     {
                         icon: 'el-icon-star-on',

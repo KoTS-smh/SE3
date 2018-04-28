@@ -11,7 +11,7 @@ public class UserModel {
     private String username;
     private String password;
     private String tel_phone;
-    private long point;
+    private int point;
     private Sex sex;
     private Education education;
     private String description;
@@ -73,11 +73,11 @@ public class UserModel {
         Email = email;
     }
 
-    public long getPoint() {
+    public int getPoint() {
         return point;
     }
 
-    public void setPoint(long point) {
+    public void setPoint(int point) {
         this.point = point;
     }
 
