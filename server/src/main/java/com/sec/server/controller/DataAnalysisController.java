@@ -1,5 +1,7 @@
 package com.sec.server.controller;
 
+import com.sec.server.domain.SystemAdministratorMessage;
+import com.sec.server.domain.TaskRateMessage;
 import com.sec.server.model.PersonalDataModel;
 import com.sec.server.model.UserModel;
 import com.sec.server.service.DataAnalysisService;
@@ -18,40 +20,38 @@ public class DataAnalysisController {
     @Resource(name = "dataAnalysisService")
     private DataAnalysisService dataAnalysisService;
 
-    //获取工人积分信息
-    public long getPoint(long userId){
-        return 0;
-    }
-
     /**
      * 获取工人积分信息
      * @param userId 众包工人ID
-     * @return point 积分信息
-     */
-
-    /**
-     * 获取工人群体排名信息
-     * @param userId 众包工人ID
-     * @return rank 排名信息
+     * @return workerMessage 该工人的信息
+     * 包括 point 积分 rank 排名
      */
 
     /**
      * 众包发起者获取任务的完成情况
      * @param taskId 任务ID
-     * @return List<taskRateMessage> 所有的任务完成信息
-     * 其中 taskRateMessage 包括 acceptUserId 工人ID，acceptUserName 工人姓名, rate 工人进度
+     * @return List<taskRateMessage> 任务完成信息
+     * taskRateMessage 包括 acceptUserId 工人ID，acceptUserName 工人姓名, rate 工人进度
      */
+    @RequestMapping("/getTaskMessage")
+    public List<TaskRateMessage> getTaskMessage(long taskId){
+        List<TaskRateMessage> list = new ArrayList<>();
+        list = dataAnalysisService.getTaskMessage(taskId);
+        return list;
+    }
 
     /**
-     * 系统管理员获得当前所有用户数目
-     * @return userNumber 所有用户数目
+     * 系统管理员获得信息
+     * @return systemAdministratorMessage 系统管理员信息
+     * 包括 userNumber 用户数
+     *      taskNumber 任务数
+     *      finishedTaskNumber 已完成任务数
+     *      unfinishedTaskNumber 未完成任务数
      */
-
-    /**
-     * 系统管理员获得当前所有任务信息
-     * @return List<taskMessage> 所有的任务基本信息
-     * 其中 taskMessage 包括 taskId 任务Id, taskName 任务名称, taskState 任务完成状态
-     */
+    @RequestMapping("/getSystemMessage")
+    public SystemAdministratorMessage getSystemMessage(){
+        return dataAnalysisService.getSystemMessage();
+    }
 
     @RequestMapping("/analysis")
     public Result getAnalysisResult(@RequestBody UserModel userModel){
