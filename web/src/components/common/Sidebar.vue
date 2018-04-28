@@ -68,13 +68,18 @@
                         icon: 'el-icon-date',
                         index: 'dataCheck',
                         title: '数据统计',
-                    
+
                     },
                     {
                         icon: 'el-icon-star-on',
                         // index: 'basecharts',
                         index:'personalSpace',
                         title: '个人中心'
+                    },
+                    {
+                        icon:'el-icon-star-on',
+                        index:'adTable',
+                        title:'系统管理员界面'
                     }
                 ]
             }

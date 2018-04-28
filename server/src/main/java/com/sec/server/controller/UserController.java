@@ -46,6 +46,7 @@ public class UserController {
 
     @RequestMapping("/user/getUser")
     public Result getUser(long userId){
+        System.out.println(userId);
         User user = userService.get(userId);
         System.out.print(user.getUserId());
         return ResultUtils.success(user);

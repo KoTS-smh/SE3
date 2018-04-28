@@ -94,6 +94,7 @@
             getUserMessage(){
                 const self = this;
                 var userId = localStorage.getItem("userId");
+                console.log("here" + userId);
                 console.log("获取中...");
                 axios.get('http://localhost:8080/user/getUser',{
                     params:{

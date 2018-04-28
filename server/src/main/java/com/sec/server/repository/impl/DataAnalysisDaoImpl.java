@@ -195,17 +195,6 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
         String username = "illiant";
         DataAnalysisDao test = new DataAnalysisDaoImpl();
 
-
-        //测试点1：userId能否取出
-        //测试点2：能否遍历所有的json文件
-
-        //测试点3：
-
-        //测试点4：
-
-        //测试点5：
-
-        //System.out.println(test.getParticipant(3).get(0).getUserId());
     }
 
     /**
@@ -278,8 +267,8 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
                     content = FileUtils.readFileToString(file, "UTF-8");
                     JSONArray array = new JSONArray(content);
                     for(int j = 0;j<array.length();j++){
-                        JSONObject object = array.getJSONObject(i);
-                        long taskId = object.getLong("taskId");//todo
+                        JSONObject object = array.getJSONObject(j);
+                        long taskId = object.getLong("taskId");
                         if(!list.contains(taskId)){
                             list.add(taskId);
                             taskNumber++;

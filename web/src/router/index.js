@@ -61,6 +61,10 @@ export default new Router({
                     path: '/getTask',
                     component: resolve => require(['../components/page/space/GetTask.vue'], resolve)
                 },
+                {
+                    path:'/adTable',
+                    component:resolve => require(['../components/page/space/administratorTable.vue'],resolve)
+                },
                 // {
                 //     path: '/publishedTasks',
                 //     component: resolve => require(['../components/page/space/PublishedTasks.vue'], resolve)
@@ -77,18 +81,18 @@ export default new Router({
                 //     path: '/analysis',
                 //     component: resolve => require(['../components/page/space/Analysis.vue'], resolve)
                 // }
-                {
-                    path: '/publishedTasks',
-                    component: resolve => require(['../components/page/space/PublishedTasks.vue'], resolve)
-                },
+                // {
+                //     path: '/publishedTasks',
+                //     component: resolve => require(['../components/page/space/PublishedTasks.vue'], resolve)
+                // },
                 {
                     path: '/personalSpace',
                     component: resolve => require(['../components/page/space/PersonalSpace.vue'], resolve)
-                },
-                {
-                    path: '/dataCheck',
-                    component: resolve => require(['../components/page/space/DataCheck.vue'], resolve)
                 }
+                // {
+                //     path: '/dataCheck',
+                //     component: resolve => require(['../components/page/space/DataCheck.vue'], resolve)
+                // }
             ]
         },
         {
@@ -111,9 +115,5 @@ export default new Router({
         //     path: '/mainPage',
         //     component: resolve => require(['../components/page/mainPage/MainPage.vue'], resolve)
         // }
-        {
-                    path: '/CheckTask',
-                    component: resolve => require(['../components/page/space/CheckTask.vue'], resolve)
-        }
     ]
 })

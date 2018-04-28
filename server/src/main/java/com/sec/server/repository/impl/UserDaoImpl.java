@@ -22,7 +22,7 @@ public class UserDaoImpl implements UserDao {
 //    ios todo
 //    private String pathname = "src/data/user.json";
 //    windows
-    private String pathname = "src/data/user.json";
+    private String pathname = "server/src/data/user.json";
     private File file = new File(pathname);
     @Override
     public User login(String username, String password) {
@@ -96,7 +96,6 @@ public class UserDaoImpl implements UserDao {
                 String username = array.getJSONObject(i).getString("username");
                 if(user.getUsername().equals(username)){
                     isPush = true;
-                    //todo 看下能不能修改里面的值
                     putUser(user,array.getJSONObject(i));
                     break;
                 }
@@ -124,6 +123,7 @@ public class UserDaoImpl implements UserDao {
                 if(array.getJSONObject(i).getLong("userId")==ID){
                     JSONObject object = array.getJSONObject(i);
                     User user = new User();
+                    user.setUserId(ID);
                     user.setUserLevel(translateToUserLevel(object.getString("userLevel")));
                     user.setEducation(translateToEducation(object.getString("education")));
                     user.setPoint(object.getInt("point"));
@@ -132,6 +132,7 @@ public class UserDaoImpl implements UserDao {
                     user.setEmail(object.getString("email"));
                     user.setSex(translateToSex(object.getString("sex")));
                     user.setDescription(object.getString("description"));
+                    user.setPassword(object.getString("password"));
                     return user;
                 }
             }
