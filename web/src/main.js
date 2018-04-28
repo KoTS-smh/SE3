@@ -20,7 +20,7 @@ Vue.prototype.$message = message
 
 Vue.use(lightbox);
 Vue.use(ElementUI);
-//Vue.use(VueResource);
+Vue.use(VueResource);
 Vue.prototype.$axios = axios;
 new Vue({
     store,

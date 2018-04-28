@@ -173,7 +173,7 @@ export default {
         action: 'http://upload.qiniu.com/', // 替换自己的上传链接
         accept: 'image/png, image/jpeg, image/gif',
         multiple: true,
-        token: 'Ujh0-lp7Hk_fUrta0DWEQeBR4sWlavb3firT_Ivd:ivbJf_EUfDZjFjgRwhLAVCcPLEQ=:eyJzY29wZSI6Im1yZ3MtYnVja2V0IiwiZGVhZGxpbmUiOjE1MjQ4Njk1NDR9',
+        token: 'j0dwMMGFcKPhncC7vb_PWXshbpiSMEWB69NiKhn4:DcfAuQmyay94cJItiZ3Jtwf-oBw=:eyJzY29wZSI6Im1yZ3MtYnVja2V0IiwiZGVhZGxpbmUiOjE1MjQ5NzA3MTB9',
         hashes: [],
         keys: [],
         uploadMsg: [],
@@ -202,7 +202,6 @@ export default {
         onSubmit() {
             const self = this
             this.form.annotationType = this.annotationType
-            this.form.postUserId = localStorage.getItem("userId");
             axios.post('http://localhost:8080/task/create', this.form).then(function (response) {
 
                 console.log(response);

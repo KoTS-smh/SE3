@@ -36,7 +36,18 @@
 </template>
 
 <script>
+    export default {
+        data() {
+            return {
 
+            }
+        },
+        methods: {
+            handleSelect() {
+
+            }
+        }
+    }
 </script>
 
 <style lang="stylus">
