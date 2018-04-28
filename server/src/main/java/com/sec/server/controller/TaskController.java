@@ -8,17 +8,12 @@ import com.sec.server.service.TaskService;
 import com.sec.server.utils.ReadFile;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
-import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -52,11 +47,10 @@ public class TaskController {
         return ResultUtils.success(array.toString());
     }
 
-    @RequestMapping("/task/getAllAccept")
-    public Result getAllAcceptTask(long userId){
-        //todo
-        return ResultUtils.success();
-    }
+//    @RequestMapping("/task/getAllAccept")
+//    public Result getAllAcceptTask(long userId){
+//        return ResultUtils.success();
+//    }
 
     @RequestMapping("/task/taskInfo")
     public Result getTaskInfo(long taskId){
@@ -66,14 +60,11 @@ public class TaskController {
 
     @RequestMapping("/task/create")
     public Result createTask(@RequestBody String task){
-        System.out.println(task);
         try {
             taskService.createTask(task);
         }catch (Exception e){
             throw new ResultException(ResultCode.UNKNOWN_ERROR);
         }
-
-
         return ResultUtils.success();
     }
 

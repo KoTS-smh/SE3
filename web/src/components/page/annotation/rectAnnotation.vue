@@ -9,7 +9,7 @@
                         <el-menu-item index="2-1" @click="submitTask">提交</el-menu-item>
                         <el-menu-item index="2-2" @click="removeTask">移除</el-menu-item>
                     </el-submenu>
-                    <span style="color: dodgerblue">孙铭辉</span>
+                    <span style="color: dodgerblue">{{myName}}</span>
                     <el-dropdown>
                         <i class="el-icon-arrow-down" style="margin-right: 10px"></i>
                         <el-dropdown-menu slot="dropdown">
@@ -62,8 +62,20 @@
                             v-model="textarea">
                         </el-input>
                     </div>
-                    <el-row>
-                        <el-button-group style="margin-left: 150px;margin-top: 20px">
+                    <div style="margin-top: 10px">
+                        <span style="color: #242f42;margin-left: 12px">大家将本图标注为：</span>
+                    </div>
+                    <div style="width: 100%">
+                        <el-tag
+                            :key="tag"
+                            v-for="tag in Tags"
+                            :disable-transitions="false"
+                            style="margin-top: 10px;margin-left: 12px">
+                            <span style="color: royalblue">{{tag.split(/\s+/)[0]}}</span><small style="color: #8c939d">{{tag.split(/\s+/)[1]}}</small>
+                        </el-tag>
+                    </div>
+                    <div>
+                        <el-button-group style="margin-left: 130px;margin-top: 20px">
                             <el-tooltip content="重新标注" placement="bottom">
                                 <el-button type="primary" icon="el-icon-refresh" style="width: 80px" @click="reAnnotation"></el-button>
                             </el-tooltip>
@@ -74,8 +86,10 @@
                                 <el-button type="primary" icon="el-icon-delete" style="width: 80px" @click="remove"></el-button>
                             </el-tooltip>
                         </el-button-group>
-                    </el-row>
-                    <el-button type="primary" style="position: relative; left: 295px; top: 300px" @click="leave">离 开 <i class="el-icon-d-arrow-right"></i></el-button>
+                    </div>
+                    <div>
+                        <el-button type="primary" style="position: relative; left: 295px; top: 200px" @click="leave">离 开 <i class="el-icon-d-arrow-right"></i></el-button>
+                    </div>
                 </el-aside>
             </el-container>
         </el-container>
@@ -97,6 +111,8 @@
     let isNew = false;
     let draw;
     let canDraw = true;
+    let tag;
+    let thisTag;
     function Coordinate(x,y) {
         this.x=x;
         this.y=y;
@@ -110,6 +126,8 @@
     let words = [];
     export default {
         created(){
+            //this.myName = localStorage.getItem("userId");
+            this.myName = '什么鬼';
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
                     //taskOrderId:sessionStorage.getItem('taskOrderId')
@@ -135,16 +153,38 @@
                     img.src = task.imgUrlList[thisPage - 1];
                     this.imgUrl = "url('"+img.src+"')";
                 });
+                axios.get('http://localhost:8080//annotation/tags',{
+                    params:{
+                        taskId:taskOrder.taskId
+                    }
+                }).then((response)=>{
+                    tag  = response.data.data;
+                    thisTag = tag[thisTag];
+                    let temp = [];
+                    for(let k in thisTag){
+                        if(thisTag.hasOwnProperty(k)){
+                            temp.push(k+' '+thisTag[k]);
+                        }
+                    }
+                    this.Tags = temp;
+                }).catch(()=>{
+                    this.$message({
+                        showClose:true,
+                        message:'tag加载异常!',
+                        type:'error'
+                    })
+                });
                 axios.get('http://localhost:8080/annotation/getAll',{
                     params:{
-                        annotationId:taskOrder.annotationId
+                        //annotationId:taskOrder.annotationId
+                        annotationId:2
                     },
                 }).then((response) => {
                     annotationInfo = response.data.data;
                         annotationMap = annotationInfo.annotationMap;
                         annotations = annotationMap[thisPage];
                         thisAnnotation = annotations[0];
-                        if(thisAnnotation ===null){
+                        if(thisAnnotation == null){
                             isNew = true;
                         }else {
                             this.textarea = thisAnnotation.sentence;
@@ -163,6 +203,7 @@
         },
         data() {
             return {
+                Tags:['131231 :1','213123',"123132131","2131","ewwedwe","qweq"],
                 activeIndex: '1',
                 currentPage: 1,
                 textarea:'',
@@ -171,7 +212,8 @@
                 imgY:null,
                 imgUrl: '',
                 fullscreenLoading:true,
-                process:0
+                process:0,
+                myName:'',
             };
         },
         methods: {
@@ -192,19 +234,33 @@
                 thisPage = val;
                 annotations = annotationMap[thisPage];
                 thisAnnotation = annotations[0];
-                if(thisAnnotation ===null){
+                if(thisAnnotation ==null){
                     isNew = true;
                 }else {
                     this.textarea = thisAnnotation.sentence;
                     coordinates = thisAnnotation.coordinates;
                     this.showAnnotation();
                 }
+                thisTag = tag[thisTag];
+                let temp = [];
+                for(let k in thisTag){
+                    if(thisTag.hasOwnProperty(k)){
+                        temp.push(k+' '+thisTag[k]);
+                    }
+                }
+                this.Tags = temp;
                 this.fullscreenLoading = false;
             },
             save(){
                 sentence = this.textarea;
-                words =sentence.trim().split(/\s+|\.|,/);
+                let temp =sentence.trim().split(/\s+|\.|,|\(|\)|;|:|"|\?|!/);
+                for(let i=0;i<temp.length;i++){
+                    if(temp[i] !==""){
+                        words.push(temp[i])
+                    }
+                }
                 thisAnnotation =new Annotation(sentence,words,coordinates);
+                words = [];
                 annotations[0] = thisAnnotation;
                 annotationMap[thisPage] = annotations;
                 annotationInfo.annotationMap=annotationMap;

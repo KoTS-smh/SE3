@@ -168,7 +168,7 @@
                     annotationMap = annotationInfo.annotationMap;
                     annotations = annotationMap[thisPage];
                     thisAnnotation = annotations[0];
-                    if(thisAnnotation ===null){
+                    if(thisAnnotation ==null){
                         isNew = true;
                     }else {
                         words = thisAnnotation.words;
@@ -224,7 +224,7 @@
                 thisPage = val;
                 annotations = annotationMap[thisPage];
                 thisAnnotation = annotations[0];
-                if(thisAnnotation ===null){
+                if(thisAnnotation ==null){
                     isNew = true;
                 }else {
                     words = thisAnnotation.words;

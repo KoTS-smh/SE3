@@ -35,4 +35,9 @@ public class TaskOrderServiceImpl implements TaskOrderService{
     public void deleteTaskOrder(long taskOrderId,long userId) {
         taskOrderDao.deleteTaskOrder(taskOrderId,userId);
     }
+
+    @Override
+    public TaskOrder getTaskOrderById(long taskOrderId,long userId) {
+        return taskOrderDao.getTaskOrderById(taskOrderId,userId);
+    }
 }

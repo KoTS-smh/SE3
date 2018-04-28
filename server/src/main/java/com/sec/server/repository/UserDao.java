@@ -8,7 +8,9 @@ public interface UserDao {
 
     void register(User user);
 
-    User upate(User user);
+    void deleteUser(long userId);
+
+    User update(User user);
 
     User getUserById(long ID);
 }
