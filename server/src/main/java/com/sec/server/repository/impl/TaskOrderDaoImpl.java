@@ -18,10 +18,11 @@ import java.util.List;
 
 @Repository("taskOrderDao")
 public class TaskOrderDaoImpl implements TaskOrderDao{
+    private static String taskOrderPath = "src/data/taskOrder_";
     @Override
     public List<TaskOrder> getAllTaskOrder(long userId) {
         System.out.println("inDao " + userId);
-        File file = new File("src/data/taskOrder_" + userId + ".json");
+        File file = new File(taskOrderPath + userId + ".json");
         String content = null;
         List<TaskOrder> list = null;
         try {
@@ -54,7 +55,7 @@ public class TaskOrderDaoImpl implements TaskOrderDao{
         String content = null;
 
         //先判断是否存在json文件
-        File file = new File("src/data/taskOrder_" + userId + ".json");
+        File file = new File(taskOrderPath + userId + ".json");
         if(file.exists()){
             try {
                 content = FileUtils.readFileToString(file, "UTF-8");
@@ -94,7 +95,7 @@ public class TaskOrderDaoImpl implements TaskOrderDao{
         long userId = newObject.getLong("userId");
 
         //
-        File file = new File("src/data/taskOrder_" + userId + ".json");
+        File file = new File(taskOrderPath + userId + ".json");
         if(file.exists()){
             try {
                 String content = FileUtils.readFileToString(file,"UTF-8");
@@ -116,7 +117,7 @@ public class TaskOrderDaoImpl implements TaskOrderDao{
     @Override
     public void deleteTaskOrder(long taskOrderId,long userId) {
         //todo
-        File file = new File("src/data/taskOrder_" + userId + ".json");
+        File file = new File(taskOrderPath + userId + ".json");
         if(file.exists()){
             try {
                 String content = FileUtils.readFileToString(file);

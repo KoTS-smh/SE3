@@ -18,12 +18,13 @@ import java.util.List;
 
 @Repository("taskDao")
 public class TaskDaoImpl implements TaskDao{
+    private static String path = "src/data/task.json";
     @Override
     public void createTask(String task) {
         //System.out.println(task);
         JSONObject object = new JSONObject(task);
 
-        File file = new File("src/data/task.json");
+        File file = new File(path);
         String content = null;
 
         try {
@@ -42,7 +43,7 @@ public class TaskDaoImpl implements TaskDao{
         System.out.println(task);
         JSONObject object = new JSONObject(task);
         long inId = object.getLong("taskId");
-        File file = new File("src/data/task.json");
+        File file = new File(path);
         String content = null;
 
         try {
@@ -80,7 +81,7 @@ public class TaskDaoImpl implements TaskDao{
 
     @Override
     public void deleteTask(long taskId) {
-        File file = new File("src/data/task.json");
+        File file = new File(path);
         String content = null;
 
         try {
@@ -104,7 +105,7 @@ public class TaskDaoImpl implements TaskDao{
 
     @Override
     public Task getTaskInfo(long taskId) {
-        File file = new File("src/data/task.json");
+        File file = new File(path);
         String content = null;
 
         try {
