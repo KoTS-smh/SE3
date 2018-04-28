@@ -39,13 +39,11 @@ public class TaskOrder {
             this.taskOrderId = 0;
         }
 
-
         this.isSubmited = false;
         this.lastPic = 0;
         this.degreeOfCompletion = 0;
         this.rate = -1;
         this.annotationId = 0;
-
 
         Task task = ReadFile.getTask(taskId);
         this.beginDate = task.getBeginDate();

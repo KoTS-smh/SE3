@@ -90,12 +90,50 @@ public class TaskOrderDaoImpl implements TaskOrderDao{
 
     @Override
     public void updateTaskOrder(String taskOrder) {
+        JSONObject newObject = new JSONObject(taskOrder);
+        long userId = newObject.getLong("userId");
 
+        //
+        File file = new File("src/data/taskOrder_" + userId + ".json");
+        if(file.exists()){
+            try {
+                String content = FileUtils.readFileToString(file,"UTF-8");
+                JSONArray array = new JSONArray(content);
+                for(int i = 0;i<array.length();i++){
+                    JSONObject object = array.getJSONObject(i);
+                    if(object.getLong("taskId")==newObject.getLong("taskId")){
+                        array.put(i,newObject);
+                        break;
+                    }
+                }
+                FileUtils.write(file,array.toString(2));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
-    public void deleteTaskOrder(long taskOrderId) {
+    public void deleteTaskOrder(long taskOrderId,long userId) {
+        //todo
+        File file = new File("src/data/taskOrder_" + userId + ".json");
+        if(file.exists()){
+            try {
+                String content = FileUtils.readFileToString(file);
+                JSONArray array = new JSONArray(content);
+                for(int i = 0;i<array.length();i++){
+                    JSONObject object = array.getJSONObject(i);
+                    if(object.getLong("taskOrderId")==taskOrderId){
+                        array.remove(i);
+                        break;
+                    }
+                }
+                FileUtils.write(file,array.toString(2));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
+        }
     }
 
 }
