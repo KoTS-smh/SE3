@@ -80,6 +80,11 @@
                         icon:'el-icon-star-on',
                         index:'adTable',
                         title:'系统管理员界面'
+                    },
+                    {
+                        icon:'el-icon-star-on',
+                        index:'taskRate',
+                        title:'任务完成进度界面'
                     }
                 ]
             }

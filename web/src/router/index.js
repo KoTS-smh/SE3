@@ -88,11 +88,11 @@ export default new Router({
                 {
                     path: '/personalSpace',
                     component: resolve => require(['../components/page/space/PersonalSpace.vue'], resolve)
+                },
+                {
+                    path:'/taskRate',
+                    component:resolve => require(['../components/page/space/TaskRate.vue'],resolve)
                 }
-                // {
-                //     path: '/dataCheck',
-                //     component: resolve => require(['../components/page/space/DataCheck.vue'], resolve)
-                // }
             ]
         },
         {

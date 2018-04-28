@@ -2,7 +2,7 @@
     <div class="all" id="all">
             <div class="crumbs">
                 <el-breadcrumb separator="/">
-                    <el-breadcrumb-item>个人信息</el-breadcrumb-item>
+                    <el-breadcrumb-item><i class="el-icon-menu"></i>个人信息</el-breadcrumb-item>
                 </el-breadcrumb>
             </div>
             <div class="form-box">
@@ -126,9 +126,9 @@
 </script>
 
 <style scoped>
-    #all{
-        display:flex;
-    }
+    /*#all{*/
+        /*display:flex;*/
+    /*}*/
     .form-box{
         width:600px;
     }

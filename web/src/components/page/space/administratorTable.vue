@@ -1,24 +1,30 @@
 <template>
     <div>
-        <h2>系统信息</h2>
-        <el-form style="margin-top: 40px;">
-            <!--显示用户数-->
-            <el-form-item label="用户数目">
-                {{form.userNumber}}
-            </el-form-item>
-            <!--显示任务数-->
-            <el-form-item label="任务数目">
-                {{form.taskNumber}}
-            </el-form-item>
-            <!--显示已完成任务数-->
-            <el-form-item label="已完成任务数目">
-                {{form.finishedTaskNumber}}
-            </el-form-item>
-            <!--显示未完成任务数-->
-            <el-form-item label="未完成任务数目">
-                {{form.unfinishedTaskNumber}}
-            </el-form-item>
-        </el-form>
+        <div class="crumbs">
+        <el-breadcrumb separator="/">
+            <el-breadcrumb-item><i class="el-icon-message"></i>系统信息</el-breadcrumb-item>
+        </el-breadcrumb>
+        </div>
+        <div style="margin-left: 50px">
+            <el-form style="margin-top: 40px">
+                <!--显示用户数-->
+                <el-form-item label="用户数目">
+                    {{form.userNumber}}
+                </el-form-item>
+                <!--显示任务数-->
+                <el-form-item label="任务数目">
+                    {{form.taskNumber}}
+                </el-form-item>
+                <!--显示已完成任务数-->
+                <el-form-item label="已完成任务数目">
+                    {{form.finishedTaskNumber}}
+                </el-form-item>
+                <!--显示未完成任务数-->
+                <el-form-item label="未完成任务数目">
+                    {{form.unfinishedTaskNumber}}
+                </el-form-item>
+            </el-form>
+        </div>
     </div>
 </template>
 
