@@ -17,14 +17,6 @@ export default new Router({
                     path: '/',
                     component: resolve => require(['../components/page/space/Readme.vue'], resolve)
                 },
-                // {
-                //     path:'/picktable',
-                //     component: resolve => require(['../components/page/space/PickTable.vue'],resolve)
-                // },
-                // {
-                //     path:'/releaseTable',
-                //     component:resolve => require(['../components/page/space/ReleaseTable.vue'],resolve)
-                // },
                 {
                     path: '/basetable',
                     component: resolve => require(['../components/page/space/BaseTable.vue'], resolve)
@@ -61,33 +53,13 @@ export default new Router({
                     path: '/getTask',
                     component: resolve => require(['../components/page/space/GetTask.vue'], resolve)
                 },
-                // {
-                //     path: '/publishedTasks',
-                //     component: resolve => require(['../components/page/space/PublishedTasks.vue'], resolve)
-                // },
                 {
                     path: '/createTask',
                     component: resolve => require(['../components/page/space/CreateTask.vue'], resolve)
                 },
-                // {
-                //     path: '/checkTask',
-                //     component: resolve => require(['../components/page/space/CheckTask.vue'], resolve)
-                // },
-                // {
-                //     path: '/analysis',
-                //     component: resolve => require(['../components/page/space/Analysis.vue'], resolve)
-                // }
                 {
-                    path: '/publishedTasks',
-                    component: resolve => require(['../components/page/space/PublishedTasks.vue'], resolve)
-                },
-                {
-                    path: '/personalSpace',
-                    component: resolve => require(['../components/page/space/PersonalSpace.vue'], resolve)
-                },
-                {
-                    path: '/dataCheck',
-                    component: resolve => require(['../components/page/space/DataCheck.vue'], resolve)
+                    path: '/analysis',
+                    component: resolve => require(['../components/page/space/Analysis.vue'], resolve)
                 }
             ]
         },
@@ -107,13 +79,21 @@ export default new Router({
             path:'/guide',
             component:resolve => require(['../components/page/guide/Guide.vue'],resolve)
         },
-        // {
-        //     path: '/mainPage',
-        //     component: resolve => require(['../components/page/mainPage/MainPage.vue'], resolve)
-        // }
         {
-                    path: '/CheckTask',
+            path: '/mainPage',
+            component: resolve => require(['../components/page/mainPage/MainPage.vue'], resolve)
+        },
+        {
+                    path: '/checkTask',
                     component: resolve => require(['../components/page/space/CheckTask.vue'], resolve)
-        }
+        },
+        {
+            path: '/homepage',
+            component: resolve => require(['../components/homepage/Bhomepage.vue'], resolve)
+        },
+        {
+            path: '/search',
+            component: resolve => require(['../components/page/search/Search.vue'], resolve)
+        },
     ]
 })
