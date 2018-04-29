@@ -115,7 +115,7 @@ public class TaskDaoImpl implements TaskDao{
             for(int i = 0;i < array.length();++i){
                 JSONObject tmp = (JSONObject) array.get(i);
                 if(tmp.getLong("taskId") == taskId){
-                    return (Task) JSON.parse(tmp.toString());
+                    return JSON.parseObject(tmp.toString(), Task.class);
                 }
             }
             throw new ResultException(ResultCode.TASK_NOT_FOUND);
