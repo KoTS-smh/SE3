@@ -155,7 +155,6 @@ public class ReadFile {
             content = FileUtils.readFileToString(file, "UTF-8");
             JSONArray array = new JSONArray(content);
 
-
             List<Task> taskList = JSON.parseArray(array.toString(), Task.class);
             for(Task task : taskList){
                 if(task.getPostUserId() == userId)

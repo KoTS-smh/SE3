@@ -13,7 +13,7 @@
                 <el-option key="2" label="已结束" value="已结束"></el-option>
                 <el-option key="3" label="草稿" value="草稿"></el-option>
             </el-select>
-            
+
             <el-button type="primary">新建</el-button>
         </div>
 
@@ -47,8 +47,8 @@
                 </el-form-item>
                 <el-form-item label="截止时间" label-width="100px">
                     <el-input v-model="selectTable.endDate" auto-complete="off"></el-input>
-                    
-                    
+
+
                 </el-form-item>
                 <el-form-item label="任务等级" label-width="100px">
                     <el-input v-model="selectTable.taskLevel" auto-complete="off"></el-input>
@@ -64,7 +64,7 @@
              <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveChange()">确 定</el-button>
-                <el-button type="success" @click="publish()">发布</el-button>
+                <!--<el-button type="success" @click="publish()">发布</el-button>-->
             </div>
         </el-dialog>
     </div>
@@ -92,6 +92,26 @@ export default {
             this.address = row.address;
             this.dialogVisible = true;
         },
+        handleDelete(index, row){
+            if(this.tableData[index].acceptUserIds.length === 0){
+                axios.get("http://localhost:8080/task/delete",{
+                    params:{
+                        taskId:row.taskId
+                    }
+                }).then((response)=>{
+                    if(response.data.code ===0){
+                        this.$message.success("删除成功！");
+                        this.placeData();
+                    }else {
+                        this.$message.error("删除失败！")
+                    }
+                }).catch(()=>{
+                    this.$message.error("网络异常！")
+                })
+            }else {
+                this.$message.info("该任务已有人参与，无法删除！")
+            }
+        },
         saveChange() {
             this.dialogVisible = false
             // console.log("here")
@@ -108,27 +128,24 @@ export default {
             //         tmpData[i].endDate = endDate
             //     }
 
-
             // axios.post("http://localhost:8080/task/update", tmpData)
             // .then(response => {
             //     console.log(response)
             // }).catch(err => {
             //     console.log(err)
             // })
-
         },
         handleChange() {
             var selection = this.select_cate;
-            var userId = localStorage.getItem("userId")
+            var userId = localStorage.getItem("userId");
             var mydata;
             if(selection === "进行中"){
                 axios.post("http://localhost:8080/task/getAllFinished", {"userId": userId, "password": ""})
                 .then(response => {
-                    console.log(response)
-                    mydata = JSON.parse(response.data.data)
-                    var i = 0
+                    mydata = JSON.parse(response.data.data);
+                    var i = 0;
                     for(i = 0;i < mydata.length;++i){
-                        mydata[i].endDate = this.convertDate(mydata[i].endDate)
+                        mydata[i].endDate = this.convertDate(mydata[i].endDate);
                         mydata[i].beginDate = this.convertDate(mydata[i].beginDate)
                     }
                     this.tableData = mydata;
@@ -138,11 +155,11 @@ export default {
             }else if(selection === "已结束"){
                 axios.post("http://localhost:8080/task/getAllunFinished", {"userId": userId, "password": ""})
                 .then(response => {
-                    console.log(response)
-                    mydata = JSON.parse(response.data.data)
-                    var i = 0
+                    console.log(response);
+                    mydata = JSON.parse(response.data.data);
+                    var i = 0;
                     for(i = 0;i < mydata.length;++i){
-                        mydata[i].endDate = this.convertDate(mydata[i].endDate)
+                        mydata[i].endDate = this.convertDate(mydata[i].endDate);
                         mydata[i].beginDate = this.convertDate(mydata[i].beginDate)
                     }
                     this.tableData = mydata;
@@ -150,25 +167,19 @@ export default {
                     console.log(err)
                 })
             }
-
-            
-
-            
         },
         placeData(){
-            var userId = localStorage.getItem("userId")
-            console.log("this is userId " + userId)
+            var userId = localStorage.getItem("userId");
             axios.post("http://localhost:8080/task/getAllPost", {"userId": userId, "password": ""})
             .then(response => {
-                var mydata = JSON.parse(response.data.data)
-                
-                
-                var i = 0
+                var mydata = JSON.parse(response.data.data);
+
+                var i = 0;
                 for(i = 0;i < mydata.length;++i){
-                    mydata[i].endDate = this.convertDate(mydata[i].endDate)
+                    mydata[i].endDate = this.convertDate(mydata[i].endDate);
                     mydata[i].beginDate = this.convertDate(mydata[i].beginDate)
                 }
-                
+
 
                 this.tableData = mydata
             }).catch(err => {
@@ -176,13 +187,13 @@ export default {
             })
         },
         convertDate(indate) {
-        var date = new Date(indate)
+        var date = new Date(indate);
         var year = date.getFullYear() + '-';
         var month = (date.getMonth() + 1) + '-';
         var day = date.getDate() - 1;
-                    
+
         var hour = date.getUTCHours();
-                    
+
         hour = hour - 6;
         if(hour <= 0){
             hour = hour + 24;
@@ -191,7 +202,7 @@ export default {
             day = day + ' ';
             hour = hour + ':';
             var minute = date.getMinutes();
-                    
+
         return year + month + day + hour + minute;
         }
     },

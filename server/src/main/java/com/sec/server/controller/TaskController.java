@@ -27,7 +27,6 @@ public class TaskController {
         long userId = userModel.getUserId();
         List<Task> list = taskService.getAllPost(userId);
         JSONArray array = new JSONArray(list);
-
         return ResultUtils.success(array.toString());
     }
 
