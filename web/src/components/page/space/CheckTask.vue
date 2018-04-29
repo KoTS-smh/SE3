@@ -135,7 +135,7 @@ export default {
         }
     },
     methods: {
-            getTask() {
+            getData() {
             var userId = localStorage.getItem("userId")
             var taskId = this.taskData.taskId
             axios.post("http://localhost:8080/task/taskInfo", {"taskId": taskId})
@@ -177,11 +177,19 @@ export default {
                 }else if(key == 2){
                     this.$router.push({path: '/personalSpace'})
                 }
-            }
+            },
+            getTask() {
+            var userId = localStorage.getItem("userId")
+            var taskId = this.taskData.taskId
+            axios.post("http://localhost:8080/taskOrder/createTaskOrder", {"userId": userId, "taskId": taskId})
+            .then(response => {
+                console.log(response.data)
+            })
+        }
             
         },
     mounted() {
-        this.getTask();
+        this.getData();
     }
 
     

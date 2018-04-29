@@ -73,10 +73,10 @@ export default new Router({
                 //     path: '/analysis',
                 //     component: resolve => require(['../components/page/space/Analysis.vue'], resolve)
                 // }
-                // {
-                //     path: '/publishedTasks',
-                //     component: resolve => require(['../components/page/space/PublishedTasks.vue'], resolve)
-                // },
+                {
+                    path: '/publishedTasks',
+                    component: resolve => require(['../components/page/space/PublishedTasks.vue'], resolve)
+                },
                 {
                     path: '/personalSpace',
                     component: resolve => require(['../components/page/space/PersonalSpace.vue'], resolve)
