@@ -20,8 +20,8 @@
                 <el-form-item label="任务名称" class="formItems">
                     <el-input v-model="taskData.taskname" readonly></el-input>
                 </el-form-item>
-                <el-form-item label="发起人" class="formItems">
-                    <el-input v-model="taskData.sponsorName" readonly></el-input>
+                <el-form-item label="发起人编号" class="formItems">
+                    <el-input v-model="taskData.sponsorId" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="发起时间" class="formItems">
                     <el-input v-model="taskData.beginDate" readonly></el-input>
@@ -39,7 +39,7 @@
                     <el-input v-model="taskData.totalPoint" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="任务进度" class="formItems">
-                    <el-progress type="circle" :percentage="0"></el-progress>
+                    <el-progress type="circle" :percentage="0" v-model="taskData.degree"></el-progress>
                 </el-form-item>
                 
 
@@ -98,13 +98,14 @@ export default {
             value5: '',
             taskData: {
                 taskname: '任务1',
-                sponsorName: 'tony王',
+                sponsorId: 'tony王',
                 beginDate: '2018/4/6 10:27',
                 endDate: '2018/5/6 10:27',
-                tagType: '标框标注',
+                tagType: '',
                 taskLevel: 2,
                 totalPoint: 20,
-                taskId: '2'
+                taskId: '2',
+                degree: 10
             },
             rules: {
 
@@ -137,9 +138,33 @@ export default {
             getTask() {
             var userId = localStorage.getItem("userId")
             var taskId = this.taskData.taskId
-            axios.post("http://localhost:8080/taskOrder/createTaskOrder", {"userId": userId, "taskId": taskId})
+            axios.post("http://localhost:8080/task/taskInfo", {"taskId": taskId})
             .then(response => {
-                console.log(response.data)
+                console.log(response.data.data)
+                var indata = response.data.data
+                this.taskData.taskId = indata.taskId
+                this.taskData.taskname = indata.taskname
+                this.taskData.taskLevel = indata.taskLevel
+                if(indata.annotationType == 'option1'){
+                    this.taskData.tagType = "标框标注"
+                }else if(indata.annotationType == 'option2'){
+                    this.taskData.tagType = "分类标注"
+                }else if(indata.annotationType == 'option3'){
+                    this.taskData.tagType = "区域标注"
+                }else if(indata.annotationType == "option4" ){
+                    this.taskData.tagType = "整体标注"
+                }else {
+                    this.taskData.tagType = "未定义"
+                }
+
+                this.taskData.sponsorId = indata.postUserId
+                this.taskData.beginDate = new Date(indata.beginDate)
+                this.taskData.endDate = new Date(indata.endDate)
+                this.taskData.totalPoint = indata.totalPoints
+
+
+            }).catch(err =>{
+                console.log(err);
             })
             },
             test () {
@@ -154,7 +179,10 @@ export default {
                 }
             }
             
-        }
+        },
+    mounted() {
+        this.getTask();
+    }
 
     
 }

@@ -3,6 +3,7 @@ package com.sec.server.controller;
 import com.sec.server.domain.Task;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
+import com.sec.server.model.TaskModel;
 import com.sec.server.model.UserModel;
 import com.sec.server.service.TaskService;
 import com.sec.server.utils.ReadFile;
@@ -53,7 +54,8 @@ public class TaskController {
 //    }
 
     @RequestMapping("/task/taskInfo")
-    public Result getTaskInfo(long taskId){
+    public Result getTaskInfo(@RequestBody TaskModel taskModel){
+        long taskId = taskModel.getTaskId();
         Task task = taskService.getTaskInfo(taskId);
         return ResultUtils.success(task);
     }
