@@ -29,6 +29,8 @@ public class TaskDaoImpl implements TaskDao{
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
             JSONArray array = new JSONArray(content);
+            int length = array.length();
+            object.put("taskId", length + 1);
             array.put(object);
             FileUtils.write(file, array.toString(2));
         } catch (IOException e) {
