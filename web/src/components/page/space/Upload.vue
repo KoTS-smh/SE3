@@ -1,78 +1,92 @@
 <template>
     <div>
-        <div class="crumbs">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-date"></i> 表单</el-breadcrumb-item>
-                <el-breadcrumb-item>图片上传</el-breadcrumb-item>
-            </el-breadcrumb>
+        <upload-ali-oss :url.sync="uploadForm.content.path" :multiple="true"
+                        :id="uploadForm.id"
+                        :ossClient="this.ossClient"
+                        :inputName="uploadForm.inputName"
+                        :uploadFileName="uploadForm.uploadFileName"
+                        :path="uploadForm.upload.path"
+                        :uploadRes.sync="uploadForm.uploadRes"
+        ></upload-ali-oss>
+        <div v-show="uploadForm.uploadRes"
+             v-text="uploadForm.content.path">
         </div>
-        <div class="content-title">支持拖拽</div>
-        <div class="plugins-tips">
-            Element UI自带上传组件。
-            访问地址：<a href="http://element.eleme.io/#/zh-CN/component/upload" target="_blank">Element UI Upload</a>
+        <div>
+            <img v-if="uploadForm.uploadRes"
+                 :src="this.imgSrc">
         </div>
-        <el-upload
-            class="upload-demo"
-            drag
-            action="/api/posts/"
-            multiple>
-            <i class="el-icon-upload"></i>
-            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-            <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-        </el-upload>
-        <div class="content-title">支持裁剪</div>
-        <div class="plugins-tips">
-            Vue-Core-Image-Upload：一款轻量级的vue上传插件，支持裁剪。
-            访问地址：<a href="https://github.com/Vanthink-UED/vue-core-image-upload" target="_blank">Vue-Core-Image-Upload</a>
-        </div>
-        <img class="pre-img" :src="src" alt="">
-        <vue-core-image-upload :class="['pure-button','pure-button-primary','js-btn-crop']"
-                               :crop="true"
-                               text="上传图片"
-                               url="/api/posts/"
-                               extensions="png,gif,jpeg,jpg"
-                               @imageuploaded="imageuploaded"
-                               @errorhandle="handleError"></vue-core-image-upload>
     </div>
 </template>
 
 <script>
-    import VueCoreImageUpload  from 'vue-core-image-upload';
+    import VueUploadAliOSS from 'vue-oss-upload';
+    import Css from 'vue-oss-upload/dist/vue-alioss-upload.min.css'
     export default {
-        data: function(){
-            return {
-                src: './static/img/img.jpg',
-                fileList: []
-            }
-        },
+        name: 'app',
         components: {
-                VueCoreImageUpload
+            'upload-ali-oss': VueUploadAliOSS
         },
-        methods:{
-            imageuploaded(res) {
-                console.log(res)
-            },
-            handleError(){
-                this.$notify.error({
-                    title: '上传失败',
-                    message: '图片上传接口上传失败，可更改为自己的服务器接口'
-                });
+        data() {
+            return {
+                ossClient: Object,
+                uploadForm: {
+                    id: 'imgFile',
+                    inputName: '上传图片',// 自定义
+                    uploadFileName: '2017063010192023',// 上传文件的名称
+                    content: {
+                        path: '',
+                    },
+                    upload: {
+                        path: 'img/test/',// 自定义路径
+                    },
+                    uploadRes: false,
+                },
+                imgSrc: ''
             }
+        },
+        methods: {
+            // 需要引入阿里云的ossSDK
+            //初始化OSS 权限, 建议后台提供获取oss临时权限的接口
+            initOSSAuth() {
+
+                let Oss = OSS.Wrapper;
+                this.ossClient = new Oss({
+                    region: 'mrgsbucket.oss-cn-hangzhou.aliyuncs.com',
+                    accessKeyId: 'LTAIIWnMJkZvYfKn',
+                    accessKeySecret: 'rDNV76L1myCE0fePFX7xE1RHuW5KD3',
+                    stsToken: '',
+                    bucket: 'mrgsbucket',
+                    endpoint: 'oss-cn-hangzhou.aliyuncs.com',
+                });
+            },
+            // 展示上传的内容（图片）
+            showUploadContent() {
+                if (this.uploadForm.content.path) {
+
+                    let path = this.uploadForm.content.path;
+
+                    var result = this.ossClient.signatureUrl(path, {
+                        response: {
+                            // 'content-disposition': 'attachment; filename="' + filename + '"'
+                            'Content-Type': 'image/jpeg'
+                        }
+                    });
+                    this.imgSrc = result;
+                }
+            }
+        },
+        watch: {
+            'uploadForm.content.path' (val, oldVal) {
+//                console.log('new: %s, old: %s', val, oldVal)
+                if ('' !== val) {
+                    this.showUploadContent();
+                }
+            }
+        },
+        mounted() {
+            this.initOSSAuth();
         }
     }
 </script>
-
-<style scoped>
-    .content-title{
-        font-weight: 400;
-        line-height: 50px;
-        margin: 10px 0;
-        font-size: 22px;
-        color: #1f2f3d;
-    }
-    .pre-img{
-        width:250px;
-        height: 250px;
-        margin-bottom: 20px;
-    }
+<style>
 </style>

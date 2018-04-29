@@ -171,9 +171,9 @@ export default {
         },
 
         action: 'http://upload.qiniu.com/', // 替换自己的上传链接
-        accept: 'image/png, image/jpeg, image/gif',
+        accept: 'image/png, image/jpeg, image/gif, image/jpg',
         multiple: true,
-        token: 'j0dwMMGFcKPhncC7vb_PWXshbpiSMEWB69NiKhn4:DcfAuQmyay94cJItiZ3Jtwf-oBw=:eyJzY29wZSI6Im1yZ3MtYnVja2V0IiwiZGVhZGxpbmUiOjE1MjQ5NzA3MTB9',
+        token: 'j0dwMMGFcKPhncC7vb_PWXshbpiSMEWB69NiKhn4:W4rT1JkXcrZ4hJAx0l2Nwnn6DB8=:eyJzY29wZSI6Im1yZ3MtYnVja2V0IiwiY2FsbGJhY2tCb2R5Ijoia2V5PSQoa2V5KSZoYXNoPSQoZXRhZykmd2lkdGg9JChpbWFnZUluZm8ud2lkdGgpJmhlaWdodD0kKGltYWdlSW5mby5oZWlnaHQpJnVzZXI9JChlbmRVc2VyKSZzaXplPSQoZnNpemUpJm1pbWU9JChtaW1lVHlwZSkiLCJkZWFkbGluZSI6MTUyNDk2OTE4N30=',
         hashes: [],
         keys: [],
         uploadMsg: [],
