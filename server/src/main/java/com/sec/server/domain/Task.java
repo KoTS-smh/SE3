@@ -101,8 +101,6 @@ public class Task {
         this.totalPoints = totalPoints;
     }
 
-
-
     public int getTaskLevel() {
         return taskLevel;
     }

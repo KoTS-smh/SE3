@@ -8,7 +8,7 @@
             </el-menu-item>
 
         </el-menu>
-        
+
 
         <el-row>
         <el-col :span="8" class="taskInfos"><div class="grid-content bg-purple">
@@ -41,7 +41,7 @@
                 <el-form-item label="任务进度" class="formItems">
                     <el-progress type="circle" :percentage="0"></el-progress>
                 </el-form-item>
-                
+
 
             </el-form>
         </div>
@@ -54,12 +54,9 @@
             </lightbox>
 
         </el-col>
-            
-        
-       
 
         </el-row>
-        
+
 
         <el-row>
             <el-button type="primary" class="choiceBtn" @click="getTask()">接受任务</el-button>
@@ -135,8 +132,8 @@ export default {
     },
     methods: {
             getTask() {
-            var userId = localStorage.getItem("userId")
-            var taskId = this.taskData.taskId
+            var userId = localStorage.getItem("userId");
+            var taskId = this.taskData.taskId;
             axios.post("http://localhost:8080/taskOrder/createTaskOrder", {"userId": userId, "taskId": taskId})
             .then(response => {
                 console.log(response.data)
@@ -153,10 +150,10 @@ export default {
                     this.$router.push({path: '/personalSpace'})
                 }
             }
-            
+
         }
 
-    
+
 }
 </script>
 
@@ -236,7 +233,7 @@ export default {
         border-radius: 50%;
         margin-left: 1000px;
         margin-top: 5px;
-        
+
     }
 
     .icon {

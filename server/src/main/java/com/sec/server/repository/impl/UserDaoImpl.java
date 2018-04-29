@@ -115,7 +115,7 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public User getUserById(long ID) {
-        String content = null;
+        String content;
         try {
             content = FileUtils.readFileToString(file);
             JSONArray array = new JSONArray(content);
@@ -123,6 +123,7 @@ public class UserDaoImpl implements UserDao {
                 if(array.getJSONObject(i).getLong("userId")==ID){
                     JSONObject object = array.getJSONObject(i);
                     User user = new User();
+                    user.setUserId(ID);
                     user.setUserLevel(translateToUserLevel(object.getString("userLevel")));
                     user.setEducation(translateToEducation(object.getString("education")));
                     user.setPoint(object.getInt("point"));
@@ -135,10 +136,9 @@ public class UserDaoImpl implements UserDao {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
             throw new ResultException(ResultCode.UNKNOWN_USER_ERROR);
         }
-        return null;
+        throw new ResultException(ResultCode.UNKNOWN_USER_ERROR);
     }
 
     @Override

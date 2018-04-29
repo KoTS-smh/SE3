@@ -83,8 +83,6 @@
                     </el-carousel-item>
                     </el-carousel>
                 </div>
-
-                
             </el-col>
 
         </el-row>
@@ -92,22 +90,22 @@
         <el-dialog title="请输入标注分类" :visible.sync="dialogTableVisible">
             <el-form id="parentForm">
                 <el-form-item label="分类1">
-                    <el-input  auto-complete="off" v-model="form.classfication[0]"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classification[0]"></el-input>
 
                 </el-form-item>
 
                 <el-form-item label="分类2">
-                    <el-input  auto-complete="off" v-model="form.classfication[1]"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classification[1]"></el-input>
 
                 </el-form-item>
 
                 <el-form-item label="分类3">
-                    <el-input  auto-complete="off" v-model="form.classfication[2]"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classification[2]"></el-input>
 
                 </el-form-item>
 
                 <el-form-item label="分类">
-                    <el-input  auto-complete="off" v-model="form.classfication[3]"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classification[3]"></el-input>
 
                 </el-form-item>
             </el-form>
@@ -124,7 +122,6 @@
 <script>
 import upload from '../../common/upload.vue'
 import axios from 'axios'
-import lightbox from 'vlightbox'
 export default {
     name: 'app',
     components: {
@@ -154,10 +151,12 @@ export default {
                 label: '整体标注'
             }
         ],
-        
+
 
         dialogTableVisible: false,
         form: {
+            postUserId: localStorage.getItem("userId"),
+            acceptUserIds:[],
           taskname: '',
           beginDate: '',
           endDate: '',
@@ -166,7 +165,7 @@ export default {
           maxParticipator: '',
           taskLevel: 0,
           imgList: [],
-          classfication: ["", "", "", ""]
+          classification:['','','','']
         },
 
         action: 'http://upload.qiniu.com/', // 替换自己的上传链接
@@ -180,13 +179,9 @@ export default {
       }
     },
     methods: {
-        onSubmit() {
-            console.log('submit!');
-        },
-
         uploadFile (res) {
-            this.hashes.push(`http://p6r9un2qj.bkt.clouddn.com/${res.hash}`)
-            this.keys.push(`http://p6r9un2qj.bkt.clouddn.com/${res.key}`)
+            this.hashes.push(`http://p6r9un2qj.bkt.clouddn.com/${res.hash}`);
+            this.keys.push(`http://p6r9un2qj.bkt.clouddn.com/${res.key}`);
             this.form.imgList.push(`http://p6r9un2qj.bkt.clouddn.com/${res.key}`)
         },
         uploadErr (res) {
@@ -199,9 +194,8 @@ export default {
 
         },
         onSubmit() {
-            const self = this
-            this.form.annotationType = this.annotationType
-            
+            const self = this;
+            this.form.annotationType = this.annotationType;
             axios.post('http://localhost:8080/task/create', this.form).then(function (response) {
 
                 console.log(response);
@@ -212,8 +206,8 @@ export default {
 
         },
         addLabel() {
-            var elFormItem = document.createElement('el-form-item')
-            var parent = document.getElementById('parentForm')
+            var elFormItem = document.createElement('el-form-item');
+            var parent = document.getElementById('parentForm');
             parent.appendChild(elFormItem)
         },
         changeClassification() {

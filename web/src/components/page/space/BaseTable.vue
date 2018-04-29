@@ -31,13 +31,13 @@
                 </template>
             </el-table-column>
         </el-table>
-        <div class="pagination">
-            <el-pagination
-                    @current-change ="handleCurrentChange"
-                    layout="prev, pager, next"
-                    :total="1000">
-            </el-pagination>
-        </div>
+        <!--<div class="pagination">-->
+            <!--<el-pagination-->
+                    <!--@current-change ="handleCurrentChange"-->
+                    <!--layout="prev, pager, next"-->
+                    <!--:total="1000">-->
+            <!--</el-pagination>-->
+        <!--</div>-->
 
         <el-dialog title="任务详情" :visible.sync="dialogVisible">
             <el-form :model="selectTable">
@@ -46,12 +46,12 @@
                 </el-form-item>
                 <el-form-item label="截止时间" label-width="100px">
                     <el-input v-model="selectTable.endDate" auto-complete="off" readonly="true"></el-input>
-                    
+
                 </el-form-item>
                 <el-form-item label="状态" label-width="100px">
                     <el-input v-model="selectTable.submited" auto-complete="off" readonly="true"></el-input>
                 </el-form-item>
-                
+
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
@@ -122,7 +122,6 @@
                 let self = this;
                 // if(process.env.NODE_ENV === 'development'){
                 //     self.url = '/ms/table/list';
-
                 // };
                 self.$axios.get(self.url, {page:self.cur_page}).then((res) => {
                     self.tableData = res.data.list;
@@ -141,15 +140,13 @@
             },
             handleEdit(index, row) {
                 //this.$message('编辑第'+(index+1)+'行');
-                var date = this.tableData[0].endDate
+                var date = this.tableData[0].endDate;
                 this.selectTable = row;
 
                 //this.selectTable.endDate = new Date(date)
-                
+
                 this.address = row.address;
                 this.dialogVisible = true;
-               
-
             },
             handleDelete(index, row) {
                 this.$message.error('删除第'+(index+1)+'行');
@@ -157,19 +154,19 @@
             },
             handleChange() {
                 var selection = this.select_cate;
-                var userId = localStorage.getItem("userId")
+                var userId = localStorage.getItem("userId");
                 var mydata;
                 if(selection === "已完成"){
                     axios.post("http://localhost:8080/taskOrder/getAllSubmited", {"userId": userId, "password": ""})
                     .then(response => {
-                        console.log(response)
-                        mydata = JSON.parse(response.data.data)
-                        var i = 0
+                        console.log(response);
+                        mydata = JSON.parse(response.data.data);
+                        var i = 0;
                         for(i = 0;i < mydata.length;++i){
-                            mydata[i].endDate = this.convertDate(mydata[i].endDate)
-                            mydata[i].beginDate = this.convertDate(mydata[i].beginDate)
+                            mydata[i].endDate = this.convertDate(mydata[i].endDate);
+                            mydata[i].beginDate = this.convertDate(mydata[i].beginDate);
                             var tmprate = mydata[i].rate;
-                            if(tmprate != null && tmprate != undefined && tmprate != -1){
+                            if(tmprate != null && tmprate !== undefined && tmprate !== -1){
                                 //donothing
                             }else{
                                 mydata[i].rate = '未评分';
@@ -180,15 +177,15 @@
                 }else if(selection === "未完成"){
                     axios.post("http://localhost:8080/taskOrder/getAllunSubmited", {"userId": userId, "password": ""})
                     .then(response => {
-                        console.log(response)
-                        mydata = JSON.parse(response.data.data)
-                        var i = 0
+                        console.log(response);
+                        mydata = JSON.parse(response.data.data);
+                        var i = 0;
                         for(i = 0;i < mydata.length;++i){
-                            mydata[i].endDate = this.convertDate(mydata[i].endDate)
-                            mydata[i].beginDate = this.convertDate(mydata[i].beginDate)
+                            mydata[i].endDate = this.convertDate(mydata[i].endDate);
+                            mydata[i].beginDate = this.convertDate(mydata[i].beginDate);
 
                             var tmprate = mydata[i].rate;
-                            if(tmprate != null && tmprate != undefined && tmprate != -1){
+                            if(tmprate != null && tmprate !== undefined && tmprate !== -1){
                                 //donothing
                             }else{
                                 mydata[i].rate = '未评分';
@@ -214,14 +211,13 @@
             },
             saveChange() {
                 //向后端传送数据
-                console.log("now date " + this.selectTable.endDate)
-                this.tableData[0].endDate = this.selectTable.endDate
+                console.log("now date " + this.selectTable.endDate);
+                this.tableData[0].endDate = this.selectTable.endDate;
                 this.dialogVisible = false
             },
             startTag() {
 
             },
-
             imageuploaded(res) {
                 console.log(res)
             },
@@ -236,22 +232,22 @@
             },
 
             placeTheData() {
-                var username = localStorage.getItem('username')
-                var userId = localStorage.getItem('userId')
+                var username = localStorage.getItem('username');
+                var userId = localStorage.getItem('userId');
                 axios.post('http://localhost:8080/taskOrder/getAll', {"username": username, "password": '', "userId": userId})
                 .then(response => {
                     console.log(response.data.data);
                     var j;
                     for(j = 0;j < response.data.data.length; j++){
-                        if(response.data.data[j].submited == false){
+                        if(response.data.data[j].submited === false){
                             response.data.data[j].submited = "未提交";
                         }else{
                             response.data.data[j].submited = "已提交";
                         }
 
-                        response.data.data[j].endDate = this.convertDate(response.data.data[j].endDate)
+                        response.data.data[j].endDate = this.convertDate(response.data.data[j].endDate);
                         var tmprate = response.data.data[j].rate;
-                        if(tmprate != null && tmprate != undefined && tmprate != -1){
+                        if(tmprate != null && tmprate !== undefined && tmprate !== -1){
                             //donothing
                         }else{
                             response.data.data[j].rate = '未评分';
@@ -260,22 +256,22 @@
                     }
                     var list = response.data.data;
                     this.tableData = list;
-                   
+
                 }
-                    
+
                 ).catch(err => {
                     console.log(err)
                 })
-                
+
             },
             convertDate(indate) {
-                var date = new Date(indate)
+                var date = new Date(indate);
                 var year = date.getFullYear() + '-';
                 var month = (date.getMonth() + 1) + '-';
                 var day = date.getDate() - 1;
-                            
+
                 var hour = date.getUTCHours();
-                            
+
                 hour = hour - 6;
                 if(hour <= 0){
                     hour = hour + 24;
@@ -284,11 +280,11 @@
                     day = day + ' ';
                     hour = hour + ':';
                     var minute = date.getMinutes();
-                            
+
                 return year + month + day + hour + minute;
             }
         },
-        
+
         mounted() {
             this.placeTheData();
         }

@@ -44,7 +44,7 @@
                 <el-form-item label="任务进度" class="formItems">
                     <el-progress type="circle" :percentage="0"></el-progress>
                 </el-form-item>
-                
+
 
             </el-form>
         </div></el-col>
@@ -102,8 +102,8 @@ export default {
     },
     methods: {
         getTask() {
-            var userId = localStorage.getItem("userId")
-            var taskId = this.taskData.taskId
+            var userId = localStorage.getItem("userId");
+            var taskId = this.taskData.taskId;
             axios.post("http://localhost:8080/taskOrder/createTaskOrder", {"userId": userId, "taskId": taskId})
             .then(response => {
                 console.log(response.data)
