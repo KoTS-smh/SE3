@@ -5,6 +5,7 @@ import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
 import com.sec.server.model.UserModel;
 import com.sec.server.service.UserService;
+import com.sec.server.utils.CreateToken;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,6 +60,16 @@ public class UserController {
     public Result delete(long userId){
         userService.deleteUser(userId);
         return ResultUtils.success();
+    }
+
+    @RequestMapping("/user/getToken")
+    public String getToken() {
+        String bucket = "mrgs-bucket";
+        String accessKey = "j0dwMMGFcKPhncC7vb_PWXshbpiSMEWB69NiKhn4";
+        String secretKey = "2vWVIw3WJfk314YN3e24ZnixdJMbyoZ14FXiqF--";
+        String token = CreateToken.uploadToken(bucket, accessKey, secretKey);
+
+        return token;
     }
 
 //    @RequestMapping("/user/getById")

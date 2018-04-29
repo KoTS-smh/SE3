@@ -83,6 +83,8 @@
                     </el-carousel-item>
                     </el-carousel>
                 </div>
+
+                
             </el-col>
 
         </el-row>
@@ -90,22 +92,22 @@
         <el-dialog title="请输入标注分类" :visible.sync="dialogTableVisible">
             <el-form id="parentForm">
                 <el-form-item label="分类1">
-                    <el-input  auto-complete="off" v-model="form.classification1"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classfication[0]"></el-input>
 
                 </el-form-item>
 
                 <el-form-item label="分类2">
-                    <el-input  auto-complete="off" v-model="form.classification2"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classfication[1]"></el-input>
 
                 </el-form-item>
 
                 <el-form-item label="分类3">
-                    <el-input  auto-complete="off" v-model="form.classification3"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classfication[2]"></el-input>
 
                 </el-form-item>
 
                 <el-form-item label="分类">
-                    <el-input  auto-complete="off" v-model="form.classification4"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classfication[3]"></el-input>
 
                 </el-form-item>
             </el-form>
@@ -122,6 +124,7 @@
 <script>
 import upload from '../../common/upload.vue'
 import axios from 'axios'
+import lightbox from 'vlightbox'
 export default {
     name: 'app',
     components: {
@@ -163,17 +166,13 @@ export default {
           maxParticipator: '',
           taskLevel: 0,
           imgList: [],
-          classification1: '',
-          classification2: '',
-          classification3: '',
-          classification4: '',
-
+          classfication: ["", "", "", ""]
         },
 
         action: 'http://upload.qiniu.com/', // 替换自己的上传链接
         accept: 'image/png, image/jpeg, image/gif, image/jpg',
         multiple: true,
-        token: 'j0dwMMGFcKPhncC7vb_PWXshbpiSMEWB69NiKhn4:W4rT1JkXcrZ4hJAx0l2Nwnn6DB8=:eyJzY29wZSI6Im1yZ3MtYnVja2V0IiwiY2FsbGJhY2tCb2R5Ijoia2V5PSQoa2V5KSZoYXNoPSQoZXRhZykmd2lkdGg9JChpbWFnZUluZm8ud2lkdGgpJmhlaWdodD0kKGltYWdlSW5mby5oZWlnaHQpJnVzZXI9JChlbmRVc2VyKSZzaXplPSQoZnNpemUpJm1pbWU9JChtaW1lVHlwZSkiLCJkZWFkbGluZSI6MTUyNDk2OTE4N30=',
+        token: 'j0dwMMGFcKPhncC7vb_PWXshbpiSMEWB69NiKhn4:MekzrWCymy2QrrqlXii3_3lp_qM=:eyJzY29wZSI6Im1yZ3MtYnVja2V0IiwiY2FsbGJhY2tCb2R5Ijoia2V5PSQoa2V5KSZoYXNoPSQoZXRhZykmd2lkdGg9JChpbWFnZUluZm8ud2lkdGgpJmhlaWdodD0kKGltYWdlSW5mby5oZWlnaHQpJnVzZXI9JChlbmRVc2VyKSZzaXplPSQoZnNpemUpJm1pbWU9JChtaW1lVHlwZSkiLCJkZWFkbGluZSI6MTUyNDk4Njc3OH0=',
         hashes: [],
         keys: [],
         uploadMsg: [],
@@ -202,6 +201,7 @@ export default {
         onSubmit() {
             const self = this
             this.form.annotationType = this.annotationType
+            
             axios.post('http://localhost:8080/task/create', this.form).then(function (response) {
 
                 console.log(response);
@@ -221,6 +221,14 @@ export default {
         },
         success() {
             this.$message('任务创建成功！');
+        },
+        placeToken() {
+            axios.post("http://localhost:8080/user/getToken").then(response =>{
+                console.log(response.data)
+                this.token = response.data;
+            }).catch(err => {
+                console.log(err)
+            })
         }
 
     },
@@ -246,6 +254,9 @@ export default {
         //     },
         //     deep: true
         // }
+    },
+    mounted() {
+        this.placeToken();
     }
 }
 
