@@ -164,7 +164,7 @@ export default {
           totalPoints: 0,
           maxParticipator: '',
           taskLevel: 0,
-          imgList: [],
+          imgUrlList: [],
           classification:['','','','']
         },
 

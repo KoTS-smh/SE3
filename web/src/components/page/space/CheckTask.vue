@@ -1,17 +1,16 @@
 <template>
     <div class="table">
-       <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+        <el-header style="text-align: right; font-size: 15px">
+        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
             <el-menu-item index="1">首页</el-menu-item>
             <el-menu-item index="2">个人中心</el-menu-item>
-            <el-menu-item index="3">
-            <img class="user-logo" src="http://img06.tooopen.com/images/20160921/tooopen_sy_179583447187.jpg">
-            </el-menu-item>
-
+           <!--<img class="user-logo" src="http://img06.tooopen.com/images/20160921/tooopen_sy_179583447187.jpg">  -->
+            <span style="color: dodgerblue;position:absolute;top: 18px;right: 10px">{{myName}}</span>
         </el-menu>
-
+        </el-header>
 
         <el-row>
-        <el-col :span="8" class="taskInfos"><div class="grid-content bg-purple">
+        <el-col :span="8" class="taskInfos" style="border-right: gainsboro solid 1px"><div class="grid-content bg-purple">
 
             <el-form :model="taskData" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-form-item label="任务编号" class="formItems">
@@ -38,16 +37,21 @@
                 <el-form-item label="奖励积分" class="formItems">
                     <el-input v-model="taskData.totalPoint" readonly></el-input>
                 </el-form-item>
-                <el-form-item label="任务进度" class="formItems">
-                    <el-progress type="circle" :percentage="0" v-model="taskData.degree"></el-progress>
-                </el-form-item>
+                <!--<el-form-item label="任务进度" class="formItems">-->
+                    <!--<el-progress type="circle" :percentage="0" v-model="taskData.degree"></el-progress>-->
+                <!--</el-form-item>-->
 
 
             </el-form>
         </div>
+            <el-row>
+                <el-button type="primary" class="choiceBtn" @click="acceptTask()">接受任务</el-button>
+                <el-button type="success" class="choiceBtn" @click="startAnno()">开始标注</el-button>
+            </el-row>
+
         </el-col>
 
-        <el-col span="16">
+        <el-col :span="16">
 
             <lightbox :images="images">
 
@@ -55,15 +59,6 @@
 
         </el-col>
 
-
-
-
-        </el-row>
-
-
-        <el-row>
-            <el-button type="primary" class="choiceBtn" @click="getTask()">接受任务</el-button>
-            <el-button type="success" class="choiceBtn" @click="test()">开始标注</el-button>
         </el-row>
 
     </div>
@@ -81,20 +76,11 @@ export default {
             upload
     },
     data() {
-
         return {
+            myName:'',
             readonly: true,
             currentDate: new Date(),
             activeIndex: '1',
-            imgList: [
-                'http://p0.ifengimg.com/pmop/2017/0925/2D6C95104267D4F27325E7502509FF0BCB67304F_size1443_w479_h314.gif',
-                'https://up.enterdesk.com/edpic_360_360/23/c5/a5/23c5a544259db587a535efaaba046187.jpg'
-            ],
-            task: {
-                name: '任务1',
-                sponsor: 'tony马'
-
-            },
             value5: '',
             taskData: {
                 taskname: '任务1',
@@ -104,84 +90,68 @@ export default {
                 tagType: '',
                 taskLevel: 2,
                 totalPoint: 20,
-                taskId: '2',
+                taskId: '1',
                 degree: 10
             },
             rules: {
 
             },
-            tableData: [
-               'https://gss1.bdstatic.com/-vo3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike92%2C5%2C5%2C92%2C30/sign=1a3d82d42f2dd42a4b0409f9625230d0/314e251f95cad1c86a912b9a753e6709c93d5161.jpg',
-               'https://gss1.bdstatic.com/-vo3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike92%2C5%2C5%2C92%2C30/sign=1a3d82d42f2dd42a4b0409f9625230d0/314e251f95cad1c86a912b9a753e6709c93d5161.jpg'
-            ],
-
-            images: [
-                {
-                    src: 'https://p.upyun.com/docs/cloud/demo.jpg',
-                },
-                {
-                    src: 'https://p.upyun.com/docs/cloud/demo.jpg',
-                },
-                {
-                    src: 'https://p.upyun.com/docs/cloud/demo.jpg'
-                },
-                {
-                    src: 'https://p.upyun.com/docs/cloud/demo.jpg'
-                },
-                {
-                    src: 'https://p.upyun.com/docs/cloud/demo.jpg'
-                }
-            ]
+            images: []
         }
     },
     methods: {
-            getData() {
-            var userId = localStorage.getItem("userId")
-            var taskId = this.taskData.taskId
+            getTask() {
+            var userId = localStorage.getItem("userId");
+            var taskId = this.taskData.taskId;
             axios.post("http://localhost:8080/task/taskInfo", {"taskId": taskId})
-            .then(response => {
-                console.log(response.data.data)
-                var indata = response.data.data
-                this.taskData.taskId = indata.taskId
-                this.taskData.taskname = indata.taskname
-                this.taskData.taskLevel = indata.taskLevel
-                if(indata.annotationType == 'option1'){
+            .then((response) => {
+                console.log(response.data.data);
+                var indata = response.data.data;
+                this.taskData.taskId = indata.taskId;
+                this.taskData.taskname = indata.taskname;
+                this.taskData.taskLevel = indata.taskLevel;
+                console.log(indata.annotationType);
+                if(indata.annotationType === 'option1'){
                     this.taskData.tagType = "标框标注"
-                }else if(indata.annotationType == 'option2'){
+                }else if(indata.annotationType === 'option2'){
                     this.taskData.tagType = "分类标注"
-                }else if(indata.annotationType == 'option3'){
+                }else if(indata.annotationType === 'option3'){
                     this.taskData.tagType = "区域标注"
-                }else if(indata.annotationType == "option4" ){
+                }else if(indata.annotationType === "option4" ){
                     this.taskData.tagType = "整体标注"
                 }else {
                     this.taskData.tagType = "未定义"
                 }
-
-                this.taskData.sponsorId = indata.postUserId
-                this.taskData.beginDate = new Date(indata.beginDate)
-                this.taskData.endDate = new Date(indata.endDate)
-                this.taskData.totalPoint = indata.totalPoints
-
-
-            }).catch(err =>{
-                console.log(err);
+                this.taskData.sponsorId = indata.postUserId;
+                this.taskData.beginDate = new Date(indata.beginDate).toDateString();
+                this.taskData.endDate = new Date(indata.endDate).toDateString();
+                this.taskData.totalPoint = indata.totalPoints;
+                for(let i=0;i<indata.imgUrlList.length;i++){
+                    this.images.push({src:indata.imgUrlList[i]})
+                }
+                console.log(this.images)
+            }).catch(() =>{
             })
             },
-            test () {
-                console.log(this.$route.query.beginDate)
+            startAnno(){
+
+            },
+            acceptTask(){
+
             },
             handleSelect(key, keyPath) {
                 console.log(key, keyPath);
-                if(key == 1){
+                if(key === 1){
                     this.$router.push({path: '/guide'})
-                }else if(key == 2){
+                }else if(key === 2){
                     this.$router.push({path: '/personalSpace'})
                 }
             }
 
         },
     mounted() {
-        this.getData();
+        this.myName = localStorage.getItem("username");
+        this.getTask();
     }
 
 
@@ -256,7 +226,6 @@ export default {
     }
 
     .user-logo {
-        /* position: absolute; */
         left:0;
         top:15px;
         width:40px;
