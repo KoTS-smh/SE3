@@ -1,0 +1,127 @@
+<template>
+  <div class="lee-picture-card">
+    <!-- <div class="card-actions justify-box">
+      <el-button type="primary" size="small">
+        <icon name="pencil-alt"></icon>
+      </el-button>
+      <el-button type="danger" size="small" @click="removeItem">
+        <icon name="trash"></icon>
+      </el-button>
+    </div> -->
+    <div class="preview" :style="{ backgroundImage: 'url(' + url + ')' }"></div>
+    <div class="card-info">
+      <span class="large-text">{{ name }} - {{ id }}</span>
+      <span class="description">{{ description }}</span>
+    </div>
+    <div class="card-footer justify-between">
+      <div class="left">
+        <span><icon name="eye"></icon>{{ views }}</span>
+        <span><icon name="comments"></icon>{{ comments }}</span>
+        <el-button class="moreBtn" size="mini" round @click="clickTest">more</el-button>
+      </div>
+       
+    </div>
+  </div>
+</template>
+
+<script type="javascript">
+  import Icon from 'vue-awesome/components/Icon'
+  import 'vue-awesome/icons'
+  export default{
+    name: 'pictureCard',
+    components: {
+        Icon
+    },
+    props: {
+      name: {
+        type: String,
+        default: 'lijiaxunOuO'
+      },
+      id: {
+        type: Number,
+        default: 19940722
+      },
+      url: {
+        type: String,
+        default: require('../../assets/img/picture_card2.jpeg')
+      },
+      description: {
+        type: String,
+        default: "The sorrowful gust of wind that blew right between you and me, Where did it find the loneliness it carried on the breeze, Looking up at the sky after shedding a stream of tears, I could see for miles of blue,It's never been so clear"
+      },
+      views: {
+        type: Number,
+        default: 0
+      },
+      comments: {
+        type: Number,
+        default: 0
+      }
+    },
+    methods: {
+      removeItem: function() {
+        this.$emit('remove')
+      },
+      clickTest() {
+          this.$message("testMessage")
+      }
+    }
+  }
+</script>
+
+<style lang="scss">
+    .preview{
+        width: 300px;
+        height: 200px;
+        background-size: cover;
+    }
+
+    .lee-picture-card{
+        position: relative;
+        background-color: white;
+        margin-top: 2rem;
+        border-radius: .4rem;
+    }
+
+    .large-text{
+        font-size: 1.2rem;
+    }
+
+    .description{
+        margin-top: 0rem;
+        font-size: 1.0rem;
+        
+        color: gray;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        height: 10px;
+    }
+
+    .card-footer {
+    padding: 0rem;
+    text-align: left;
+
+    .left {
+      color: grey;
+      font-size: 1.0rem;
+
+      span {
+        margin-right: 0.5rem;
+
+        &:last-child {
+          margin-right: 0px;
+        }
+      }
+      i {
+        font-size: 1.4rem;
+        margin-right: 0.5rem;
+      }
+    }
+    .el-tag {
+      cursor: pointer;
+    }
+  }
+</style>
