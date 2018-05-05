@@ -55,19 +55,21 @@
                     <div id="annotationField" style="width: 100%">
                     </div>
                     <div>
-                        <el-button-group style="margin-left: 130px;margin-top: 20px">
-                            <el-tooltip content="重新标注" placement="bottom">
+                        <el-button-group style="margin-left: 60px;margin-top: 100px">
+                            <el-tooltip content="重新标注" placement="top">
                                 <el-button type="primary" icon="el-icon-refresh" style="width: 80px" @click="reAnnotation"></el-button>
                             </el-tooltip>
-                            <el-tooltip content="保存" placement="bottom">
+                            <el-tooltip content="保存" placement="top">
                                 <el-button type="primary" icon="el-icon-upload" style="width: 80px" @click="save"></el-button>
                             </el-tooltip>
-                            <el-tooltip content="删除" placement="bottom">
+                            <el-tooltip content="删除" placement="top">
                                 <el-button type="primary" icon="el-icon-delete" style="width: 80px" @click="remove"></el-button>
+                            </el-tooltip>
+                            <el-tooltip content="离开" placement="top">
+                                <el-button type="primary" icon="el-icon-d-arrow-right" style="width: 80px" @click="leave"></el-button>
                             </el-tooltip>
                         </el-button-group>
                     </div>
-                    <el-button type="primary" style="position: relative; left: 295px; top: 300px" @click="leave">离 开 <i class="el-icon-d-arrow-right"></i></el-button>
                 </el-aside>
             </el-container>
         </el-container>
@@ -105,24 +107,23 @@
     export default {
         created(){
             this.myName = localStorage.getItem("username");
-            if(this.$router.query == null){
+            if(this.$route.query == null){
                 this.$router.go(-1)
-            }else if(this.$router.query.taskOrderId == null){
+            }else if(this.$route.query.taskOrderId == null){
                 this.$router.go(-1)
             }
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
-                    taskOrderId:this.$router.query.taskOrderId
+                    taskOrderId:this.$route.query.taskOrderId,
+                    userId:localStorage.getItem("userId")
                 }
             }).then((response) => {
                 taskOrder=response.data.data;
                 thisPage = taskOrder.lastPic;
                 annotated = taskOrder.degreeOfCompletion;
                 this.currentPage = thisPage;
-                axios.get('http://localhost:8080/task/taskInfo',{
-                    params:{
+                axios.post('http://localhost:8080/task/taskInfo',{
                         taskId:taskOrder.taskId
-                    }
                 }).then((response) => {
                     task = response.data.data;
                     classifiedInfo = task.classifiedInfo;
@@ -163,7 +164,7 @@
                     }
                     this.fullscreenLoading = false;
                 })
-            }).catch(function () {
+            }).catch( ()=> {
                 this.$message({
                     showClose:true,
                     message:'网络异常!',
@@ -194,6 +195,7 @@
             },
             handleCurrentChange(val) {
                 this.fullscreenLoading = true;
+                draw.refresh();
                 img.addEventListener('load',() =>{
                     this.imgX =img.width;
                     this.imgY = img.height;
@@ -204,6 +206,9 @@
                 annotations = annotationMap[thisPage];
                 thisAnnotation = annotations[0];
                 if(thisAnnotation ==null){
+                    for(let i =0;i<classifiedLen;i++){
+                        document.getElementById('text'+i).value = '';
+                    }
                     isNew = true;
                 }else {
                     words = thisAnnotation.words;
@@ -315,7 +320,7 @@
                             cancelButtonText: '取消',
                             type: 'warning'
                         }).then(() => {
-                            this.$router.push('/readme');
+                            this.$router.go(-1);
                         }).catch(() => {
                             this.$message({
                                 type: 'info',
@@ -323,7 +328,7 @@
                             });
                         });
                     }else {
-                        this.$router.push('/readme');
+                        this.$router.go(-1);
                     }
                 }) .catch(()=>{
                     this.$confirm('网络异常，信息未正常保存, 是否继续?', '提示', {
@@ -331,7 +336,7 @@
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(() => {
-                        this.$router.push('/readme');
+                        this.$router.go(-1);
                     }).catch(() => {
                         this.$message({
                             type: 'info',
@@ -345,7 +350,7 @@
                 draw.drawFirst();
             },
             submitTask(){
-                if(this.process !== 1){
+                if(this.process !== 100){
                     this.$message({
                         type: 'error',
                         message: '未完成，无法提交！'

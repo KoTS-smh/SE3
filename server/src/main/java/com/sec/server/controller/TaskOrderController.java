@@ -9,7 +9,6 @@ import com.sec.server.service.TaskOrderService;
 import com.sec.server.utils.ReadFile;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
-import org.json.JSONArray;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,22 +40,8 @@ public class TaskOrderController {
      */
     @RequestMapping("/taskOrder/getAll")
     public Result getAllTaskOrder(@RequestBody UserModel userModel) {
-        String username = userModel.getUsername();
         long userId = userModel.getUserId();
         List<TaskOrder> list = taskOrderService.getAllTaskOrder(userId);
-        JSONArray array = new JSONArray(list);
-
-
-        //todo 从task.json获取任务名称
-//        for(int i = 0;i < list.size();++i){
-//            long taskId = list.get(i).getTaskId();
-//            Task tmpTask = ReadFile.getTask(taskId);
-//            JSONObject tmpObject = (JSONObject) array.get(i);
-//            tmpObject.put("taskname", tmpTask.getTaskname());
-//            array.remove(i);
-//            array.put(tmpObject);
-//        }
-
         return ResultUtils.success(list);
     }
 
@@ -107,8 +92,8 @@ public class TaskOrderController {
     public Result getAllSubmitted(@RequestBody UserModel userModel){
         long userId = userModel.getUserId();
         List<TaskOrder> list = ReadFile.getAllSubmited(userId);
-        JSONArray array = new JSONArray(list);
-        return ResultUtils.success(array.toString());
+        return ResultUtils.success(list);
     }
+
 
 }

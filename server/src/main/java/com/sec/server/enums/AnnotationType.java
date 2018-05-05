@@ -1,8 +1,8 @@
 package com.sec.server.enums;
 
 public enum AnnotationType {
-    Rect,
-    Full,
-    Classified,
-    Region
+    option1,//标框
+    option4,//整体
+    option2,//分类
+    option3//区域
 }

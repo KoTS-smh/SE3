@@ -153,8 +153,7 @@ public class ReadFile {
 
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
-            JSONArray array = new JSONArray(content);
-
+            com.alibaba.fastjson.JSONArray array =JSON.parseArray(content);
             List<Task> taskList = JSON.parseArray(array.toString(), Task.class);
             for(Task task : taskList){
                 if(task.getPostUserId() == userId)
@@ -228,7 +227,7 @@ public class ReadFile {
 
             for(TaskOrder tmpTaskOrder : taskOrderList) {
 
-                if(tmpTaskOrder.isSubmited()){
+                if(tmpTaskOrder.getSubmited()){
                     retList.add(tmpTaskOrder);
                 }
             }
@@ -253,7 +252,7 @@ public class ReadFile {
 
             for(TaskOrder tmpTaskOrder : taskOrderList) {
 
-                if(!tmpTaskOrder.isSubmited()){
+                if(!tmpTaskOrder.getSubmited()){
                     retList.add(tmpTaskOrder);
                 }
             }

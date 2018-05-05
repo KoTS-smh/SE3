@@ -20,13 +20,13 @@
 
                             <el-form-item label="开始时间">
                                 <el-col :span="14">
-                                <el-date-picker type="datetime" placeholder="选择日期和时间" v-model="form.beginDate" style="width: 100%;"></el-date-picker>
+                                <el-date-picker type="datetime" placeholder="选择日期和时间" value-format="yyyy-MM-dd HH:mm:ss" v-model="form.beginDate" @change="beginDateChange" style="width: 100%;"></el-date-picker>
                                 </el-col>
                             </el-form-item>
 
                             <el-form-item label="截止时间">
                                 <el-col :span="14">
-                                <el-date-picker type="datetime" placeholder="选择日期和时间" v-model="form.endDate" style="width: 100%;"></el-date-picker>
+                                <el-date-picker type="datetime" placeholder="选择日期和时间" value-format="yyyy-MM-dd HH:mm:ss" v-model="form.endDate" @change="endDateChange" style="width: 100%;"></el-date-picker>
                                 </el-col>
                             </el-form-item>
 
@@ -179,10 +179,17 @@ export default {
       }
     },
     methods: {
+        beginDateChange(val){
+            console.log(val);
+            this.form.beginDate = val
+        },
+        endDateChange(val){
+            this.form.endDate = val;
+        },
         uploadFile (res) {
             this.hashes.push(`http://p6r9un2qj.bkt.clouddn.com/${res.hash}`);
             this.keys.push(`http://p6r9un2qj.bkt.clouddn.com/${res.key}`);
-            this.form.imgList.push(`http://p6r9un2qj.bkt.clouddn.com/${res.key}`)
+            this.form.imgUrlList.push(`http://p6r9un2qj.bkt.clouddn.com/${res.key}`)
         },
         uploadErr (res) {
             this.uploadMsg.push(JSON.stringify(res))
@@ -197,7 +204,6 @@ export default {
             const self = this;
             this.form.annotationType = this.annotationType;
             axios.post('http://localhost:8080/task/create', this.form).then(function (response) {
-
                 console.log(response);
                 self.success();
             }).catch(function(err) {

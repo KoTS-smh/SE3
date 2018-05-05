@@ -1,5 +1,6 @@
 package com.sec.server.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.sec.server.domain.Task;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
@@ -31,8 +32,7 @@ public class TaskController {
     public Result getAllPostTask(@RequestBody UserModel userModel){
         long userId = userModel.getUserId();
         List<Task> list = taskService.getAllPost(userId);
-        JSONArray array = new JSONArray(list);
-        return ResultUtils.success(array.toString());
+        return ResultUtils.success(list);
     }
 
     /**
@@ -44,7 +44,6 @@ public class TaskController {
     public Result getAllFinishedTask(@RequestBody UserModel userModel) {
         long userId = userModel.getUserId();
         List<Task> list  = ReadFile.getAllFinished(userId);
-
         JSONArray array = new JSONArray(list);
         return ResultUtils.success(array.toString());
     }

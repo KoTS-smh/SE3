@@ -45,11 +45,11 @@ import axios from 'axios'
                 if(!value){
                     return callback(new Error('用户名不能为空'))
                 }
-                setTimeout(()=>{
-                    if(value.length<5){
-                        callback(new Error('用户名不能少于五位数'))
-                    }
-                })
+                // setTimeout(()=>{
+                //     if(value.length<5){
+                //         callback(new Error('用户名不能少于五位数'))
+                //     }
+                // })
             };
             var checkPassword = (rule,value,callback)=>{
                 if(value===''){
