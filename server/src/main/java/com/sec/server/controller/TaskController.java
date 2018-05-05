@@ -23,9 +23,9 @@ public class TaskController {
     private TaskService taskService;
 
     /**
-     * 获得用户对应的所有提交的任务
+     * 获得用户发起的所有任务
      * @param userModel 用户信息
-     * @return 返回所有提交的任务信息
+     * @return 返回用户发起的所有任务
      */
     @RequestMapping("/task/getAllPost")
     public Result getAllPostTask(@RequestBody UserModel userModel){

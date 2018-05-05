@@ -26,7 +26,7 @@ public class DataAnalysisModuleTest extends TestCase {
 
     @Autowired
     protected WebApplicationContext wac;
-    protected MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Before()
     public void setup(){
