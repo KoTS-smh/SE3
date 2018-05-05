@@ -7,7 +7,17 @@ import lightbox from 'vlightbox';
 import 'element-ui/lib/theme-chalk/index.css';
 import VueResource from 'vue-resource'
 import VueLazyload from 'vue-lazyload'
+import Vuex from 'vuex'
 
+import fontawesome from '@fortawesome/fontawesome'
+import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
+import solid from '@fortawesome/fontawesome-free-solid'
+import regular from '@fortawesome/fontawesome-free-regular'
+import brands from '@fortawesome/fontawesome-free-brands'
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+Vue.use(Vuex)
 Vue.use(VueLazyload)
 import "babel-polyfill";
 

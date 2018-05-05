@@ -6,6 +6,7 @@ import com.sec.server.domain.TaskOrder;
 import com.sec.server.domain.User;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
+import com.sec.server.model.Picture_CardModel;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -356,5 +357,69 @@ public class ReadFile {
             DecimalFormat df = new DecimalFormat("0.00");
             return "前" + df.format(percentage * 100) + " %";
         }
+    }
+
+    /**
+     * 获得任务ID
+     */
+
+    public static long getNextTaskID() {
+        File file = new File(Path.taskPath);
+        String content = null;
+        long nextID = 0;
+        try {
+            content = FileUtils.readFileToString(file, "UTF-8");
+            JSONArray array = new JSONArray(content);
+
+            List<Task> taskList = JSON.parseArray(array.toString(), Task.class);
+            for(Task tmpTask : taskList) {
+                if(tmpTask.getTaskId() > nextID){
+                    nextID = tmpTask.getTaskId();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return nextID + 1;
+    }
+
+    /**
+     * 获取所有未结束的任务，显示到主页上
+     */
+
+    public static List<Picture_CardModel> getAllUnFinishTasks() {
+        File file = new File(Path.taskPath);
+        String content = null;
+
+        List<Picture_CardModel> retList = new ArrayList<>();
+        try {
+            content = FileUtils.readFileToString(file, "UTF-8");
+            JSONArray array = new JSONArray(content);
+            System.out.println(array.toString(2));
+            List<Task> taskList = JSON.parseArray(array.toString(), Task.class);
+
+            for(Task tmpTask : taskList) {
+                if(!tmpTask.isFinished()){
+                    Picture_CardModel model = new Picture_CardModel();
+                    model.setId(tmpTask.getTaskId());
+                    model.setName(tmpTask.getTaskname());
+                    model.setDescription(tmpTask.getTaskInfo());
+                    //默认以第一张图片作为预览图
+                    if(tmpTask.getImgUrlList().size() > 0) {
+                        model.setUrl(tmpTask.getImgUrlList().get(0));
+                    }
+
+                    retList.add(model);
+                }
+            }
+
+            if(retList.size() == 0){
+                throw new ResultException(ResultCode.TASK_NOT_FOUND);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return retList;
     }
 }

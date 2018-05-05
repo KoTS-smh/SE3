@@ -1,11 +1,14 @@
-[{
+[
+  {
   "education": "master",
   "userLevel": "LEVEL1",
   "sex": "Man",
   "description": "xxx",
   "tel_phone": "110",
-  "userId": 0,
+  "userId": 1,
   "email": "",
-  "point": 0,
-  "username": "wrs000"
-}]
+  "point": 20,
+  "username": "wrs000",
+    "password": "123"
+  }
+]

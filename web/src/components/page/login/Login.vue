@@ -69,7 +69,7 @@
                    }else{
                        localStorage.setItem("username", username);
                        localStorage.setItem("userId", response.data.data.userId);
-                       self.$router.push('/readme');
+                       self.$router.push({path: 'homepage', query:{"username": username, "isLogin":true}});
                    }
                 }).catch(function(err){
                     console.log(err);

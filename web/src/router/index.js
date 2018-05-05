@@ -84,6 +84,10 @@ export default new Router({
                 {
                     path:'/taskRate',
                     component:resolve => require(['../components/page/space/TaskRate.vue'],resolve)
+                },
+                {
+                    path: '/dataCheck',
+                    component: resolve => require(['../components/page/space/DataCheck.vue'], resolve)
                 }
             ]
         },

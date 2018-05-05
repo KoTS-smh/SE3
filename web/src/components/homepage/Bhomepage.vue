@@ -1,14 +1,14 @@
 <template>
-    <div>
-        <el-container>
+    <div style="height:100%">
+        <el-container style="height:100%">
             <el-header>
-                <TopContainer></TopContainer>
+                <!-- <TopContainer></TopContainer> -->
+                <component :is="currentView"></component>
+                
             </el-header>
-            <el-main>
+            <el-main style="height:100%">
                 <BHeader></BHeader>
                 <BContent></BContent>
-                <BNavSide :options="options" v-on:change="isShowMask"></BNavSide>
-                <div class="wnd-mask" ref="mask" v-show="showMask"></div>
             </el-main>
         </el-container>
     </div>
@@ -18,8 +18,8 @@
     import TopContainer from 'components/homepage/TopContainer.vue'
     import BHeader from 'components/homepage/BHeader.vue'
     import BContent from 'components/homepage/BContent.vue'
-    import BNavSide from 'components/homepage/BNavSide'
-
+    import BNavSide from 'components/homepage/BNavSide.vue'
+    import TopContainerAfterLogin from 'components/homepage/TopContainerAfterLogin.vue'
     import { mapGetters } from 'vuex'
     export default {
         name: 'app',
@@ -27,14 +27,16 @@
             TopContainer,
             BHeader,
             BContent,
-            BNavSide
+            BNavSide,
+            TopContainerAfterLogin,
+            component1: TopContainer,
+            component2: TopContainerAfterLogin,
         },
-        mounted() {
-            this.$store.dispatch('getContentRows')
-        },
+        
         data() {
             return {
-                showMask: false
+                showMask: false,
+                currentView: 'component1'
             }
         },
         watch: {
@@ -63,7 +65,19 @@
         methods: {
             isShowMask() {
                 this.showMask = !this.showMask
+            },
+            placeData() {
+                var username = this.$route.query.username
+                var isLogin = this.$route.query.isLogin
+                var usernameInStorage = localStorage.getItem("username");
+                if(isLogin == true && usernameInStorage.length > 0){
+                    this.currentView = 'component2'
+                }
             }
+        },
+        mounted() {
+            //this.$store.dispatch('getContentRows');
+            this.placeData();
         }
     }
 </script>
@@ -80,14 +94,4 @@
         min-width 990px
         tap-highlight-color transparent
         -webkit-tap-highlight-color transparent
-        .wnd-mask
-            position fixed
-            width 100%
-            height 150%
-            background-color #000
-            opacity .5!important
-            z-index 1000
-            top 0px
-            left 0px
-            transition .2s
 </style>

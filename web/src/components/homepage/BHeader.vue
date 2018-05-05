@@ -1,5 +1,5 @@
 <template>
-  <div class="header" style="background-color: #8c939d">
+  <div class="header">
   	<div class="h-center">
         <search class="msearch"></search>
   	</div >
@@ -26,6 +26,7 @@ export default {
  .header
     position relative
     margin -42px auto 0
+    background-color white
     .h-center
     	width 960px
     	margin 0 auto
