@@ -47,6 +47,7 @@
                         </el-col>
                         <el-col :span="18">
                             <el-rate
+                                :disabled="canNotRate"
                                 v-model="ratePoint"
                                 :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
                             </el-rate>
@@ -68,7 +69,7 @@
                         <div id="annotationField" style="width: 100%"></div>
                     </div>
                     <el-button-group style="position: relative; left: 180px; top: 220px" >
-                        <el-button type="primary" @click="finishRate">完成评分<i class="el-icon-circle-check-outline"></i></el-button>
+                        <el-button type="primary" v-show="rateBtn" @click="finishRate">完成评分<i class="el-icon-circle-check-outline"></i></el-button>
                         <el-button type="primary" @click="leave">离 开 <i class="el-icon-d-arrow-right"></i></el-button>
                     </el-button-group>
                 </el-aside>
@@ -98,26 +99,27 @@
     export default {
         created(){
             this.myName = localStorage.getItem("username");
-            if(this.$router.query == null){
+            if(this.$route.query == null){
                 this.$router.go(-1)
-            }else if(this.$router.query.taskOrderId == null){
+            }else if(this.$route.query.taskOrderId == null){
                 this.$router.go(-1)
             }
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
-                    taskOrderId:this.$router.query.taskOrderId
+                    taskOrderId:this.$route.query.taskOrderId,
+                    userId:this.$route.query.userId
                 }
             }).then((response) => {
                 taskOrder=response.data.data;
                 thisPage = taskOrder.lastPic;
                 this.toRateId = taskOrder.acceptUserId;
                 annotated = taskOrder.degreeOfCompletion;
-                if(taskOrder.rate !==null){
+                if(taskOrder.rate != null){
                     this.ratePoint = taskOrder.rate;
                     this.canNotRate = true;
                 }
                 this.currentPage = thisPage;
-                if(localStorage.getItem("userId") ===taskOrder.acceptUserId){
+                if(localStorage.getItem("userId") ==taskOrder.acceptUserId){
                     this.rateBtn = false;
                 }
                 axios.get('http://localhost:8080/user/getUser',{
@@ -133,10 +135,8 @@
                         type:'error'
                     })
                 });
-                axios.get('http://localhost:8080/task/taskInfo',{
-                    params:{
+                axios.post('http://localhost:8080/task/taskInfo',{
                         taskId:taskOrder.taskId
-                    }
                 }).then((response) => {
                     task = response.data.data;
                     classifiedInfo = task.classifiedInfo;
@@ -177,7 +177,7 @@
                     }
                     this.fullscreenLoading = false;
                 })
-            }).catch(function () {
+            }).catch( ()=> {
                 this.$message({
                     showClose:true,
                     message:'网络异常!',
@@ -214,6 +214,7 @@
             },
             handleCurrentChange(val) {
                 this.fullscreenLoading = true;
+                draw.refresh();
                 img.addEventListener('load',() =>{
                     this.imgX =img.width;
                     this.imgY = img.height;
@@ -225,6 +226,9 @@
                 annotations = annotationMap[thisPage];
                 thisAnnotation = annotations[0];
                 if(thisAnnotation ==null){
+                    for(let i =0;i<classifiedLen;i++){
+                        document.getElementById('text'+i).value = '';
+                    }
                     isNew = true;
                 }else {
                     words = thisAnnotation.words;

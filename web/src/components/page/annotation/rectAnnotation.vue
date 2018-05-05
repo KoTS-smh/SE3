@@ -65,30 +65,30 @@
                     <div style="margin-top: 10px">
                         <span style="color: #242f42;margin-left: 12px">大家将本图标注为：</span>
                     </div>
-                    <div style="width: 100%">
+                    <div style="width: 100%;height: 300px">
                         <el-tag
                             :key="tag"
                             v-for="tag in Tags"
                             :disable-transitions="false"
                             style="margin-top: 10px;margin-left: 12px">
-                            <span style="color: royalblue">{{tag.split(/\s+/)[0]}}</span><small style="color: #8c939d">{{tag.split(/\s+/)[1]}}</small>
+                            <span style="color: royalblue">{{tag.split(/\s+/)[0]}}</span>&nbsp;&nbsp;<small style="color: #8c939d">{{tag.split(/\s+/)[1]}}</small>
                         </el-tag>
                     </div>
                     <div>
-                        <el-button-group style="margin-left: 130px;margin-top: 20px">
-                            <el-tooltip content="重新标注" placement="bottom">
+                        <el-button-group style="margin-left: 60px;margin-top: 30px">
+                            <el-tooltip content="重新标注" placement="top">
                                 <el-button type="primary" icon="el-icon-refresh" style="width: 80px" @click="reAnnotation"></el-button>
                             </el-tooltip>
-                            <el-tooltip content="保存" placement="bottom">
+                            <el-tooltip content="保存" placement="top">
                                 <el-button type="primary" icon="el-icon-upload" style="width: 80px" @click="save"></el-button>
                             </el-tooltip>
-                            <el-tooltip content="删除" placement="bottom">
+                            <el-tooltip content="删除" placement="top">
                                 <el-button type="primary" icon="el-icon-delete" style="width: 80px" @click="remove"></el-button>
                             </el-tooltip>
+                            <el-tooltip content="离开" placement="top">
+                                <el-button type="primary" icon="el-icon-d-arrow-right" style="width: 80px" @click="leave"></el-button>
+                            </el-tooltip>
                         </el-button-group>
-                    </div>
-                    <div>
-                        <el-button type="primary" style="position: relative; left: 295px; top: 200px" @click="leave">离 开 <i class="el-icon-d-arrow-right"></i></el-button>
                     </div>
                 </el-aside>
             </el-container>
@@ -126,25 +126,24 @@
     let words = [];
     export default {
         created(){
-            this.myName = localStorage.getItem("userId");
-            if(this.$router.query == null){
+            this.myName = localStorage.getItem("username");
+            if(this.$route.query == null){
                 this.$router.go(-1)
-            }else if(this.$router.query.taskOrderId == null){
+            }else if(this.$route.query.taskOrderId == null){
                 this.$router.go(-1)
             }
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
-                    taskOrderId:this.$router.query.taskOrderId
+                    taskOrderId:this.$route.query.taskOrderId,
+                    userId:localStorage.getItem("userId")
                 }
             }).then((response) => {
                 taskOrder=response.data.data;
                 thisPage = taskOrder.lastPic;
                 annotated = taskOrder.degreeOfCompletion;
                 this.currentPage = thisPage;
-                axios.get('http://localhost:8080/task/taskInfo',{
-                    params:{
+                axios.post('http://localhost:8080/task/taskInfo',{
                         taskId:taskOrder.taskId
-                    }
                 }).then((response) => {
                     task = response.data.data;
                     this.totalNum = task.imgUrlList.length;
@@ -156,13 +155,13 @@
                     img.src = task.imgUrlList[thisPage - 1];
                     this.imgUrl = "url('"+img.src+"')";
                 });
-                axios.get('http://localhost:8080//annotation/tags',{
+                axios.get('http://localhost:8080/annotation/tags',{
                     params:{
                         taskId:taskOrder.taskId
                     }
                 }).then((response)=>{
                     tag  = response.data.data;
-                    thisTag = tag[thisTag];
+                    thisTag = tag[thisPage];
                     let temp = [];
                     for(let k in thisTag){
                         if(thisTag.hasOwnProperty(k)){
@@ -195,7 +194,7 @@
                         }
                     this.fullscreenLoading = false;
                 })
-            }).catch(function () {
+            }).catch(()=>    {
                 this.$message({
                     showClose:true,
                     message:'网络异常!',
@@ -227,6 +226,7 @@
             },
             handleCurrentChange(val) {
                 this.fullscreenLoading = true;
+                draw.refresh();
                 img.addEventListener('load',() =>{
                     this.imgX =img.width;
                     this.imgY = img.height;
@@ -236,14 +236,15 @@
                 thisPage = val;
                 annotations = annotationMap[thisPage];
                 thisAnnotation = annotations[0];
-                if(thisAnnotation ==null){
+                if(thisAnnotation == null){
+                    this.textarea = '';
                     isNew = true;
                 }else {
                     this.textarea = thisAnnotation.sentence;
                     coordinates = thisAnnotation.coordinates;
                     this.showAnnotation();
                 }
-                thisTag = tag[thisTag];
+                thisTag = tag[thisPage];
                 let temp = [];
                 for(let k in thisTag){
                     if(thisTag.hasOwnProperty(k)){
@@ -385,7 +386,7 @@
                 draw.drawFirst();
             },
             submitTask(){
-                if(this.process !== 1){
+                if(this.process !== 100){
                     this.$message({
                         type: 'error',
                         message: '未完成，无法提交！'
@@ -396,7 +397,7 @@
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(() => {
-                        taskOrder.isSubmited = true;
+                        taskOrder.submited = true;
                         taskOrder.lastPic = thisPage;
                         taskOrder.degreeOfCompletion = annotated;
                         axios.post('http://localhost:8080/taskOrder/update', {
@@ -543,7 +544,7 @@
     };
 
     Draw.prototype.drawFirst = ()=>{
-        if(thisAnnotation.coordinates !==null){
+        if(thisAnnotation.coordinates.length !== 0){
             canDraw = false;
             this.pen.beginPath();
             let x = thisAnnotation.coordinates[1].x;

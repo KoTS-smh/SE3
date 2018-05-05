@@ -24,8 +24,8 @@
             <el-table-column prop="taskLevel" label="任务等级" width="100"></el-table-column>
             <el-table-column prop="totalPoints" label="任务积分" width="100"></el-table-column>
             <el-table-column prop="maxParticipator" label="最大参与者数量" width="140"></el-table-column>
-            <el-table-column prop="beginDate" label="开始时间" width="140"></el-table-column>
-            <el-table-column prop="endDate" label="截止时间" width="140"></el-table-column>
+            <el-table-column prop="beginDate" label="开始时间" width="185"></el-table-column>
+            <el-table-column prop="endDate" label="截止时间" width="185"></el-table-column>
 
             <el-table-column label="操作" width="200">
                 <template slot-scope="scope">
@@ -172,45 +172,41 @@ export default {
             var userId = localStorage.getItem("userId");
             axios.post("http://localhost:8080/task/getAllPost", {"userId": userId, "password": ""})
             .then(response => {
-                var mydata = JSON.parse(response.data.data);
-
+                var mydata = response.data.data;
                 var i = 0;
                 for(i = 0;i < mydata.length;++i){
-                    mydata[i].endDate = this.convertDate(mydata[i].endDate);
-                    mydata[i].beginDate = this.convertDate(mydata[i].beginDate)
+                    mydata[i].endDate = new Date(mydata[i].endDate).Format("yyyy-MM-dd hh:mm:ss");
+                    mydata[i].beginDate =new Date(mydata[i].beginDate).Format("yyyy-MM-dd hh:mm:ss")
                 }
-
-
                 this.tableData = mydata
             }).catch(err => {
                 console.log(err)
             })
         },
-        convertDate(indate) {
-        var date = new Date(indate);
-        var year = date.getFullYear() + '-';
-        var month = (date.getMonth() + 1) + '-';
-        var day = date.getDate() - 1;
-
-        var hour = date.getUTCHours();
-
-        hour = hour - 6;
-        if(hour <= 0){
-            hour = hour + 24;
-            day = day - 1;
-        }
-            day = day + ' ';
-            hour = hour + ':';
-            var minute = date.getMinutes();
-
-        return year + month + day + hour + minute;
-        }
     },
 
     mounted() {
         this.placeData()
     }
 }
+    Date.prototype.Format = function(fmt)
+    {
+        let o = {
+            "M+" : this.getMonth()+1,                 //月份
+            "d+" : this.getDate(),                    //日
+            "h+" : this.getHours(),                   //小时
+            "m+" : this.getMinutes(),                 //分
+            "s+" : this.getSeconds(),                 //秒
+            "q+" : Math.floor((this.getMonth()+3)/3), //季度
+            "S"  : this.getMilliseconds()             //毫秒
+        };
+        if(/(y+)/.test(fmt))
+            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+        for(let k in o)
+            if(new RegExp("("+ k +")").test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length===1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+        return fmt;
+    }
 </script>
 
 

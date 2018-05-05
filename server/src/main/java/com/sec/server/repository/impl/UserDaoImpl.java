@@ -29,13 +29,17 @@ public class UserDaoImpl implements UserDao {
         String content;
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
+            System.out.print("flieSuccess");
             JSONArray array = new JSONArray(content);
             for(int i = 0;i < array.length();i++){
                 String thisUsername = array.getJSONObject(i).getString("username");
+                System.out.print(thisUsername);
                 if(username.equals(thisUsername)){
                     String thisPassword = array.getJSONObject(i).getString("password");
+                    System.out.print(thisPassword);
                     if(password.equals(thisPassword)){
                         String temp = array.get(i).toString();
+                        System.out.print(true);
                         return JSON.parseObject(temp,User.class);
                     }else{
                         throw new ResultException(ResultCode.PASSWORD_ERROR);
@@ -43,6 +47,7 @@ public class UserDaoImpl implements UserDao {
                 }
             }
         } catch (IOException e) {
+            System.out.print(false);
             throw new ResultException(ResultCode.UNKNOWN_ERROR);
         }
         throw new ResultException(ResultCode.UNKNOWN_USER_ERROR);
@@ -51,14 +56,15 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void register(User user){
         String content;
+        System.out.print("tr");
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
         } catch (IOException e) {
+            System.out.print(false);
             throw new ResultException(ResultCode.WEAK_NET_WORK);
         }
 
         //判断用户名是否已经注册过
-
         //注册用户名
         JSONArray array = new JSONArray(content);
         JSONObject object = putUser(user,new JSONObject());

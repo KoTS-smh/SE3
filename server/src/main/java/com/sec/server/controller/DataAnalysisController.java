@@ -30,24 +30,6 @@ public class DataAnalysisController {
     public Result getTaskMessage(long taskId){
         List<TaskRateMessage> list = new ArrayList<>();
         list = dataAnalysisService.getTaskMessage(taskId);
-//        TaskRateMessage taskRateMessage = new TaskRateMessage();
-//        taskRateMessage.setAcceptUserId(0);
-//        taskRateMessage.setAcceptUserName("wrs000");
-//        taskRateMessage.setRate(0.9);
-//
-//        TaskRateMessage taskRateMessage1 = new TaskRateMessage();
-//        taskRateMessage1.setAcceptUserId(1);
-//        taskRateMessage1.setAcceptUserName("wrs111");
-//        taskRateMessage1.setRate(0.8);
-//
-//        TaskRateMessage taskRateMessage2 = new TaskRateMessage();
-//        taskRateMessage2.setAcceptUserId(2);
-//        taskRateMessage2.setAcceptUserName("wrs222");
-//        taskRateMessage2.setRate(1);
-//
-//        list.add(taskRateMessage);
-//        list.add(taskRateMessage1);
-//        list.add(taskRateMessage2);
         return ResultUtils.success(list);
     }
 
@@ -64,11 +46,6 @@ public class DataAnalysisController {
         SystemAdministratorMessage message = dataAnalysisService.getSystemMessage();
         return ResultUtils.success(message);
     }
-
-//    @RequestMapping("/analysis")
-//    public Result getAnalysisResult(@RequestBody UserModel userModel){
-//        return ResultUtils.success();
-//    }
 
     /**
      * 获取用户相关统计数据

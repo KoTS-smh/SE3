@@ -22,7 +22,7 @@ public class AnnotationDaoImpl implements AnnotationDao {
         JSONObject jsonObject = JSON.parseObject(annotationInfo);
         long annotationId = jsonObject.getLong("annotationId");
         try {
-            File file = new File(Path.annotationPath +annotationId+".txt");
+            File file = new File(Path.annotationPath +"/"+annotationId+".txt");
             FileWriter fr = new FileWriter(file);
             fr.write(annotationInfo);
             fr.flush();
@@ -34,7 +34,7 @@ public class AnnotationDaoImpl implements AnnotationDao {
 
     @Override
     public String getAnnotation(long annotationId) {
-        File file = new File(Path.annotationPath+annotationId+".txt");
+        File file = new File(Path.annotationPath+"/"+annotationId+".txt");
         String s="";
         try {
             FileReader fr = new FileReader(file);
@@ -58,9 +58,9 @@ public class AnnotationDaoImpl implements AnnotationDao {
             long thisId = Long.parseLong(filename.split("\\.")[0])+1;
             AnnotationInfo annotationInfo=new AnnotationInfo();
             annotationInfo.setAnnotationId(thisId);
-            HashMap<Integer,List<Annotation>> hashMap=new HashMap<>();
+            HashMap<String,List<Annotation>> hashMap=new HashMap<>();
             for(int i=1;i<=imgNum;i++){
-                hashMap.put(i,new ArrayList<>());
+                hashMap.put(i+"",new ArrayList<>());
             }
             annotationInfo.setAnnotationMap(hashMap);
             try {

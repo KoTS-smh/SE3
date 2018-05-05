@@ -5,7 +5,7 @@ import java.util.List;
 
 public class AnnotationInfo {
     private long annotationId;
-    private HashMap<Integer,List<Annotation>> annotationMap;
+    private HashMap<String,List<Annotation>> annotationMap;
 
     public long getAnnotationId() {
         return annotationId;
@@ -15,11 +15,11 @@ public class AnnotationInfo {
         this.annotationId = annotationId;
     }
 
-    public HashMap<Integer, List<Annotation>> getAnnotationMap() {
+    public HashMap<String, List<Annotation>> getAnnotationMap() {
         return annotationMap;
     }
 
-    public void setAnnotationMap(HashMap<Integer, List<Annotation>> annotationMap) {
+    public void setAnnotationMap(HashMap<String, List<Annotation>> annotationMap) {
         this.annotationMap = annotationMap;
     }
 }

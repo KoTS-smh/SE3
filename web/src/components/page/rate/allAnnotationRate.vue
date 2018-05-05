@@ -79,17 +79,17 @@
                     <div style="margin-top: 10px">
                         <span style="color: #242f42;margin-left: 12px">大家将本图标注为：</span>
                     </div>
-                    <div style="width: 100%">
+                    <div style="width: 100%;height: 200px">
                         <el-tag
                             :key="tag"
                             v-for="tag in Tags"
                             :disable-transitions="false"
                             style="margin-top: 10px;margin-left: 12px">
-                            <span style="color: royalblue">{{tag.split(/\s+/)[0]}}</span><span style="color: #8c939d">{{tag.split(/\s+/)[1]}}</span>
+                            <span style="color: royalblue">{{tag.split(/\s+/)[0]}}</span>&nbsp;&nbsp;<small style="color: #8c939d">{{tag.split(/\s+/)[1]}}</small>
                         </el-tag>
                     </div>
                     <div>
-                    <el-button-group style="position: relative; left: 180px; top: 220px" >
+                    <el-button-group style="position: relative; left: 180px" >
                         <el-button type="primary" v-show="rateBtn" @click="finishRate">完成评分<i class="el-icon-circle-check-outline"></i></el-button>
                         <el-button type="primary" @click="leave">离 开 <i class="el-icon-d-arrow-right"></i></el-button>
                     </el-button-group>
@@ -117,18 +117,19 @@
     export default {
         created(){
             this.myName = localStorage.getItem("username");
-            if(this.$router.query == null){
+            if(this.$route.query == null){
                 this.$router.go(-1)
-            }else if(this.$router.query.taskOrderId == null){
+            }else if(this.$route.query.taskOrderId == null){
                 this.$router.go(-1)
             }
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
-                    taskOrderId:this.$router.query.taskOrderId
+                    taskOrderId:this.$route.query.taskOrderId,
+                    userId:this.$route.query.userId
                 }
             }).then((response) => {
                 taskOrder=response.data.data;
-                thisPage = taskOrder.lastPic;
+                thisPage = 1;
                 this.toRateId = taskOrder.acceptUserId;
                 annotated = taskOrder.degreeOfCompletion;
                 if(taskOrder.rate != null){
@@ -136,7 +137,7 @@
                     this.canNotRate = true;
                 }
                 this.currentPage = thisPage;
-                if(localStorage.getItem("userId") ===taskOrder.acceptUserId){
+                if(localStorage.getItem("userId") ==taskOrder.acceptUserId){
                     this.rateBtn = false;
                 }
                 axios.get('http://localhost:8080/user/getUser',{
@@ -152,13 +153,11 @@
                         type:'error'
                     })
                 });
-                axios.get('http://localhost:8080/task/taskInfo',{
-                    params:{
+                axios.post('http://localhost:8080/task/taskInfo',{
                         taskId:taskOrder.taskId
-                    }
                 }).then((response) => {
                     task = response.data.data;
-                    if(task.postUserId === localStorage.getItem("userId")){
+                    if(task.postUserId == localStorage.getItem("userId")){
                         if(this.ratePoint != null){
                             this.canNotRate = true;
                         }
@@ -174,13 +173,13 @@
                     img.src = task.imgUrlList[thisPage - 1];
                     this.imgUrl = "url('"+img.src+"')";
                 });
-                axios.get('http://localhost:8080//annotation/tags',{
+                axios.get('http://localhost:8080/annotation/tags',{
                     params:{
                         taskId:taskOrder.taskId
                     }
                 }).then((response)=>{
                     tag  = response.data.data;
-                    thisTag = tag[thisTag];
+                    thisTag = tag[thisPage];
                     let temp = [];
                     for(let k in thisTag){
                         if(thisTag.hasOwnProperty(k)){
@@ -211,7 +210,7 @@
                     }
                     this.fullscreenLoading = false;
                 })
-            }).catch(function () {
+            }).catch( ()=> {
                 this.$message({
                     showClose:true,
                     message:'网络异常!',
@@ -263,7 +262,7 @@
                 }else {
                     this.textarea = thisAnnotation.sentence;
                 }
-                thisTag = tag[thisTag];
+                thisTag = tag[thisPage];
                 let temp = [];
                 for(let k in thisTag){
                     if(thisTag.hasOwnProperty(k)){

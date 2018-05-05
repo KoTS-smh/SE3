@@ -3,6 +3,7 @@ package com.sec.server.domain;
 
 import com.sec.server.repository.DataAnalysisDao;
 import com.sec.server.repository.impl.DataAnalysisDaoImpl;
+import com.sec.server.utils.Path;
 import com.sec.server.utils.ReadFile;
 
 
@@ -13,7 +14,7 @@ public class TaskOrder {
     private long taskOrderId;
     private long taskId;
     private long acceptUserId;
-    private boolean isSubmited;
+    private boolean submited;
     private int lastPic;
     private int degreeOfCompletion;
     private int rate;
@@ -26,10 +27,9 @@ public class TaskOrder {
     public TaskOrder(long taskId, long acceptUserId){
         this.taskId = taskId;
         this.acceptUserId = acceptUserId;
-
         //获取现在该用户taskOrder文件下taskOrder的数目，以确定编号
         //todo 实际运行时路径前没有server，测试时需要有
-        String path = "src/data/taskOrder_" + acceptUserId + ".json";
+        String path = Path.taskOrderPath + acceptUserId + ".json";
         File file = new File(path);
         if(file.exists()){
             DataAnalysisDao finder = new DataAnalysisDaoImpl();
@@ -39,7 +39,7 @@ public class TaskOrder {
             this.taskOrderId = 0;
         }
 
-        this.isSubmited = false;
+        this.submited = false;
         this.lastPic = 0;
         this.degreeOfCompletion = 0;
         this.rate = -1;
@@ -74,13 +74,6 @@ public class TaskOrder {
         this.acceptUserId = acceptUserId;
     }
 
-    public boolean isSubmited() {
-        return isSubmited;
-    }
-
-    public void setSubmited(boolean submited) {
-        isSubmited = submited;
-    }
 
     public int getLastPic() {
         return lastPic;
@@ -128,5 +121,13 @@ public class TaskOrder {
 
     public void setBeginDate(Date beginDate) {
         this.beginDate = beginDate;
+    }
+
+    public boolean getSubmited() {
+        return submited;
+    }
+
+    public void setSubmited(boolean submited) {
+        this.submited = submited;
     }
 }

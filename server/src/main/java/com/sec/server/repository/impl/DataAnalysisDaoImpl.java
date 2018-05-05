@@ -130,15 +130,18 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
                 String temp = FileUtils.readFileToString(thisFile, "UTF-8");
                 JSONArray taskOrders = new JSONArray(temp);
                 for(int j = 0;j<taskOrders.length();j++){
-                    if(taskId == taskOrders.getJSONObject(i).getLong("taskId")){
-                        annotationIds.add(taskOrders.getJSONObject(i).getLong("annotationId"));
+                    if(taskId == taskOrders.getJSONObject(j).getLong("taskId")){
+                        annotationIds.add(taskOrders.getJSONObject(j).getLong("annotationId"));
                         break;
                     }
                 }
             }
+            if(annotationIds.size()==0){
+                throw new ResultException("无标注信息",123);
+            }
             HashMap<Integer,HashMap<String,Integer>> result = getOneAnnotationTag(annotationIds.get(0),len);
-            HashMap<Integer,HashMap<String,Integer>> temp = new HashMap<>();
-            for(int i=1;i<len;i++){
+            HashMap<Integer,HashMap<String,Integer>> temp;
+            for(int i=1;i<annotationIds.size();i++){
                 temp = getOneAnnotationTag(annotationIds.get(i),len);
                 for(int j=1;j<=len;j++){
                     Set<String> keys = temp.get(j).keySet();
@@ -169,8 +172,12 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
             JSONObject jsonObject = JSON.parseObject(content);
             HashMap<String,Integer> tags;
             for(int i=1;i<=len;i++){
-                List<String> words = JSON.parseArray(JSON.toJSONString(jsonObject.getJSONObject("annotationMap").getJSONObject(i+"")),String.class);
-                tags = getTags(words);
+                if(jsonObject.getJSONObject("annotationMap").getJSONArray(i+"").size() == 0){
+                    tags = new HashMap<>();
+                }else {
+                    List<String> words = JSON.parseArray(JSON.toJSONString(jsonObject.getJSONObject("annotationMap").getJSONArray(i + "").getJSONObject(0).getJSONArray("words")), String.class);
+                    tags = getTags(words);
+                }
                 result.put(i,tags);
             }
             return result;
@@ -181,6 +188,9 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
 
     private HashMap<String,Integer> getTags(List<String> words){
         HashMap<String,Integer> result =new HashMap<>();
+        if(words == null){
+            return result;
+        }
         for (String word : words) {
             String temp = isValue(word);
             if (temp != null) {

@@ -1,5 +1,6 @@
 package com.sec.server.domain;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.sec.server.enums.AnnotationType;
 
 import java.util.Date;
@@ -13,7 +14,9 @@ public class Task {
     private List<String> imgUrlList;
     private AnnotationType annotationType;
     private List<String> classifiedInfo;
+    @JSONField(format="yyyy-MM-dd HH:mm:ss")
     private Date beginDate;
+    @JSONField (format="yyyy-MM-dd HH:mm:ss")
     private Date endDate;
     private int totalPoints;
     private List<Long> acceptUserIds;

@@ -69,6 +69,7 @@ public class TaskOrderDaoImpl implements TaskOrderDao{
             FileUtils.write(file, tasks.toString(2));
             long annotationId = createAnnotationInfo(len);
             taskOrder.setAnnotationId(annotationId);
+            taskOrder.setLastPic(1);
             JSONObject object = new JSONObject(taskOrder);
             String nativeBeginDate = object.getString("beginDate");
             String nativeEndDate = object.getString("endDate");
@@ -87,7 +88,6 @@ public class TaskOrderDaoImpl implements TaskOrderDao{
                         throw new ResultException(ResultCode.TASK_ALREADY_ACCEPT);
                     }
                 }
-
                 //不重复
                 array.put(object);
                 FileUtils.write(file, array.toString(2));
@@ -105,8 +105,7 @@ public class TaskOrderDaoImpl implements TaskOrderDao{
     @Override
     public void updateTaskOrder(String taskOrder) {
         JSONObject newObject = new JSONObject(taskOrder);
-        long userId = newObject.getLong("userId");
-
+        long userId = newObject.getLong("acceptUserId");
         File file = new File(Path.taskOrderPath + userId + ".json");
         if(file.exists()){
             try {
@@ -157,7 +156,7 @@ public class TaskOrderDaoImpl implements TaskOrderDao{
             for(int i=0;i<array.length();i++){
                 JSONObject object = array.getJSONObject(i);
                 if(object.getLong("taskOrderId")==taskOrder){
-                    return JSON.parseObject(JSON.toJSONString(object),TaskOrder.class);
+                    return JSON.parseObject(object.toString(),TaskOrder.class);
                 }
             }
         } catch (IOException e) {
