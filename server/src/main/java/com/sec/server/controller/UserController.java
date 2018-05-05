@@ -29,33 +29,51 @@ public class UserController {
      */
     @RequestMapping("/user/login")
     public Result login(@RequestBody UserModel userModel) {
+        System.out.print(userModel.getUsername());
         User user = userService.login(userModel.getUsername(),userModel.getPassword());
-        System.out.println("the userId " + userModel.getUserId());
+        System.out.print(user.getUsername());
         return ResultUtils.success(user);
     }
 
+    /**
+     * 用户注册使用方法
+     * @param userModel 用户名和密码的一层封装
+     * @return 如果已经用户名已经被注册过，会抛出异常
+     */
     @RequestMapping("/user/register")
-    public Result register(@RequestBody UserModel userModel) throws IOException{
-        try {
-            System.out.println("controller" + userModel.getUsername());
-            userService.register(userModel);
-        }catch (Exception e){
-            throw new ResultException(ResultCode.UNKNOWN_USER_ERROR);
-        }
+    public Result register(@RequestBody UserModel userModel){
+        System.out.print(userModel.getUsername());
+        userService.register(userModel);
         return ResultUtils.success();
     }
 
+    /**
+     * 获取一个用户
+     * @param userId 用户ID
+     * @return 返回用户详细信息
+     */
     @RequestMapping("/user/getUser")
     public Result getUser(long userId){
         User user = userService.get(userId);
         return ResultUtils.success(user);
     }
+
+    /**
+     * 更新用户信息
+     * @param userModel 新的用户信息
+     * @return 操作成功信息
+     */
     @RequestMapping("/user/update")
     public Result update(@RequestBody UserModel userModel){
         User user = userService.updateUser(userModel);
         return ResultUtils.success(user);
     }
 
+    /**
+     * 删除用户信息
+     * @param userId 用户ID
+     * @return 操作成功信息
+     */
     @RequestMapping("/user/delete")
     public Result delete(long userId){
         userService.deleteUser(userId);
@@ -72,9 +90,4 @@ public class UserController {
         return token;
     }
 
-//    @RequestMapping("/user/getById")
-//    public Result getCommonUserInfo(long userId){
-//        User user=userService.get(userId);
-//        return ResultUtils.success(user);
-//    }
 }

@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
         user.setSex(Sex.Man);
         user.setEducation(Education.undergraduate);
         user.setEmail("");
+        System.out.print(user.getUsername()+"service");
         userDao.register(user);
 
     }

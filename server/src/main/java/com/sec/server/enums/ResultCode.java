@@ -2,6 +2,9 @@ package com.sec.server.enums;
 
 public enum ResultCode {
 
+    //userModule error
+    UNREGISTERED_ERROR(10000,"用户不存在"),
+
     SUCCESS(0, "请求成功"),
     UNKNOWN_ERROR(-1,"未知错误"),
     WEAK_NET_WORK(1, "网络异常，请稍后重试"),
