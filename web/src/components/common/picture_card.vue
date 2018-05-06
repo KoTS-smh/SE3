@@ -17,7 +17,7 @@
       <div class="left">
         <span><icon name="eye"></icon>{{ views }}</span>
         <span><icon name="comments"></icon>{{ comments }}</span>
-        <el-button class="moreBtn" size="mini" round @click="clickTest">more</el-button>
+        <el-button class="moreBtn" size="mini" round @click="getInfo">more</el-button>
       </div>
        
     </div>
@@ -62,8 +62,8 @@
       removeItem: function() {
         this.$emit('remove')
       },
-      clickTest() {
-          this.$message("testMessage")
+      getInfo(item) {
+          this.$emit('getInfo')
       }
     }
   }
@@ -81,6 +81,7 @@
         background-color: white;
         margin-top: 2rem;
         border-radius: .4rem;
+        height: 300px;
     }
 
     .large-text{
@@ -97,7 +98,7 @@
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
-        height: 10px;
+        height: 15px;
     }
 
     .card-footer {

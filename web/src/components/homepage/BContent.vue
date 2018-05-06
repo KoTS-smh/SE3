@@ -12,8 +12,8 @@
           :total="card_list.length">
         </el-pagination>
       </div>
-      <el-col :sm="12" :md="6" v-for="(card, index) in card_list" :key="card.id">
-        <picture-card :name="card.name" :url="card.url" :description="card.description" :id="card.id" :views="card.views" :comments="card.comments" @remove="removeItem(card)"></picture-card>
+      <el-col :sm="12" :md="6" v-for="(card, index) in showCardList" :key="card.id">
+        <picture-card :name="card.name" :url="card.url" :description="card.description" :id="card.id" :views="card.views" :comments="card.comments" @remove="removeItem(card)" @getInfo="getInfo(card)"></picture-card>
       </el-col>
     </el-row>
   </div>
@@ -87,6 +87,11 @@
 			  this.card_list = array
 			  console.log(array.length)
 		  })
+	  },
+
+	  getInfo: function(item) {
+		  var taskId = item.id;
+		  this.$router.push({path: 'checkTask', query:{"taskId":taskId}})
 	  }
     },
 
@@ -95,3 +100,9 @@
 	}
   }
 </script>
+
+<style>
+	.pictures{
+		display: inline;
+	}
+</style>

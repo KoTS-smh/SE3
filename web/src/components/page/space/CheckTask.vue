@@ -262,6 +262,7 @@ export default {
         },
     mounted() {
         this.myName = localStorage.getItem("username");
+        this.taskData.taskId = this.$route.query.taskId;
         this.getTask();
     }
 }
