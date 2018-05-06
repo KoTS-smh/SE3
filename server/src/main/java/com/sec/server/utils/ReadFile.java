@@ -193,7 +193,7 @@ public class ReadFile {
 
     public static List<Task> getAllunFinished(long userId){
         File file = new File(Path.taskPath);
-        String content = null;
+        String content;
         List<Task> retTaskList = new ArrayList<>();
 
         try {
@@ -364,7 +364,7 @@ public class ReadFile {
 
     public static long getNextTaskID() {
         File file = new File(Path.taskPath);
-        String content = null;
+        String content;
         long nextID = 0;
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
@@ -389,7 +389,7 @@ public class ReadFile {
 
     public static List<Picture_CardModel> getAllUnFinishTasks() {
         File file = new File(Path.taskPath);
-        String content = null;
+        String content;
 
         List<Picture_CardModel> retList = new ArrayList<>();
         try {

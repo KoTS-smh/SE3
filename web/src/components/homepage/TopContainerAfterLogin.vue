@@ -1,6 +1,6 @@
 <template>
   <div class="top_container">
-      <el-menu default-active="/homepage" class="el-menu-demo" mode="horizontal" @select="handleSelect" router="true">
+      <el-menu default-active="/homepage" class="el-menu-demo" mode="horizontal" @select="handleSelect" :router="canRouter">
           <el-row>
               <el-col :span="2">
                   <el-menu-item index="/guide" style="text-align: center">首页</el-menu-item>
@@ -12,11 +12,17 @@
                   <el-menu-item index="/search" style="text-align: center">搜索</el-menu-item>
               </el-col>
               <el-col :span="2" :offset="11">
-                  <el-menu-item index="/personalSpace" style="text-align: center; position:absolute; top:0px; right:150px;color: dodgerblue">
+                  <el-menu-item index="/personalSpace" style="text-align: center; position:absolute; top:0; right:150px;color: dodgerblue">
                     <span>{{myName}}</span>
+                      <el-dropdown>
+                          <i class="el-icon-arrow-down" style="margin-right: 10px"></i>
+                          <el-dropdown-menu slot="dropdown">
+                              <el-dropdown-item>退出</el-dropdown-item>
+                          </el-dropdown-menu>
+                      </el-dropdown>
                   </el-menu-item>
               </el-col>
-              
+
               <el-col :span="2">
                   <el-dropdown style="text-align: center;margin-top: 7.5px;position:absolute;right:30px" @command="handleCommand">
                       <el-button type="primary">
@@ -40,7 +46,8 @@
         data() {
             return {
                 isLogin: false,
-                myName: ''
+                myName: '',
+                canRouter:true
             }
         },
         methods: {
@@ -59,8 +66,7 @@
                 }
             },
             placeUsername() {
-                var username = localStorage.getItem("username");
-                this.myName = username;
+                this.myName = localStorage.getItem("username");
             }
         },
         mounted() {

@@ -1,6 +1,6 @@
 <template>
   <div class="top_container">
-      <el-menu default-active="/homepage" class="el-menu-demo" mode="horizontal" @select="handleSelect" router="true">
+      <el-menu default-active="/homepage" class="el-menu-demo" mode="horizontal" @select="handleSelect" :router="canRouter">
           <el-row>
               <el-col :span="2">
                   <el-menu-item index="/guide" style="text-align: center">首页</el-menu-item>
@@ -39,7 +39,8 @@
     export default {
         data() {
             return {
-                isLogin: false
+                isLogin: false,
+                canRouter:true
             }
         },
         methods: {

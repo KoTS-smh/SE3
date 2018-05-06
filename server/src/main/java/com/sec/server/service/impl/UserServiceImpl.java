@@ -53,13 +53,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long userId) {
+    public void deleteUser(long userId) {
         userDao.deleteUser(userId);
     }
 
     @Override
     public User get(long userId) {
         return userDao.getUserById(userId);
+    }
+
+    @Override
+    public void logout(String username) {
+        userDao.logout(username);
     }
 
 }

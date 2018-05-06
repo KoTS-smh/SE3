@@ -30,29 +30,10 @@
     data() {
       return {
         pictures: [
-          {
-            name: 'In Snow',
-            url: require('../../assets/img/picture1.jpg')
-          },
-          {
-            name: 'Storm',
-            url: require('../../assets/img/picture2.jpg')
-          },
-          {
-            name: 'Little Door Gods',
-            url: require('../../assets/img/picture3.jpg')
-          },
-          {
-            name: 'Lesser Panda',
-            url: require('../../assets/img/picture4.jpg')
-          },
-          {
-            name: 'Immortal',
-            url: require('../../assets/img/picture5.jpg')
-          }
+
         ],
         card_list: [
-          
+
         ],
         currentPage: 1,
         perPage: 16
@@ -82,7 +63,7 @@
 	  placeData() {
 		  axios.post('http://localhost:8080/getContent').then(response => {
 			  console.log(response.data)
-			  
+
 			  var array = JSON.parse(response.data.data)
 			  this.card_list = array
 			  console.log(array.length)

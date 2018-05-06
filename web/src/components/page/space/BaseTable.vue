@@ -70,7 +70,6 @@
     export default {
         data() {
             return {
-                //url: './static/testtable.json',
                 tableData: [],
                 cur_page: 1,
                 multipleSelection: [],
@@ -120,9 +119,6 @@
             },
             getData(){
                 let self = this;
-                // if(process.env.NODE_ENV === 'development'){
-                //     self.url = '/ms/table/list';
-                // };
                 self.$axios.get(self.url, {page:self.cur_page}).then((res) => {
                     self.tableData = res.data.list;
                 }).catch(err => {
@@ -139,12 +135,8 @@
                 return row.tag === value;
             },
             handleEdit(index, row) {
-                //this.$message('编辑第'+(index+1)+'行');
                 var date = this.tableData[0].endDate;
                 this.selectTable = row;
-
-                //this.selectTable.endDate = new Date(date)
-
                 this.address = row.address;
                 this.dialogVisible = true;
             },

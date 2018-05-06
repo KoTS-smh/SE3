@@ -16,30 +16,32 @@ import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository("userDao")
 public class UserDaoImpl implements UserDao {
 
-//    ios todo
-//    private String pathname = "src/data/user.json";
-//    windows
+    private static List<String> loginUsers = new ArrayList<>();
+
     private File file = new File(Path.userPath);
     @Override
     public User login(String username, String password) {
         String content;
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
-            System.out.print("flieSuccess");
             JSONArray array = new JSONArray(content);
             for(int i = 0;i < array.length();i++){
                 String thisUsername = array.getJSONObject(i).getString("username");
-                System.out.print(thisUsername);
                 if(username.equals(thisUsername)){
                     String thisPassword = array.getJSONObject(i).getString("password");
-                    System.out.print(thisPassword);
                     if(password.equals(thisPassword)){
+                        if(loginUsers.contains(thisUsername)){
+                            throw new ResultException("用户已经登录！",12450);
+                        }else {
+                            loginUsers.add(thisUsername);
+                        }
                         String temp = array.get(i).toString();
-                        System.out.print(true);
                         return JSON.parseObject(temp,User.class);
                     }else{
                         throw new ResultException(ResultCode.PASSWORD_ERROR);
@@ -56,7 +58,6 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void register(User user){
         String content;
-        System.out.print("tr");
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
         } catch (IOException e) {
@@ -145,6 +146,11 @@ public class UserDaoImpl implements UserDao {
             throw new ResultException(ResultCode.UNKNOWN_USER_ERROR);
         }
         throw new ResultException(ResultCode.UNKNOWN_USER_ERROR);
+    }
+
+    @Override
+    public void logout(String username) {
+        loginUsers.remove(username);
     }
 
     @Override

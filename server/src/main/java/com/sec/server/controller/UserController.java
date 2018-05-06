@@ -81,13 +81,18 @@ public class UserController {
     }
 
     @RequestMapping("/user/getToken")
-    public String getToken() {
+    public Result getToken() {
         String bucket = "mrgs-bucket";
         String accessKey = "j0dwMMGFcKPhncC7vb_PWXshbpiSMEWB69NiKhn4";
         String secretKey = "2vWVIw3WJfk314YN3e24ZnixdJMbyoZ14FXiqF--";
         String token = CreateToken.uploadToken(bucket, accessKey, secretKey);
+        return ResultUtils.success(token);
+    }
 
-        return token;
+    @RequestMapping("/user/logout")
+    public Result logout(String username){
+        userService.logout(username);
+        return ResultUtils.success();
     }
 
 }

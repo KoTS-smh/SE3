@@ -19,7 +19,7 @@
         <span><icon name="comments"></icon>{{ comments }}</span>
         <el-button class="moreBtn" size="mini" round @click="getInfo">more</el-button>
       </div>
-       
+
     </div>
   </div>
 </template>
@@ -43,7 +43,7 @@
       },
       url: {
         type: String,
-        default: require('../../assets/img/picture_card2.jpeg')
+        default:''
       },
       description: {
         type: String,
@@ -91,7 +91,7 @@
     .description{
         margin-top: 0rem;
         font-size: 1.0rem;
-        
+
         color: gray;
         overflow: hidden;
         text-overflow: ellipsis;

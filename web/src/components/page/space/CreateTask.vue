@@ -224,8 +224,7 @@ export default {
         },
         placeToken() {
             axios.post("http://localhost:8080/user/getToken").then(response =>{
-                console.log(response.data)
-                this.token = response.data;
+                this.token = response.data.data;
             }).catch(err => {
                 console.log(err)
             })

@@ -11,7 +11,9 @@ public interface UserService {
     //更新用户信息
     User updateUser(UserModel userModel);
     //注销用户
-    void deleteUser(Long userId);
+    void deleteUser(long userId);
     //获取当今登录用户信息
     User get(long userId);
+
+    void logout(String username);
 }

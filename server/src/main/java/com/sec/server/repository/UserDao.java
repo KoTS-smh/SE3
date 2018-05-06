@@ -13,4 +13,6 @@ public interface UserDao {
     User update(User user);
 
     User getUserById(long ID);
+
+    void logout(String username);
 }

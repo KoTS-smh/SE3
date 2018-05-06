@@ -52,7 +52,6 @@ public class TaskOrderController {
      */
     @RequestMapping("/taskOrder/createTaskOrder")
     public Result createTaskOrder(@RequestBody TaskOrderModel taskOrderModel){
-        System.out.println("here");
         long taskId = taskOrderModel.getTaskId();
         long userId = taskOrderModel.getUserId();
         TaskOrder taskOrder = new TaskOrder(taskId, userId);
@@ -78,7 +77,7 @@ public class TaskOrderController {
      * @param userId 工人ID
      * @return 返回操作成功信息
      */
-    @RequestMapping("taskOrder/delete")
+    @RequestMapping("/taskOrder/delete")
     public Result deleteTaskOrder(long taskOrderId,long userId){
         taskOrderService.deleteTaskOrder(taskOrderId,userId);
         return ResultUtils.success();

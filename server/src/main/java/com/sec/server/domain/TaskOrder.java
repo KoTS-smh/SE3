@@ -1,13 +1,14 @@
 package com.sec.server.domain;
 
 
-import com.sec.server.repository.DataAnalysisDao;
-import com.sec.server.repository.impl.DataAnalysisDaoImpl;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.sec.server.utils.Path;
 import com.sec.server.utils.ReadFile;
-
+import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 public class TaskOrder {
@@ -27,14 +28,18 @@ public class TaskOrder {
     public TaskOrder(long taskId, long acceptUserId){
         this.taskId = taskId;
         this.acceptUserId = acceptUserId;
-        //获取现在该用户taskOrder文件下taskOrder的数目，以确定编号
-        //todo 实际运行时路径前没有server，测试时需要有
         String path = Path.taskOrderPath + acceptUserId + ".json";
         File file = new File(path);
         if(file.exists()){
-            DataAnalysisDao finder = new DataAnalysisDaoImpl();
-            int length = finder.getTotalAmount(path);
-            this.taskOrderId = length + 1;
+            try {
+                String content = FileUtils.readFileToString(file,"utf-8");
+                com.alibaba.fastjson.JSONArray jsonArray = JSON.parseArray(content);
+                JSONObject object =jsonArray.getJSONObject(jsonArray.size()-1);
+                long length = object.getLong("taskOrderId");
+                this.taskOrderId = length + 1;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }else {
             this.taskOrderId = 0;
         }

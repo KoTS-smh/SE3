@@ -136,6 +136,22 @@ public class TaskOrderDaoImpl implements TaskOrderDao{
                 for(int i = 0;i<array.length();i++){
                     JSONObject object = array.getJSONObject(i);
                     if(object.getLong("taskOrderId")==taskOrderId){
+                        File file2 = new File(Path.taskPath);
+                        String s = FileUtils.readFileToString(file2, "UTF-8");
+                        JSONArray tasks = new JSONArray(content);
+                        for(int j=0;j<tasks.length();j++){
+                            if(tasks.getJSONObject(j).getLong("taskId")==object.getLong("taskId")){
+                                JSONArray ids = tasks.getJSONObject(j).getJSONArray("acceptUserIds");
+                                for (int n=0;n<ids.length();n++){
+                                    if(ids.getLong(n)==userId){
+                                        tasks.getJSONObject(j).getJSONArray("acceptUserIds").remove(n);
+                                        FileUtils.write(file2, tasks.toString(2));
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
                         array.remove(i);
                         break;
                     }

@@ -100,8 +100,36 @@ export default new Router({
             component:resolve => require(['../components/page/register/Register.vue'],resolve)
         },
         {
-            path: '/allAnnotation',
+            path: '/annotation/all',
             component:resolve => require(['src/components/page/annotation/allAnnotation.vue'],resolve)
+        },
+        {
+            path:'/annotation/rect',
+            component:resolve => require(['src/components/page/annotation/rectAnnotation.vue'],resolve)
+        },
+        {
+            path:'/annotation/region',
+            component:resolve => require(['src/components/page/annotation/regionAnnotation.vue'],resolve)
+        },
+        {
+            path:'/annotation/classified',
+            component:resolve => require(['src/components/page/annotation/classifiedAnnotation.vue'],resolve)
+        },
+        {
+            path:'/annotation/rate/classified',
+            component:resolve => require(['src/components/page/rate/classifiedAnnotationRate.vue'],resolve)
+        },
+        {
+            path: '/annotation/rate/all',
+            component:resolve => require(['src/components/page/rate/allAnnotationRate.vue'],resolve)
+        },
+        {
+            path:'/annotation/rate/rect',
+            component:resolve => require(['src/components/page/rate/rectAnnotationRate.vue'],resolve)
+        },
+        {
+            path:'/annotation/rate/region',
+            component:resolve => require(['src/components/page/rate/regionAnnotationRate.vue'],resolve)
         },
         {
             path:'/guide',
