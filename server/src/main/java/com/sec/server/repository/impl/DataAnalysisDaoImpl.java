@@ -373,8 +373,9 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
 
         //遍历所有的json文件，找出任务信息
         List<Task> taskList = new ArrayList<>();
-        for (int i = 0;i<userNumber;i++) {
-            File file = new File(Path.taskPath);
+        File file = new File(Path.taskPath);
+
+
             if (file.exists()) {
                 String content = null;
                 try {
@@ -384,16 +385,17 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
                     taskNumber = taskList.size();
 
                     for(Task tmpTask : taskList) {
-                        if(!tmpTask.isFinished())
+
+                        if(!tmpTask.isFinished()){
                             unfinishedTaskNumber++;
+                        }
+
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-        }
 
-        System.out.println("taskNumber: " + taskNumber);
 
         systemAdministratorMessage.setFinishedTaskNumber(taskNumber-unfinishedTaskNumber);
         systemAdministratorMessage.setTaskNumber(taskNumber);
