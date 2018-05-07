@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService {
         user.setUsername(userModel.getUsername());
         user.setPoint(userModel.getPoint());
         user.setUserLevel(userModel.getUserLevel());
+        user.setPassword(userModel.getPassword());
         return userDao.update(user);
     }
 

@@ -83,6 +83,7 @@
                     Email:'',
                     point:'',
                     userLevel:'',
+                    password:''
                 }
             }
         },

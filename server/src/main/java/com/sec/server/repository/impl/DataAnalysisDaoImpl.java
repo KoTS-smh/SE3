@@ -315,6 +315,7 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
      *
      */
     public List<TaskRateMessage> getTaskMessage(long taskId){
+
         //获取所有的userId
         long userNumber = getTotalAmount(Path.userPath);
 
@@ -348,6 +349,14 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
             taskRateMessage.setAcceptUserId(aJsonObjectList.getLong("acceptUserId"));
             taskRateMessage.setAcceptUserName(aJsonObjectList.getString("acceptUserName"));
             taskRateMessage.setRate(getCOD(new TaskOrder(aJsonObjectList.getLong("taskId"), aJsonObjectList.getLong("acceptUserId"))));
+            if(aJsonObjectList.getBoolean("submited"))
+                taskRateMessage.setState("待审批");
+            else{
+                if(taskRateMessage.getRate()==1)
+                    taskRateMessage.setState("待提交");
+                else
+                    taskRateMessage.setState("未完成");
+            }
             list.add(taskRateMessage);
         }
 

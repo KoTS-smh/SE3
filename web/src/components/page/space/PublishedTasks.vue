@@ -38,33 +38,38 @@
         </el-table>
 
         <el-dialog title="任务详情" :visible.sync="dialogVisible">
-            <el-form :model="selectTable">
-                <el-form-item label="任务ID" label-width="100px">
-                    <el-input v-model="selectTable.taskId" auto-complete="off" readonly="true"></el-input>
-                </el-form-item>
-                <el-form-item label="任务名称" label-width="100px">
-                    <el-input v-model="selectTable.taskname" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="截止时间" label-width="100px">
-                    <el-input v-model="selectTable.endDate" auto-complete="off"></el-input>
-
-
-                </el-form-item>
-                <el-form-item label="任务等级" label-width="100px">
-                    <el-input v-model="selectTable.taskLevel" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="任务积分" label-width="100px">
-                    <el-input v-model="selectTable.totalPoints" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="最大参与者数" label-width="100px">
-                    <el-input v-model="selectTable.maxParticipator" auto-complete="off"></el-input>
-                </el-form-item>
-            </el-form>
-
-             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="saveChange()">确 定</el-button>
-                <!--<el-button type="success" @click="publish()">发布</el-button>-->
+            <div>
+                <div class="crumbs">
+                    <el-breadcrumb separator="/">
+                        <el-breadcrumb-item><i class="el-icon-service"></i> 任务完成进度</el-breadcrumb-item>
+                    </el-breadcrumb>
+                </div>
+                <div>
+                    <el-form>
+                        <el-form-item label="任务名称">{{taskName}}</el-form-item>
+                        <el-form-item label="总进度" label-width="50pt">
+                            <el-progress type="line" :text-inside="true" :stroke-width="18" :percentage="totalRate" style="width:100%;margin-top: 10px" ></el-progress>
+                        </el-form-item>
+                    </el-form>
+                </div>
+                <div class="el-table" style="width: 100%">
+                    <el-table :data="selectTable" style="width:100%"  :row-class-name="tableRowClassName" @row-click="change">
+                        <el-table-column prop="acceptUserId" label="编号" sortable></el-table-column>
+                        <el-table-column prop="acceptUserName" label="用户名"></el-table-column>
+                        <el-table-column prop="rate" label="进度" sortable>
+                            <template slot-scope="scope">
+                                <el-progress type="line" :percentage="scope.row.rate*100"></el-progress>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="state" label="状态"></el-table-column>
+                        <el-table-column label="操作">
+                            <template slot-scope="scope">
+                                <el-button @click="" type="text" v-show="scope.row.state=='待评审'">评审</el-button>
+                                <el-button @click="" type="text" v-show="scope.row.state!='待评审'" disabled>暂不可操作</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
             </div>
         </el-dialog>
     </div>
@@ -77,10 +82,14 @@ import axios from "axios"
 export default {
     data() {
         return {
+            //父窗口的参数
             tableData: [],
             dialogVisible: false,
             selectTable: {},
-            select_cate: ''
+            select_cate: '',
+            //弹出窗口的参数
+            totalRate:80,
+            taskName:''
         }
     },
     methods: {
@@ -88,9 +97,22 @@ export default {
                 this.multipleSelection = val;
         },
         handleEdit(index, row){
-            this.selectTable = row;
             this.address = row.address;
             this.dialogVisible = true;
+            this.taskName = row.taskname;
+            this.getTaskRateMessage(row.taskId);
+        },
+        getTaskRateMessage(taskId){
+            const self = this;
+            axios.get("http://localhost:8080/getTaskMessage", {
+                params:{
+                    taskId:taskId
+                }
+            }).then(response => {
+                self.selectTable = response.data.data;
+            }).catch(error => {
+                self.$message("获取失败");
+            })
         },
         handleDelete(index, row){
             if(this.tableData[index].acceptUserIds.length === 0){
