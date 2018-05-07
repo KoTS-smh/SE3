@@ -421,4 +421,64 @@ public class ReadFile {
         }
         return retList;
     }
+
+    /**
+     * 用名字搜索任务
+     */
+
+    public static List<Picture_CardModel> searchTask(String message, String taskType){
+        File file = new File(Path.taskPath);
+        String content;
+
+        List<Picture_CardModel> retList = new ArrayList<>();
+        try {
+            content = FileUtils.readFileToString(file, "UTF-8");
+            JSONArray array = new JSONArray(content);
+            List<Task> taskList = JSON.parseArray(array.toString(), Task.class);
+
+            if(taskType.equals("all")){
+                for(Task tmpTask : taskList) {
+                    String taskname = tmpTask.getTaskname();
+                    if(taskname.contains(message) || message.contains(taskname)) {
+                        Picture_CardModel model = new Picture_CardModel();
+                        model.setId(tmpTask.getTaskId());
+                        model.setName(tmpTask.getTaskname());
+                        model.setDescription(tmpTask.getTaskInfo());
+                        //默认以第一张图片作为预览图
+                        if(tmpTask.getImgUrlList().size() > 0) {
+                            model.setUrl(tmpTask.getImgUrlList().get(0));
+                        }
+
+                        retList.add(model);
+                    }
+                }
+            }else{
+                for(Task tmpTask : taskList) {
+                    String taskname = tmpTask.getTaskname();
+
+                    if(taskname.contains(message) || message.contains(taskname)){
+                        if(tmpTask.getAnnotationType().toString().equals(taskType)) {
+                            Picture_CardModel model = new Picture_CardModel();
+                            model.setId(tmpTask.getTaskId());
+                            model.setName(tmpTask.getTaskname());
+                            model.setDescription(tmpTask.getTaskInfo());
+                            //默认以第一张图片作为预览图
+                            if(tmpTask.getImgUrlList().size() > 0) {
+                                model.setUrl(tmpTask.getImgUrlList().get(0));
+                            }
+
+                            retList.add(model);
+                        }
+
+
+                    }
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return retList;
+    }
 }

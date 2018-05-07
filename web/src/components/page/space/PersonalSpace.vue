@@ -87,6 +87,13 @@
             }
         },
         mounted:function(){
+            var username = localStorage.getItem('username')
+            if(username != null && username.length > 0) {
+                //donothing
+            }else {
+                this.$message('请先登陆');
+                this.$router.push('login');
+            }
             this.getUserMessage();
         },
         methods: {

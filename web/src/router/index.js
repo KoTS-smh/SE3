@@ -50,10 +50,6 @@ export default new Router({
                     component: resolve => require(['../components/page/space/DragList.vue'], resolve)    // 拖拽列表组件
                 },
                 {
-                    path: '/getTask',
-                    component: resolve => require(['../components/page/space/GetTask.vue'], resolve)
-                },
-                {
                     path:'/adTable',
                     component:resolve => require(['../components/page/space/administratorTable.vue'],resolve)
                 },

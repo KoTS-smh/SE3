@@ -1,9 +1,9 @@
 <template>
-    <div>
-        <el-container>
+    <div style="height:100%">
+        <el-container style="height:100%">
             <el-header>
                 <div class="top_container">
-                    <el-menu default-active="/search" class="el-menu-demo" mode="horizontal" @select="handleSelect" router="true">
+                    <el-menu default-active="/search" class="el-menu-demo" mode="horizontal" @select="handleSelect" :router="canRoute">
                         <el-row>
                             <el-col :span="2">
                                 <el-menu-item index="/guide" style="text-align: center">首页</el-menu-item>
@@ -36,63 +36,53 @@
                     </el-menu>
                 </div>
             </el-header>
-            <el-main>
+            <el-main style="height:100%">
                 <!--
         搜索表单
-        -->
-                <el-form ref="form" :model="form" size="mini">
-                    <el-form-item placeholder="输入搜索关键字">
-                        <el-row :gutter="20">
-                            <el-col :span="2" :offset="7" style="margin-top: 20px"><img src="~assets/logo.png" class="image"></el-col>
-                            <el-col :span="6" style="margin-top: 40px"><el-input v-model="form.name"></el-input></el-col>
-                            <el-col :span="2" style="margin-top: 40px"><el-button type="primary" @click="onSubmit" icon="el-icon-search">站内搜索</el-button></el-col>
-                        </el-row>
-                    </el-form-item>
-                    <el-form-item style="text-align: center">
-                        <el-radio-group v-model="form.resource1">
-                            <el-radio-button label="r1-1" v-model="radio1">综合排序</el-radio-button>
-                            <el-radio-button label="r1-2" v-model="radio1">最新发布</el-radio-button>
-                            <el-radio-button label="r1-3" v-model="radio1">最多收藏</el-radio-button>
-                            <el-radio-button label="r1-4" v-model="radio1">最多参与</el-radio-button>
-                        </el-radio-group>
-                    </el-form-item>
-                    <el-form-item style="text-align: center">
-                        <el-radio-group v-model="form.resource2">
-                            <el-radio-button v-model="radio2" label="r2-1">标框标注</el-radio-button>
-                            <el-radio-button v-model="radio2" label="r2-2">分类标注</el-radio-button>
-                            <el-radio-button v-model="radio2" label="r2-3">区域标注</el-radio-button>
-                            <el-radio-button v-model="radio2" label="r2-4">整体标注</el-radio-button>
-                        </el-radio-group>
-                    </el-form-item>
-                    <el-form-item style="text-align: center">
-                        <el-switch v-model="form.delivery" active-text="同时搜索已结束的任务"></el-switch>
-                    </el-form-item>
-                </el-form>
+        -->     <div style="text-align: center">
+                    <img style="margin-right:20px;" src="https://ws1.sinaimg.cn/large/0073JsqJly1fr1uiup7upj302e00raa0.jpg">
+                    <el-input v-model="input" placeholder="请输入内容" style="width:200px; "></el-input>
+                    <el-button type="primary" icon="el-icon-search" @click="searchTask">搜索</el-button>
+                </div>
+                <div style="margin-left: 220px;margin-right: 220px; ">
+                    <!-- <el-menu :default-active="activeIndex" class="taskTypeMenu" mode="horizontal" @select="handleTypeSelect">
+                        <el-menu-item index="0" key="0" class="type_item" @click="indexToOne()">所有任务</el-menu-item>
+                        <el-menu-item index="1" key="1" class="type_item">标框标注</el-menu-item>
+                        <el-menu-item index="2" key="2" class="type_item">分类标注</el-menu-item>
+                        <el-menu-item index="3" key="3" class="type_item">区域标注</el-menu-item>
+                        <el-menu-item index="4" key="4" class="type_item">整体标注</el-menu-item>
+                    </el-menu> -->
+                    <el-tabs v-model="activeName" @tab-click="handleClick">
+                        <el-tab-pane label="全部任务" name="0"></el-tab-pane>
+                        <el-tab-pane label="标框标注" name="1"></el-tab-pane>
+                        <el-tab-pane label="分类标注" name="2"></el-tab-pane>
+                        <el-tab-pane label="区域标注" name="3"></el-tab-pane>
+                        <el-tab-pane label="整体标注" name="4"></el-tab-pane>
+                    </el-tabs>
+                </div>
+
+                <div style="margin-left: 220px; margin-top: 20px">
+                    <el-radio-group v-model="sort_type" size="medium" class="sort_types">
+                        <el-radio-button label="综合排序"></el-radio-button>
+                        <el-radio-button label="最新发布"></el-radio-button>
+                        <el-radio-button label="最多点击"></el-radio-button>
+                        <el-radio-button label="最多参与"></el-radio-button>
+                    </el-radio-group>
+                </div>
 
                 <div class="line"></div>
 
                 <!--搜索结果-->
+                
                 <el-row>
-                    <el-col :span="4" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
-                        <el-card :body-style="{ padding: '0px',height:'240px'}" :shadow="hover">
-                            <img src="~assets/logo.png" class="image" width="180px" height="180px">
-                            <div class="line"></div>
-                            <div style="padding: 14px;">
-                                <span>演示任务</span>
-                                <div class="bottom clearfix">
-                                    <time class="time">{{ currentDate }}</time>
-                                </div>
-                            </div>
-                        </el-card>
-                    </el-col>
+                <el-col :span="4">&nbsp;</el-col>
+                <el-col :span="16">
+                    <myContent v-bind:searchInfo="this.input" ref="mycontent"></myContent>
+                </el-col>
+                <el-col :span="4">&nbsp;</el-col>
                 </el-row>
                 <!--分页-->
-                <div class="block" style="text-align: center">
-                    <el-pagination
-                        layout="prev, pager, next"
-                        :total="100">
-                    </el-pagination>
-                </div>
+                
             </el-main>
         </el-container>
     </div>
@@ -100,19 +90,37 @@
 </template>
 
 <script>
+    import PictureCard from '../../common/picture_card.vue'
+    import myContent from 'components/homepage/ContentInSearch.vue'
+    import Icon from 'vue-awesome/components/Icon'
+    import 'vue-awesome/icons'
     export default {
+        components: {
+            Icon,
+            myContent,
+            'picture-card': PictureCard
+        },
         data() {
             return {
-                activeIndex: '1',
-                activeIndex2: '1',
+                activeIndex: '0',
                 form: {
                     name: '',
                     delivery: false,
                     resource1: 'r1-1',
                     resource2: 'r2-1'
                 },
-                currentDate: new Date()
+                currentDate: new Date(),
+                sort_type: '',
+                
+                canRoute: true,
+                input: '',
+                activeName: 'second'
             };
+        },
+        computed: {
+            showCardList() {
+                return this.card_list.slice((this.currentPage - 1) * this.perPage, this.currentPage * this.perPage);
+            },
         },
         methods: {
             handleSelect(key, keyPath) {
@@ -120,7 +128,25 @@
             },
             onSubmit() {
                 console.log('submit!');
+            },
+            handleTypeSelect() {
+                console.log(key, keyPath);
+            },
+            handleSizeChange(val) {
+                this.perPage = val
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val
+            },
+            
+            searchTask() {
+                
+                this.$refs.mycontent.searchForTasks(this.input, this.activeName);
+            },
+            handleClick(tab, event) {
+                console.log(tab, event);
             }
+
         }
     }
 </script>
@@ -159,6 +185,14 @@
 
     .clearfix:after {
         clear: both
+    }
+
+    .type_item{
+        font-size: 1.3rem;
+    }
+
+    .picture{
+        display: inline;
     }
 
 </style>

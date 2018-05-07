@@ -91,6 +91,7 @@ public class UserController {
 
     @RequestMapping("/user/logout")
     public Result logout(String username){
+        System.out.println("here");
         userService.logout(username);
         return ResultUtils.success();
     }

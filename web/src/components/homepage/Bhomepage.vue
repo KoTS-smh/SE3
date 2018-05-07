@@ -1,6 +1,6 @@
 <template>
     <div style="height:100%">
-        <el-container style="height:100%">
+        <el-container style="height:100% " >
             <el-header>
                 <!-- <TopContainer></TopContainer> -->
                 <component :is="currentView"></component>
@@ -8,7 +8,13 @@
             </el-header>
             <el-main style="height:100%">
                 <BHeader></BHeader>
-                <BContent></BContent>
+                <el-row>
+                <el-col :span="4">&nbsp;</el-col>
+                <el-col :span="16">
+                    <BContent></BContent>
+                </el-col>
+                <el-col :span="4">&nbsp;</el-col>
+                </el-row>
             </el-main>
         </el-container>
     </div>
@@ -76,7 +82,12 @@
             }
         },
         mounted() {
-            //this.$store.dispatch('getContentRows');
+            var userId = localStorage.getItem('userId');
+            if(userId != null && userId.length > 0){
+                this.currentView = 'component2'
+            }else{
+                this.currentView = 'component1'
+            }
             this.placeData();
         }
     }

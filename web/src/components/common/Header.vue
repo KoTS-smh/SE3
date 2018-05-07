@@ -15,6 +15,7 @@
     </div>
 </template>
 <script>
+    import axios from 'axios'
     export default {
         data() {
             return {
@@ -30,7 +31,16 @@
         methods:{
             handleCommand(command) {
                 if(command === 'loginout'){
-                    localStorage.removeItem('username')
+                    axios.get('http://localhost:8080/user/logout', {
+                        params:{
+                            username: localStorage.getItem("username")
+                        }
+                    }).then(response => {
+                        localStorage.removeItem("userId");
+                        localStorage.removeItem("username");
+                    }).catch(err => {
+                        console.log(err);
+                    })
                     this.$router.push('/login');
                 }
             }

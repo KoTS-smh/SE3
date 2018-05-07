@@ -1,20 +1,29 @@
 <template>
   <div class="pictures">
     <el-row :gutter="10">
-      <div class="block pagination" style="padding: 10px;text-align: right">
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage"
-          :page-sizes="[8, 16, 24, 32]"
-          :page-size="perPage"
-          layout="total, sizes, prev, pager, next"
-          :total="card_list.length">
-        </el-pagination>
-      </div>
+	  
+			  
+		  <!-- <div class="block pagination" style="padding: 10px;text-align: right"> -->
+				<el-col :span="17">
+				<h1 style="margin-top:6px">任务列表</h1>
+				</el-col>
+				<el-col :span="7">
+				<el-pagination
+				@size-change="handleSizeChange"
+				@current-change="handleCurrentChange"
+				:current-page.sync="currentPage"
+				:page-sizes="[8, 16, 24, 32]"
+				:page-size="perPage"
+				layout="total, sizes, prev, pager, next"
+				:total="card_list.length">
+				</el-pagination>	
+				</el-col>				
+			<!-- </div> -->
+
       <el-col :sm="12" :md="6" v-for="(card, index) in showCardList" :key="card.id">
         <picture-card :name="card.name" :url="card.url" :description="card.description" :id="card.id" :views="card.views" :comments="card.comments" @remove="removeItem(card)" @getInfo="getInfo(card)"></picture-card>
       </el-col>
+
     </el-row>
   </div>
 </template>
@@ -30,10 +39,10 @@
     data() {
       return {
         pictures: [
-
+          
         ],
         card_list: [
-
+          
         ],
         currentPage: 1,
         perPage: 16
@@ -63,7 +72,7 @@
 	  placeData() {
 		  axios.post('http://localhost:8080/getContent').then(response => {
 			  console.log(response.data)
-
+			  
 			  var array = JSON.parse(response.data.data)
 			  this.card_list = array
 			  console.log(array.length)

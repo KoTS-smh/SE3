@@ -1,6 +1,6 @@
 <template>
 	<li class="m-i" :class="classes">
-		<a class="i-link" href="">
+		<a class="i-link" :href="item.link">
 			<em>{{item.title}}</em>
 			<div class="v-num" v-if="showNum">
 				<span class="addnew_1">{{item.num}}</span>

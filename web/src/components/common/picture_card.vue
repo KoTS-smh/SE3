@@ -9,15 +9,15 @@
       </el-button>
     </div> -->
     <div class="preview" :style="{ backgroundImage: 'url(' + url + ')' }"></div>
-    <div class="card-info">
-      <span class="large-text">{{ name }} - {{ id }}</span>
-      <span class="description">{{ description }}</span>
+    <div class="card-info" style="border-bottom:1px solid gainsboro;height:50px">
+      <span class="large-text">&nbsp;&nbsp;{{ name }} - {{ id }}</span>
+      <span class="description">&nbsp;&nbsp;{{ description }}</span>
     </div>
-    <div class="card-footer justify-between">
-      <div class="left">
-        <span><icon name="eye"></icon>{{ views }}</span>
-        <span><icon name="comments"></icon>{{ comments }}</span>
-        <el-button class="moreBtn" size="mini" round @click="getInfo">more</el-button>
+    <div class="card-footer justify-between" style="height: 40px">
+      <div class="left" >
+        <span ><icon name="eye" style="margin-top:12px; margin-left:10px"></icon>{{ views }}</span>
+        <span ><icon name="comments" style="margin-top:12px"></icon>{{ comments }}</span>
+        <el-button class="moreBtn" size="mini" round @click="getInfo" style="float: right; margin-top:5px; margin-right:10px">more</el-button>
       </div>
 
     </div>
@@ -71,17 +71,18 @@
 
 <style lang="scss">
     .preview{
-        width: 300px;
-        height: 200px;
+        width: 100%;
+        height: 150px;
         background-size: cover;
+        border-radius: 5px;
     }
 
     .lee-picture-card{
         position: relative;
-        background-color: white;
+        background-color: #f3f3f3;
         margin-top: 2rem;
         border-radius: .4rem;
-        height: 300px;
+        height: 240px;
     }
 
     .large-text{
@@ -98,7 +99,7 @@
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
-        height: 15px;
+        height: 20px;
     }
 
     .card-footer {
@@ -108,6 +109,7 @@
     .left {
       color: grey;
       font-size: 1.0rem;
+      text-align: center center;
 
       span {
         margin-right: 0.5rem;
@@ -120,9 +122,16 @@
         font-size: 1.4rem;
         margin-right: 0.5rem;
       }
+      
     }
     .el-tag {
       cursor: pointer;
     }
   }
+
+  .moreBtn {
+      border: 1px solid #00bfff;
+      color: #00bfff;
+  }
+
 </style>

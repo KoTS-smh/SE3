@@ -12,17 +12,20 @@
                   <el-menu-item index="/search" style="text-align: center">搜索</el-menu-item>
               </el-col>
               <el-col :span="2" :offset="11">
-                  <el-menu-item index="/personalSpace" style="text-align: center; position:absolute; top:0; right:150px;color: dodgerblue">
+                  <!-- <el-menu-item index="/personalSpace" style="text-align: center; position:absolute; top:0px; right:150px;color: dodgerblue">
                     <span>{{myName}}</span>
-                      <el-dropdown>
-                          <i class="el-icon-arrow-down" style="margin-right: 10px"></i>
-                          <el-dropdown-menu slot="dropdown">
-                              <el-dropdown-item>退出</el-dropdown-item>
-                          </el-dropdown-menu>
-                      </el-dropdown>
-                  </el-menu-item>
+                  </el-menu-item> -->
+                  <el-dropdown style="text-align: center; position:absolute; top:20px; right:200px;color: dodgerblue" @command="handlePersonCommand">
+                      <span class="el-dropdown-link">
+                          {{myName}}
+                      </span>
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item command="personalSpace">个人中心</el-dropdown-item>
+                        <el-dropdown-item command="logout">退出登陆</el-dropdown-item>
+                      </el-dropdown-menu>
+                  </el-dropdown>
               </el-col>
-
+              
               <el-col :span="2">
                   <el-dropdown style="text-align: center;margin-top: 7.5px;position:absolute;right:30px" @command="handleCommand">
                       <el-button type="primary">
@@ -42,6 +45,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     export default {
         data() {
             return {
@@ -66,7 +70,23 @@
                 }
             },
             placeUsername() {
-                this.myName = localStorage.getItem("username");
+                var username = localStorage.getItem("username");
+                this.myName = username;
+            },
+            handlePersonCommand(command) {
+                if(command == 'personalSpace') {
+                    this.$router.push('readme');
+                }else if(command == 'logout') {
+                    axios.get('http://localhost:8080/user/logout', {
+                        params:{
+                            username: localStorage.getItem("username")
+                        }
+                    }).then(response => {
+                        localStorage.removeItem("userId");
+                        localStorage.removeItem("username");
+                        location.reload();
+                    })
+                }
             }
         },
         mounted() {

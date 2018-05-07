@@ -51,7 +51,8 @@ export default {
 				{
 					title: '个人空间',
 					num: 0,
-					live: true
+					live: true,
+					link: 'http://localhost:8888/#/personalSpace'
 				}
 			]
 		}

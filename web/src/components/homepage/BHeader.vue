@@ -3,9 +3,14 @@
   	<div class="h-center">
         <search class="msearch"></search>
   	</div >
-      <div style="text-align: center">
-          <BMenu></BMenu>
-      </div>
+      
+      <el-row>
+        <el-col :span="4">&nbsp;</el-col>
+        <el-col :span="16">
+            <BMenu></BMenu>
+        </el-col>
+        <el-col :span="4">&nbsp;</el-col>
+      </el-row>
   </div>
 </template>
 
