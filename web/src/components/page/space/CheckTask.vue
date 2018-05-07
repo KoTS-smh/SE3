@@ -228,7 +228,7 @@ export default {
                 });
             },
             toTaskInfo(){
-                //todo
+                this.$router.push("/publishedTasks");
             },
             acceptTask(){
                 let isAccepted = false;
