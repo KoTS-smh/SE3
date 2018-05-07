@@ -69,7 +69,12 @@
                    }else{
                        localStorage.setItem("username", username);
                        localStorage.setItem("userId", response.data.data.userId);
-                       self.$router.push({path: 'homepage', query:{"username": username, "isLogin":true}});
+                       if(username == 'admin'){
+                           self.$router.push({path: 'adTable', query: {"username": username, "isLogin":true}});
+                       }else{
+                           self.$router.push({path: 'homepage', query:{"username": username, "isLogin":true}});
+                       }
+                       
                    }
                 }).catch(function(err){
                     console.log(err);
