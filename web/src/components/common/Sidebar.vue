@@ -27,7 +27,7 @@
                     {
                         icon: 'el-icon-setting',
                         index: 'readme',
-                        title: '自述'
+                        title: '系统介绍'
                     },
                     {
                         icon: 'el-icon-menu',
