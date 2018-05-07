@@ -85,22 +85,22 @@
         <el-dialog title="请输入标注分类" :visible.sync="dialogTableVisible">
             <el-form id="parentForm">
                 <el-form-item label="分类1">
-                    <el-input  auto-complete="off" v-model="form.classification[0]"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classifiedInfo[0]"></el-input>
 
                 </el-form-item>
 
                 <el-form-item label="分类2">
-                    <el-input  auto-complete="off" v-model="form.classification[1]"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classifiedInfo[1]"></el-input>
 
                 </el-form-item>
 
                 <el-form-item label="分类3">
-                    <el-input  auto-complete="off" v-model="form.classification[2]"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classifiedInfo[2]"></el-input>
 
                 </el-form-item>
 
                 <el-form-item label="分类">
-                    <el-input  auto-complete="off" v-model="form.classification[3]"></el-input>
+                    <el-input  auto-complete="off" v-model="form.classifiedInfo[3]"></el-input>
 
                 </el-form-item>
             </el-form>
@@ -158,8 +158,8 @@ export default {
           maxParticipator: '',
           taskLevel: 0,
           imgUrlList: [],
-          classification:['','','',''],
-          isFinished: false
+          isFinished: false,
+            classifiedInfo:['','','','']
         },
         action: 'http://upload.qiniu.com/', // 替换自己的上传链接
         accept: 'image/png, image/jpeg, image/gif, image/jpg, image/bmp',

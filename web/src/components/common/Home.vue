@@ -23,6 +23,7 @@
                 currentView: 'component1'
             }
         },
+
         mounted() {
             var username = localStorage.getItem('username');
             if(username == 'admin'){

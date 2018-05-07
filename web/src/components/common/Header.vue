@@ -19,13 +19,14 @@
     export default {
         data() {
             return {
-                name: ''
+                username: ''
             }
         },
-        computed:{
-            username(){
-                let username = localStorage.getItem('ms_username');
-                return username ? username : this.name;
+        created(){
+            if(localStorage.getItem("username") == null){
+                this.$router.push('/login');
+            }else {
+                this.username = localStorage.getItem("username");
             }
         },
         methods:{
@@ -56,6 +57,7 @@
         font-size: 22px;
         line-height: 70px;
         color: #fff;
+        background: #8cc5ff;
     }
     .header .logo{
         float: left;

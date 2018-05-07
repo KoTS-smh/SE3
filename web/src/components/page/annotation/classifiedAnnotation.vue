@@ -52,7 +52,7 @@
                         <i class="el-icon-edit"></i>
                         <span style="font-weight: bold">标注信息</span>
                     </div>
-                    <div id="annotationField" style="width: 100%">
+                    <div id="annotationField" style="width: 100%;height: 400px">
                     </div>
                     <div>
                         <el-button-group style="margin-left: 60px;margin-top: 100px">
@@ -81,7 +81,7 @@
     let taskOrder;
     let task;
     let classifiedInfo;
-    let classifiedLen;
+    let classifiedLen=0;
     let thisPage;
     let annotated;
     let annotationInfo;
@@ -131,7 +131,13 @@
                     task = response.data.data;
                     classifiedInfo = task.classifiedInfo;
                     let str = '';
-                    classifiedLen = classifiedInfo.length;
+                    //classifiedLen = classifiedInfo.length;
+                    classifiedLen = 0;
+                    for(let i=0;i<classifiedInfo.length;i++){
+                        if(classifiedInfo[i]!== ""){
+                            classifiedLen++;
+                        }
+                    }
                     for(let i = 0;i <classifiedLen;i++){
                         str = str+'<span style="margin-top: 12px;margin-left: 20px">'+
                             classifiedInfo[i]+':</span><input style="margin-left: 10px;margin-top: 12px;width: 240px;height: 24px" id="text'+i+'"><br>'
