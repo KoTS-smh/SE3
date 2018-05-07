@@ -12,7 +12,7 @@
                 <el-option key="2" label="未完成" value="未完成"></el-option>
                 <el-option key="3" label="草稿" value="草稿"></el-option>
             </el-select>
-            <el-button type="primary"  @click="newTask">新建</el-button>
+            <el-button type="primary"  @click="newTask">接取任务</el-button>
         </div>
         <el-table :data="tableData"  style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange">
             <el-table-column prop="taskName" label="任务名称" width="140"></el-table-column>
@@ -31,14 +31,6 @@
                 </template>
             </el-table-column>
         </el-table>
-        <!--<div class="pagination">-->
-            <!--<el-pagination-->
-                    <!--@current-change ="handleCurrentChange"-->
-                    <!--layout="prev, pager, next"-->
-                    <!--:total="1000">-->
-            <!--</el-pagination>-->
-        <!--</div>-->
-
         <el-dialog title="任务详情" :visible.sync="dialogVisible">
             <el-form :model="selectTable">
                 <el-form-item label="任务ID" label-width="100px">
@@ -84,9 +76,6 @@
                 fileList: []
             }
         },
-        created(){
-            this.getData();
-        },
         computed: {
             data(){
                 const self = this;
@@ -117,14 +106,6 @@
                 this.cur_page = val;
                 this.getData();
             },
-            getData(){
-                let self = this;
-                self.$axios.get(self.url, {page:self.cur_page}).then((res) => {
-                    self.tableData = res.data.list;
-                }).catch(err => {
-                    console.log(err)
-                })
-            },
             search(){
                 this.is_search = true;
             },
@@ -135,14 +116,54 @@
                 return row.tag === value;
             },
             handleEdit(index, row) {
-                var date = this.tableData[0].endDate;
-                this.selectTable = row;
-                this.address = row.address;
-                this.dialogVisible = true;
+                this.$router.push({
+                    path:'/checkTask',
+                    query:{
+                        taskId:row.taskId
+                    }
+                })
             },
             handleDelete(index, row) {
-                this.$message.error('删除第'+(index+1)+'行');
-                tableData[index + 1] = "";
+                if(row.submited === true){
+                    this.$message.info("完成的任务无法删除！")
+                }else {
+                    this.$confirm('此操作将移除该标注任务, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        axios.get('http://localhost:8080/taskOrder/delete', {
+                            params: {
+                                taskOrderId: row.taskOrderId,
+                                userId: localStorage.getItem("userId")
+                            }
+                        }).then((response) => {
+                            if (response.data.code !== 0) {
+                                this.$message({
+                                    type: 'error',
+                                    message: '移除失败!'
+                                });
+                            } else {
+                                this.$message({
+                                    type: 'success',
+                                    message: '移除成功!'
+                                });
+
+                                this.placeTheData();
+                            }
+                        }).catch(() => {
+                            this.$message({
+                                type: 'error',
+                                message: '网络异常!'
+                            });
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'error',
+                            message: '已取消！'
+                        });
+                    });
+                }
             },
             handleChange() {
                 var selection = this.select_cate;
@@ -169,7 +190,6 @@
                 }else if(selection === "未完成"){
                     axios.post("http://localhost:8080/taskOrder/getAllunSubmited", {"userId": userId, "password": ""})
                     .then(response => {
-                        console.log(response);
                         mydata = JSON.parse(response.data.data);
                         var i = 0;
                         for(i = 0;i < mydata.length;++i){
@@ -218,7 +238,7 @@
                 });
             },
             newTask(){
-                this.newDialogVisible = true;
+                this.$router.push("/homepage")
             },
 
             placeTheData() {
@@ -226,9 +246,7 @@
                 var userId = localStorage.getItem('userId');
                 axios.post('http://localhost:8080/taskOrder/getAll', {"username": username, "password": '', "userId": userId})
                 .then(response => {
-                    console.log(response.data.data);
-                    var j;
-                    for(j = 0;j < response.data.data.length; j++){
+                    for(let j = 0;j < response.data.data.length; j++){
                         if(response.data.data[j].submited === false){
                             response.data.data[j].submited = "未提交";
                         }else{
@@ -242,7 +260,6 @@
                         }else{
                             response.data.data[j].rate = '未评分';
                         }
-
                     }
                     var list = response.data.data;
                     this.tableData = list;

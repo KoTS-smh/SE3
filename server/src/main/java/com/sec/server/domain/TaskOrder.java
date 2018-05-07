@@ -35,9 +35,13 @@ public class TaskOrder {
             try {
                 String content = FileUtils.readFileToString(file,"utf-8");
                 com.alibaba.fastjson.JSONArray jsonArray = JSON.parseArray(content);
-                JSONObject object =jsonArray.getJSONObject(jsonArray.size()-1);
-                long length = object.getLong("taskOrderId");
-                this.taskOrderId = length + 1;
+                if(jsonArray.size()==0){
+                    this.taskOrderId = 0;
+                }else {
+                    JSONObject object = jsonArray.getJSONObject(jsonArray.size() - 1);
+                    long length = object.getLong("taskOrderId");
+                    this.taskOrderId = length + 1;
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

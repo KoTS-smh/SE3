@@ -10,12 +10,12 @@
               <el-menu-item index="2-2" @click="removeTask">移除</el-menu-item>
           </el-submenu>
         <span style="color: dodgerblue">{{myName}}</span>
-        <el-dropdown>
-          <i class="el-icon-arrow-down" style="margin-right: 10px"></i>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click="logout">退出</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+          <el-dropdown @command="handleCommand">
+              <i class="el-icon-arrow-down" style="margin-right: 10px"></i>
+              <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="logout">退出</el-dropdown-item>
+              </el-dropdown-menu>
+          </el-dropdown>
       </el-menu>
     </el-header>
     <el-container style="height: 656px">
@@ -121,9 +121,9 @@
               this.$router.push("/homepage")
           }
           if(this.$route.query == null){
-              this.$router.go(-1)//todo 改成报错界面
+              this.$router.push("/homepage")
           }else if(this.$route.query.taskOrderId == null){
-              this.$router.go(-1)
+              this.$router.push("/homepage")
           }
           axios.get('http://localhost:8080/taskOrder/orderInfo',{
               params:{
@@ -454,16 +454,18 @@
                   userId:localStorage.getItem("userId")
               })
           },
-          logout(){
-            axios.get("http://localhost:8080/user/logout",{
-                params:{
-                    username:localStorage.getItem("username")
-                }
-            });
-              localStorage.removeItem("username");
-              localStorage.removeItem("userId");
-              this.$router.push("/homepage")
-        }
+          handleCommand(command) {
+              if (command === 'logout') {
+                  axios.get("http://localhost:8080/user/logout", {
+                      params: {
+                          username: localStorage.getItem("username")
+                      }
+                  });
+                  localStorage.removeItem("username");
+                  localStorage.removeItem("userId");
+                  this.$router.push("/homepage")
+              }
+          }
       },
         name: "allAnnotation"
     }
