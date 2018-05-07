@@ -2,11 +2,10 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-setting"></i> 自述</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-setting"></i> 系统介绍</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="ms-doc">
-            <h3>README.md</h3>
             <article>
                 <h1>MRGS COUNT manage-system</h1>
                 <p>众包标注系统的后台管理系统</p>
