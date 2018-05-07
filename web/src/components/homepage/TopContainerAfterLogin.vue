@@ -84,6 +84,8 @@
                     }).then(response => {
                         localStorage.removeItem("userId");
                         localStorage.removeItem("username");
+                        
+                        this.$router.push('/homepage');
                         location.reload();
                     })
                 }

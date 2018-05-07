@@ -158,7 +158,8 @@ export default {
           maxParticipator: '',
           taskLevel: 0,
           imgUrlList: [],
-          classification:['','','','']
+          classification:['','','',''],
+          isFinished: false
         },
         action: 'http://upload.qiniu.com/', // 替换自己的上传链接
         accept: 'image/png, image/jpeg, image/gif, image/jpg, image/bmp',

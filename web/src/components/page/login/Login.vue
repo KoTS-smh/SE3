@@ -72,7 +72,7 @@
                        if(username == 'admin'){
                            self.$router.push({path: 'adTable', query: {"username": username, "isLogin":true}});
                        }else{
-                           self.$router.push({path: 'homepage', query:{"username": username, "isLogin":true}});
+                           self.$router.push({path: '/homepage', query:{"username": username, "isLogin":true}});
                        }
                        
                    }

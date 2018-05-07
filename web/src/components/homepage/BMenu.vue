@@ -25,7 +25,8 @@ export default {
 				},
 				{
 					title: '标框标注',
-					num: 468
+					num: 468,
+					
 				},
 				{
 					title: '分类标注',
