@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SearchController {
 
-    @RequestMapping("search/getTask")
+    @RequestMapping("/search/getTask")
     public Result searchTask(String message){
         //todo
         return ResultUtils.success();
     }
 
-    @RequestMapping("search/getUser")
+    @RequestMapping("/search/getUser")
     public Result searchUser(String message){
         // todo
         return ResultUtils.success();
     }
 
-    @RequestMapping("search/all")
+    @RequestMapping("/search/all")
     public Result search(){
         return ResultUtils.success();
     }

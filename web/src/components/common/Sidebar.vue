@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar">
-        <el-menu :default-active="onRoutes" class="el-menu-vertical-demo" theme="dark" unique-opened router>
+        <el-menu :default-active="onRoutes" class="el-menu-vertical-demo" unique-opened router>
             <template v-for="item in items">
                 <template v-if="item.subs">
                     <el-submenu :index="item.index">
@@ -38,22 +38,6 @@
                                 index: 'basetable',
                                 title: '接取任务列表'
                             },
-                            // {
-                            //     index: 'getTask',
-                            //     title: '接取任务'
-                            // },
-                            // {
-                            //     index: 'createTask',
-                            //     title: '创建任务'
-                            // },
-                            // {
-                            //     index: 'checkTask',
-                            //     title: '查看任务'
-                            // },
-                            // {
-                            //     index: 'vuetable',
-                            //     title: 'Vue表格组件'
-                            // }
                             {
                                 index: 'publishedTasks',
                                 title: '发布任务列表'

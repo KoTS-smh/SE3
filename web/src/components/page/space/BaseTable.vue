@@ -14,7 +14,7 @@
             </el-select>
             <el-button type="primary"  @click="newTask">新建</el-button>
         </div>
-        <el-table :data="tableData" border style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange">
+        <el-table :data="tableData"  style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange">
             <el-table-column prop="taskname" label="任务名称" width="140"></el-table-column>
             <el-table-column prop="taskId" label="任务Id" width="140"></el-table-column>
             <el-table-column prop="submited" label="任务状态" width="140"></el-table-column>
@@ -203,11 +203,10 @@
             },
             saveChange() {
                 //向后端传送数据
-                console.log("now date " + this.selectTable.endDate);
                 this.tableData[0].endDate = this.selectTable.endDate;
                 this.dialogVisible = false
             },
-            startTag() {
+            startTag(val) {
                 //todo
             },
             imageuploaded(res) {

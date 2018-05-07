@@ -146,8 +146,8 @@ export default {
   }
 
   .forPics {
-      /* line-height: 20px; */
-  }
+         /* line-height: 20px; */
+     }
 
   .taskInfos {
       /* line-height: 40px; */
@@ -164,7 +164,7 @@ export default {
     }
     .btn {
         padding: 10px 10px;
-        border: 0px solid #ccc;
+        border: 0 solid #ccc;
         border-radius: 3px;
     }
     .viewimg {

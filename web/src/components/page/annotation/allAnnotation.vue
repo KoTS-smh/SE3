@@ -13,7 +13,7 @@
         <el-dropdown>
           <i class="el-icon-arrow-down" style="margin-right: 10px"></i>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>退出</el-dropdown-item>
+            <el-dropdown-item @click="logout">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-menu>
@@ -117,6 +117,9 @@
     export default {
       created(){
           this.myName = localStorage.getItem("username");
+          if(this.myName == null){
+              this.$router.push("/homepage")
+          }
           if(this.$route.query == null){
               this.$router.go(-1)//todo 改成报错界面
           }else if(this.$route.query.taskOrderId == null){
@@ -450,7 +453,17 @@
                   taskOrder:JSON.stringify(taskOrder),
                   userId:localStorage.getItem("userId")
               })
-          }
+          },
+          logout(){
+            axios.get("http://localhost:8080/user/logout",{
+                params:{
+                    username:localStorage.getItem("username")
+                }
+            });
+              localStorage.removeItem("username");
+              localStorage.removeItem("userId");
+              this.$router.push("/homepage")
+        }
       },
         name: "allAnnotation"
     }
