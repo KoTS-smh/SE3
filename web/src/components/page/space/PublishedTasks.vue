@@ -39,11 +39,6 @@
 
         <el-dialog title="任务详情" :visible.sync="dialogVisible">
             <div>
-                <div class="crumbs">
-                    <el-breadcrumb separator="/">
-                        <el-breadcrumb-item><i class="el-icon-service"></i> 任务完成进度</el-breadcrumb-item>
-                    </el-breadcrumb>
-                </div>
                 <div>
                     <el-form>
                         <el-form-item label="任务名称">{{taskName}}</el-form-item>
@@ -53,7 +48,7 @@
                     </el-form>
                 </div>
                 <div class="el-table" style="width: 100%">
-                    <el-table :data="selectTable" style="width:100%"  :row-class-name="tableRowClassName" @row-click="change">
+                    <el-table :data="selectTable" style="width:100%">
                         <el-table-column prop="acceptUserId" label="编号" sortable></el-table-column>
                         <el-table-column prop="acceptUserName" label="用户名"></el-table-column>
                         <el-table-column prop="rate" label="进度" sortable>
@@ -85,7 +80,7 @@ export default {
             //父窗口的参数
             tableData: [],
             dialogVisible: false,
-            selectTable: {},
+            selectTable: [],
             select_cate: '',
             //弹出窗口的参数
             totalRate:80,
