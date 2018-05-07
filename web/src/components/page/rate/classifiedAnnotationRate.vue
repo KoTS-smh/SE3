@@ -144,7 +144,13 @@
                     task = response.data.data;
                     classifiedInfo = task.classifiedInfo;
                     let str = '';
-                    classifiedLen = classifiedInfo.length;
+                    //classifiedLen = classifiedInfo.length;
+                    classifiedLen = 0;
+                    for(let i=0;i<classifiedInfo.length;i++){
+                        if(classifiedInfo[i]!== ""){
+                            classifiedLen++;
+                        }
+                    }
                     for(let i = 0;i <classifiedLen;i++){
                         str = str+'<span style="margin-top: 12px;margin-left: 20px">'+
                             classifiedInfo[i]+':</span><input style="margin-left: 10px;margin-top: 12px;width: 240px;height: 24px" id="text'+i+'"><br>'

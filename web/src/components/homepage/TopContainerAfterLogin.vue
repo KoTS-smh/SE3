@@ -25,7 +25,7 @@
                       </el-dropdown-menu>
                   </el-dropdown>
               </el-col>
-              
+
               <el-col :span="2">
                   <el-dropdown style="text-align: center;margin-top: 7.5px;position:absolute;right:30px" @command="handleCommand">
                       <el-button type="primary">
@@ -49,7 +49,7 @@
     export default {
         data() {
             return {
-                isLogin: false,
+                isLogin: true,
                 myName: '',
                 canRouter:true
             }

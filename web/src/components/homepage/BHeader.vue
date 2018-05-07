@@ -3,7 +3,7 @@
   	<div class="h-center">
         <search class="msearch"></search>
   	</div >
-      
+
       <el-row>
         <el-col :span="4">&nbsp;</el-col>
         <el-col :span="16">
@@ -29,9 +29,9 @@ export default {
 
 <style lang="stylus">
  .header
-    position relative
-    margin -42px auto 0
-    background-color white
+     position relative
+     //margin -42px auto 0
+     background-color white
     .h-center
     	width 960px
     	margin 0 auto

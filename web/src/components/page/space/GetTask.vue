@@ -1,11 +1,5 @@
 <template>
     <div class="table">
-        <!-- <el-carousel height="300px">
-        <el-carousel-item v-for="item in imgList" :key="item">
-            <h3><img :src="item" alt=""></h3>
-        </el-carousel-item>
-        </el-carousel> -->
-
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item><i class="el-icon-menu"></i> 表格</el-breadcrumb-item>
