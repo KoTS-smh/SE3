@@ -101,17 +101,14 @@
             getUserMessage(){
                 const self = this;
                 var userId = localStorage.getItem("userId");
-                console.log("here" + userId);
-                console.log("获取中...");
                 axios.get('http://localhost:8080/user/getUser',{
                     params:{
                         userId: userId
                     }
                 }).then(response => {
-                    console.log(response.data.data);
                     this.form = response.data.data;
                 }).catch(()=>{
-                    this.$message('获取失败');
+                    this.$message('网络异常！');
                 })
             },
             saveUserMessage(){
@@ -133,9 +130,6 @@
 </script>
 
 <style scoped>
-    /*#all{*/
-        /*display:flex;*/
-    /*}*/
     .form-box{
         width:600px;
     }

@@ -13,12 +13,12 @@
             </el-form-item>
 
             <el-form-item label="进行中任务数">
-                <el-input v-model="form.tasknumber" readonly="true" class="input_area"></el-input>    
+                <el-input v-model="form.tasknumber" readonly="true" class="input_area"></el-input>
             </el-form-item>
 
             <el-form-item label="全体排名">
-                <el-input v-model="form.rank" readonly="true" class="input_area"></el-input>    
-            </el-form-item>                    
+                <el-input v-model="form.rank" readonly="true" class="input_area"></el-input>
+            </el-form-item>
         </el-form>
     </div>
 </template>
@@ -37,13 +37,11 @@ export default {
     },
     methods: {
         placeData() {
-            var userId = localStorage.getItem('userId')
-            
+            var userId = localStorage.getItem('userId');
             axios.post("http://localhost:8080/personalData", {"userId": userId, "password": ''})
             .then(response => {
-                console.log(response)
+                console.log(response);
                 this.form = response.data.data
-
             }).catch(err => {
 
             })

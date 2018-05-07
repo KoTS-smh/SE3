@@ -175,10 +175,9 @@
                         for(i = 0;i < mydata.length;++i){
                             mydata[i].endDate = this.convertDate(mydata[i].endDate);
                             mydata[i].beginDate = this.convertDate(mydata[i].beginDate);
-
                             var tmprate = mydata[i].rate;
                             if(tmprate != null && tmprate !== undefined && tmprate !== -1){
-                                //donothing
+                                //doNothing
                             }else{
                                 mydata[i].rate = '未评分';
                             }
@@ -207,7 +206,7 @@
                 this.dialogVisible = false
             },
             startTag(val) {
-                //todo
+
             },
             imageuploaded(res) {
                 console.log(res)

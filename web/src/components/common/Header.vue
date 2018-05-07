@@ -8,7 +8,7 @@
                     {{username}}
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="loginout">退出</el-dropdown-item>
+                    <el-dropdown-item command="logout">退出</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
@@ -30,7 +30,7 @@
         },
         methods:{
             handleCommand(command) {
-                if(command === 'loginout'){
+                if(command === 'logout'){
                     axios.get('http://localhost:8080/user/logout', {
                         params:{
                             username: localStorage.getItem("username")
@@ -40,7 +40,7 @@
                         localStorage.removeItem("username");
                     }).catch(err => {
                         console.log(err);
-                    })
+                    });
                     this.$router.push('/login');
                 }
             }

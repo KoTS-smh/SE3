@@ -74,12 +74,9 @@
             </el-col>
 
             <el-col :span="15">
-                <div class="grid-content bg-purple">
-                    <el-carousel height="400px">
-                    <el-carousel-item v-for="item in form.imgList" :key="item" >
-                        <img :src="item" alt="" >
-                    </el-carousel-item>
-                    </el-carousel>
+                <div>
+                    <lightbox :images="imgList">
+                    </lightbox>
                 </div>
             </el-col>
 
@@ -149,8 +146,6 @@ export default {
                 label: '整体标注'
             }
         ],
-
-
         dialogTableVisible: false,
         form: {
             postUserId: localStorage.getItem("userId"),
@@ -165,7 +160,6 @@ export default {
           imgUrlList: [],
           classification:['','','','']
         },
-
         action: 'http://upload.qiniu.com/', // 替换自己的上传链接
         accept: 'image/png, image/jpeg, image/gif, image/jpg, image/bmp',
         multiple: true,
@@ -187,7 +181,8 @@ export default {
         uploadFile (res) {
             this.hashes.push(`http://p6r9un2qj.bkt.clouddn.com/${res.hash}`);
             this.keys.push(`http://p6r9un2qj.bkt.clouddn.com/${res.key}`);
-            this.form.imgUrlList.push(`http://p6r9un2qj.bkt.clouddn.com/${res.key}`)
+            this.form.imgUrlList.push(`http://p6r9un2qj.bkt.clouddn.com/${res.key}`);
+            this.imgList.push({src:`http://p6r9un2qj.bkt.clouddn.com/${res.key}`})
         },
         uploadErr (res) {
             this.uploadMsg.push(JSON.stringify(res))
@@ -206,7 +201,6 @@ export default {
             }).catch((err)=> {
                 this.$message.error("创建失败！")
             });
-
         },
         addLabel() {
             var elFormItem = document.createElement('el-form-item');
@@ -226,7 +220,6 @@ export default {
                 console.log(err)
             })
         }
-
     },
     watch: {
         annotationType: function(val) {
@@ -257,12 +250,6 @@ function download(content, fileName, contentType) {
 </script>
 
 <style>
-  /*.el-row {*/
-    /*margin-bottom: 20px;*/
-    /*&:last-child {*/
-      /*margin-bottom: 0;*/
-    /*}*/
-  /*}*/
   .el-col {
     border-radius: 4px;
   }
@@ -283,15 +270,6 @@ function download(content, fileName, contentType) {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        /*   */
-
-        /* margin-top: 60px; */
-    }
-
-    #description {
-        font-family: "PingFang SC";
-        font-size: 15px;
-        font-style: italic;
     }
 
     .btn {

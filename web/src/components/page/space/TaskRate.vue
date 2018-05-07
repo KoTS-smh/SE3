@@ -68,19 +68,16 @@
                 const self = this;
                 axios.get("http://localhost:8080/getTaskMessage", {
                     params:{
-                        // taskId:this.$router.query.taskId todo 接受taskId
+                        // taskId:this.$route.query.taskId todo 接受taskId
                         taskId:0
                     }
                 }).then(response => {
-                    console.log("获取中...");
-                    console.log(response.data.data);
                     self.tableData = response.data.data;
                 }).catch(error => {
                     self.$message("获取失败");
                 })
             },
             tableRowClassName({row,rowIndex}){
-                console.log(rowIndex);
                 if(rowIndex ===1)
                     return 'success-row';
                 else

@@ -342,14 +342,14 @@ public class ReadFile {
         }
 
         //排名
-        double rank = 0;
+        long rank = 1;
 
         for(User tmpUser : userList) {
             if(tmpUser.getPoint() > currentPoint)
                 rank++;
         }
 
-        if(userList.size() < 10) {
+        if( rank<=100 ) {
             return rank + "";
         }else {
             double percentage = rank / userList.size();
