@@ -4,6 +4,8 @@ public class TaskRateMessage {
     private long acceptUserId;
     private String acceptUserName;
     private double rate;
+    private String state;
+    private boolean isSubmitted;
 
     public long getAcceptUserId() {
         return acceptUserId;
@@ -27,6 +29,22 @@ public class TaskRateMessage {
 
     public void setRate(double rate) {
         this.rate = rate;
+    }
+
+    public boolean isSubmitted() {
+        return isSubmitted;
+    }
+
+    public void setSubmitted(boolean submitted) {
+        isSubmitted = submitted;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }
 

@@ -49,7 +49,6 @@ public class UserDaoImpl implements UserDao {
                 }
             }
         } catch (IOException e) {
-            System.out.print(false);
             throw new ResultException(ResultCode.UNKNOWN_ERROR);
         }
         throw new ResultException(ResultCode.UNKNOWN_USER_ERROR);
