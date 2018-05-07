@@ -15,6 +15,7 @@ public class TaskOrder {
     private long taskOrderId;
     private long taskId;
     private long acceptUserId;
+    private String acceptUserName;
     private boolean submited;
     private int lastPic;
     private int degreeOfCompletion;
@@ -134,5 +135,13 @@ public class TaskOrder {
 
     public void setSubmited(boolean submited) {
         this.submited = submited;
+    }
+
+    public String getAcceptUserName() {
+        return acceptUserName;
+    }
+
+    public void setAcceptUserName(String acceptUserName) {
+        this.acceptUserName = acceptUserName;
     }
 }

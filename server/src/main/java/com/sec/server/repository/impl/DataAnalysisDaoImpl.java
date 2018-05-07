@@ -125,12 +125,12 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
                     break;
                 }
             }
-            for(int i=0;i<userIds.size();i++){
-                File thisFile = new File(Path.taskOrderPath+ userIds.get(i) + ".json");
+            for (Long userId : userIds) {
+                File thisFile = new File(Path.taskOrderPath + userId + ".json");
                 String temp = FileUtils.readFileToString(thisFile, "UTF-8");
                 JSONArray taskOrders = new JSONArray(temp);
-                for(int j = 0;j<taskOrders.length();j++){
-                    if(taskId == taskOrders.getJSONObject(j).getLong("taskId")){
+                for (int j = 0; j < taskOrders.length(); j++) {
+                    if (taskId == taskOrders.getJSONObject(j).getLong("taskId")) {
                         annotationIds.add(taskOrders.getJSONObject(j).getLong("annotationId"));
                         break;
                     }

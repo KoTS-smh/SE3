@@ -2,14 +2,33 @@
     <div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-service"></i> 任务进度</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-service"></i> 任务完成进度</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div>
-            <el-table :data="tableData" style="width:100%" border :row-class-name="tableRowClassName">
-                <el-table-column prop="acceptUserId" label="编号" width="180" sortable></el-table-column>
-                <el-table-column prop="acceptUserName" label="用户名" width="180"></el-table-column>
-                <el-table-column prop="rate" label="进度" width="180" sortable></el-table-column>
+            <el-form>
+                <el-form-item label="任务名称">{{taskId}}</el-form-item>
+                <el-form-item label="总进度" label-width="50pt">
+                    <el-progress type="line" :text-inside="true" :stroke-width="18" :percentage="totalRate" style="width:100%;margin-top: 10px" ></el-progress>
+                </el-form-item>
+            </el-form>
+        </div>
+        <div class="el-table" style="width: 100%">
+            <el-table :data="tableData" style="width:100%"  :row-class-name="tableRowClassName" @row-click="change">
+                <el-table-column prop="acceptUserId" label="编号" sortable></el-table-column>
+                <el-table-column prop="acceptUserName" label="用户名"></el-table-column>
+                <el-table-column prop="rate" label="进度" sortable>
+                    <template slot-scope="scope">
+                        <el-progress type="line" :percentage="scope.row.rate*100"></el-progress>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="state" label="状态"></el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button @click="handleClick(scope.row)" type="text" v-show="scope.row.state=='待评审'">评审</el-button>
+                        <el-button @click="handleClick(scope.row)" type="text" v-show="scope.row.state!='待评审'" disabled>暂不可操作</el-button>
+                    </template>
+                </el-table-column>
             </el-table>
         </div>
     </div>
@@ -20,7 +39,11 @@
     export default {
         data:function () {
             return {
-                tableData:[""]
+                taskId:0,
+                tableData:[""],
+                value:null,
+                rateValue:0,
+                totalRate:80
             }
         },
         mounted:function () {
@@ -34,6 +57,13 @@
             this.getTaskRateMessage();
         },
         methods: {
+            change(row,event,column){
+                console.log(row);
+                this.rateValue = row.rate*100
+            },
+            handleClick(row){
+                console.log(row)
+            },
             getTaskRateMessage(){
                 const self = this;
                 axios.get("http://localhost:8080/getTaskMessage", {
