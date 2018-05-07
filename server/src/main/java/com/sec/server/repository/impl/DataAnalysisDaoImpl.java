@@ -349,8 +349,9 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
             taskRateMessage.setAcceptUserId(aJsonObjectList.getLong("acceptUserId"));
             taskRateMessage.setAcceptUserName(aJsonObjectList.getString("acceptUserName"));
             taskRateMessage.setRate(getCOD(new TaskOrder(aJsonObjectList.getLong("taskId"), aJsonObjectList.getLong("acceptUserId"))));
+//            taskRateMessage.setRate(aJsonObjectList.getDouble("rate"));
             if(aJsonObjectList.getBoolean("submited"))
-                taskRateMessage.setState("待审批");
+                taskRateMessage.setState("待评审");
             else{
                 if(taskRateMessage.getRate()==1)
                     taskRateMessage.setState("待提交");

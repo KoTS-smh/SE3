@@ -29,42 +29,7 @@ public class DataAnalysisController {
     @RequestMapping("/getTaskMessage")
     public Result getTaskMessage(long taskId){
         List<TaskRateMessage> list = new ArrayList<>();
-        //todo
-//        list = dataAnalysisService.getTaskMessage(taskId);
-
-        TaskRateMessage t1 = new TaskRateMessage();
-        t1.setRate(0.9);
-        t1.setAcceptUserId(0);
-        t1.setAcceptUserName("wrs000");
-        t1.setSubmitted(false);
-        t1.setState("未完成");
-
-        TaskRateMessage t2 = new TaskRateMessage();
-        t2.setRate(0.8);
-        t2.setAcceptUserId(1);
-        t2.setAcceptUserName("wrs111");
-        t2.setSubmitted(false);
-        t2.setState("未完成");
-
-        TaskRateMessage t3 = new TaskRateMessage();
-        t3.setRate(1);
-        t3.setAcceptUserId(2);
-        t3.setAcceptUserName("wrs222");
-        t3.setSubmitted(false);
-        t3.setState("待提交");
-
-        TaskRateMessage t4 = new TaskRateMessage();
-        t4.setSubmitted(true);
-        t4.setAcceptUserName("wrs333");
-        t4.setAcceptUserId(3);
-        t4.setRate(1);
-        t4.setState("待评审");
-
-        list.add(t1);
-        list.add(t2);
-        list.add(t3);
-        list.add(t4);
-
+        list = dataAnalysisService.getTaskMessage(taskId);
         return ResultUtils.success(list);
     }
 

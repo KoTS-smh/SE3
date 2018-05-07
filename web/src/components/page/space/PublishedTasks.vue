@@ -59,8 +59,8 @@
                         <el-table-column prop="state" label="状态"></el-table-column>
                         <el-table-column label="操作">
                             <template slot-scope="scope">
-                                <el-button @click="" type="text" v-show="scope.row.state=='待评审'">评审</el-button>
-                                <el-button @click="" type="text" v-show="scope.row.state!='待评审'" disabled>暂不可操作</el-button>
+                                <el-button  type="text" v-show="scope.row.state=='待评审'">评审</el-button>
+                                <el-button  type="text" v-show="scope.row.state!='待评审'" disabled>暂不可操作</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -83,7 +83,7 @@ export default {
             selectTable: [],
             select_cate: '',
             //弹出窗口的参数
-            totalRate:80,
+            totalRate:0,
             taskName:''
         }
     },
@@ -97,6 +97,16 @@ export default {
             this.taskName = row.taskname;
             this.getTaskRateMessage(row.taskId);
         },
+        calculateTotalRate(){
+            var tempData = this.selectTable;
+            var tempRate = 0;
+            for(var i = 0;i<tempData.length;i++){
+                 tempRate += tempData[i].rate;
+            }
+            console.log(tempRate);
+            console.log(tempData.length);
+            this.totalRate = ((tempRate/tempData.length)*100).toFixed(2);
+        },
         getTaskRateMessage(taskId){
             const self = this;
             axios.get("http://localhost:8080/getTaskMessage", {
@@ -105,6 +115,7 @@ export default {
                 }
             }).then(response => {
                 self.selectTable = response.data.data;
+                self.calculateTotalRate();
             }).catch(error => {
                 self.$message("获取失败");
             })
