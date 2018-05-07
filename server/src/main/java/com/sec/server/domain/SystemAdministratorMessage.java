@@ -1,40 +1,40 @@
 package com.sec.server.domain;
 
 public class SystemAdministratorMessage {
-     private long userNumber;
-     private long taskNumber;
-     private long finishedTaskNumber;
-     private long unfinishedTaskNumber;
+     private int userNumber;
+     private int taskNumber;
+     private int finishedTaskNumber;
+     private int unfinishedTaskNumber;
 
-    public long getUserNumber() {
+    public int getUserNumber() {
         return userNumber;
     }
 
-    public void setUserNumber(long userNumber) {
+    public void setUserNumber(int userNumber) {
         this.userNumber = userNumber;
     }
 
-    public long getTaskNumber() {
+    public int getTaskNumber() {
         return taskNumber;
     }
 
-    public void setTaskNumber(long taskNumber) {
+    public void setTaskNumber(int taskNumber) {
         this.taskNumber = taskNumber;
     }
 
-    public long getFinishedTaskNumber() {
+    public int getFinishedTaskNumber() {
         return finishedTaskNumber;
     }
 
-    public void setFinishedTaskNumber(long finishedTaskNumber) {
+    public void setFinishedTaskNumber(int finishedTaskNumber) {
         this.finishedTaskNumber = finishedTaskNumber;
     }
 
-    public long getUnfinishedTaskNumber() {
+    public int getUnfinishedTaskNumber() {
         return unfinishedTaskNumber;
     }
 
-    public void setUnfinishedTaskNumber(long unfinishedTaskNumber) {
+    public void setUnfinishedTaskNumber(int unfinishedTaskNumber) {
         this.unfinishedTaskNumber = unfinishedTaskNumber;
     }
 }

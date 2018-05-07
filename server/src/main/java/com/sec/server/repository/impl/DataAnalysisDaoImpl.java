@@ -363,38 +363,37 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
         SystemAdministratorMessage systemAdministratorMessage = new SystemAdministratorMessage();
 
         //计算用户数目
-        long userNumber = 0;
+        int userNumber = 0;
         userNumber = getTotalAmount(Path.userPath);
         systemAdministratorMessage.setUserNumber(userNumber);
 
         //计算任务数目
-        long taskNumber = 0;
-        long unfinishedTaskNumber = 0;
+        int taskNumber = 0;
+        int unfinishedTaskNumber = 0;
 
         //遍历所有的json文件，找出任务信息
-        List<Long> list = new ArrayList<>();
+        List<Task> taskList = new ArrayList<>();
         for (int i = 0;i<userNumber;i++) {
-            File file = new File(Path.taskOrderPath + i + ".json");
+            File file = new File(Path.taskPath);
             if (file.exists()) {
                 String content = null;
                 try {
                     content = FileUtils.readFileToString(file, "UTF-8");
                     JSONArray array = new JSONArray(content);
-                    for(int j = 0;j<array.length();j++){
-                        org.json.JSONObject object = array.getJSONObject(i);
-                        long taskId = object.getLong("taskId");//todo
-                        if(!list.contains(taskId)){
-                            list.add(taskId);
-                            taskNumber++;
-                            if(!object.getBoolean("isFinished"))
-                                unfinishedTaskNumber++;
-                        }
+                    taskList = JSON.parseArray(array.toString(), Task.class);
+                    taskNumber = taskList.size();
+
+                    for(Task tmpTask : taskList) {
+                        if(!tmpTask.isFinished())
+                            unfinishedTaskNumber++;
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
+
+        System.out.println("taskNumber: " + taskNumber);
 
         systemAdministratorMessage.setFinishedTaskNumber(taskNumber-unfinishedTaskNumber);
         systemAdministratorMessage.setTaskNumber(taskNumber);

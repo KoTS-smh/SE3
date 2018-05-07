@@ -75,7 +75,7 @@
             },
             handlePersonCommand(command) {
                 if(command == 'personalSpace') {
-                    this.$router.push('readme');
+                    this.$router.push('/readme');
                 }else if(command == 'logout') {
                     axios.get('http://localhost:8080/user/logout', {
                         params:{

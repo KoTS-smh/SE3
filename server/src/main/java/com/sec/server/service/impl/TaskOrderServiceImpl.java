@@ -1,6 +1,7 @@
 package com.sec.server.service.impl;
 
 import com.sec.server.domain.TaskOrder;
+import com.sec.server.model.TaskOrderWraper;
 import com.sec.server.repository.TaskOrderDao;
 import com.sec.server.service.TaskOrderService;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class TaskOrderServiceImpl implements TaskOrderService{
 
 
     @Override
-    public List<TaskOrder> getAllTaskOrder(long userId) {
+    public List<TaskOrderWraper> getAllTaskOrder(long userId) {
         return taskOrderDao.getAllTaskOrder(userId);
     }
 

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sec.server.domain.TaskOrder;
 import com.sec.server.model.TaskOrderModel;
+import com.sec.server.model.TaskOrderWraper;
 import com.sec.server.model.UserModel;
 import com.sec.server.service.TaskOrderService;
 import com.sec.server.utils.ReadFile;
@@ -41,7 +42,7 @@ public class TaskOrderController {
     @RequestMapping("/taskOrder/getAll")
     public Result getAllTaskOrder(@RequestBody UserModel userModel) {
         long userId = userModel.getUserId();
-        List<TaskOrder> list = taskOrderService.getAllTaskOrder(userId);
+        List<TaskOrderWraper> list = taskOrderService.getAllTaskOrder(userId);
         return ResultUtils.success(list);
     }
 

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.sec.server.domain.TaskOrder;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
+import com.sec.server.model.TaskOrderWraper;
 import com.sec.server.repository.TaskOrderDao;
 import com.sec.server.utils.DateFormatConverter;
 import com.sec.server.utils.Path;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.sec.server.repository.impl.AnnotationDaoImpl.createAnnotationInfo;
@@ -21,7 +23,7 @@ import static com.sec.server.repository.impl.AnnotationDaoImpl.createAnnotationI
 @Repository("taskOrderDao")
 public class TaskOrderDaoImpl implements TaskOrderDao{
     @Override
-    public List<TaskOrder> getAllTaskOrder(long userId) {
+    public List<TaskOrderWraper> getAllTaskOrder(long userId) {
         File file = new File(Path.taskOrderPath + userId + ".json");
         if(!file.exists()){
             try {
@@ -33,11 +35,14 @@ public class TaskOrderDaoImpl implements TaskOrderDao{
             }
         }
         String content;
-        List<TaskOrder> list;
+        List<TaskOrderWraper> list = new ArrayList<>();
         try {
             content = FileUtils.readFileToString(file, "UTF-8");
             JSONArray array = new JSONArray(content);
-            list = JSON.parseArray(array.toString(), TaskOrder.class);
+            List<TaskOrder> taskOrderList = JSON.parseArray(array.toString(), TaskOrder.class);
+            for(TaskOrder taskOrder : taskOrderList) {
+                list.add(new TaskOrderWraper(taskOrder));
+            }
         } catch (IOException e) {
             e.printStackTrace();
             throw new ResultException(ResultCode.UNKNOWN_ERROR);
