@@ -216,10 +216,11 @@
                 thisPage = val;
                 annotations = annotationMap[thisPage];
                 thisAnnotation = annotations[0];
-                if(thisAnnotation ==null){
+                if(thisAnnotation ==null||thisAnnotation === undefined){
                     for(let i =0;i<classifiedLen;i++){
                         document.getElementById('text'+i).value = '';
                     }
+                    coordinates=new Coordinate();
                     isNew = true;
                 }else {
                     words = thisAnnotation.words;
@@ -229,6 +230,7 @@
                     coordinates = thisAnnotation.coordinates;
                     this.showAnnotation();
                 }
+                console.log(annotationInfo);
                 this.fullscreenLoading = false;
             },
             save(){
@@ -240,6 +242,7 @@
                 annotations[0] = thisAnnotation;
                 annotationMap[thisPage] = annotations;
                 annotationInfo.annotationMap=annotationMap;
+                console.log(annotationInfo);
                 axios.post('http://localhost:8080/annotation/update',{
                     annotationInfo:JSON.stringify(annotationInfo)
                 }).then((response)=>{
@@ -279,7 +282,7 @@
                     annotations = [];
                     annotationMap[thisPage] = annotations;
                     annotationInfo.annotationMap=annotationMap;
-                    axios.post('http://localhost:8080/annotation/deleteOne',{
+                    axios.post('http://localhost:8080/annotation/update',{
                         annotationInfo:JSON.stringify(annotationInfo)
                     }).then((response)=>{
                         if(response.data.code!==0){
@@ -358,6 +361,7 @@
             },
             showAnnotation(){
                 draw = new Draw();
+                draw.init();
                 draw.drawFirst();
             },
             submitTask(){
@@ -531,9 +535,11 @@
     };
 
     Draw.prototype.drawFirst = ()=>{
-        if(thisAnnotation.coordinates !==null){
+            if(thisAnnotation.coordinates.length !== 0){
             canDraw = false;
             this.pen.beginPath();
+            this.pen.strokeStyle = 'black';
+            this.pen.lineWidth = 1;
             let x = thisAnnotation.coordinates[1].x;
             let y = thisAnnotation.coordinates[1].y;
             let originX =thisAnnotation.coordinates[0].x;

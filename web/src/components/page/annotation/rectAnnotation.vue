@@ -242,6 +242,7 @@
                 annotations = annotationMap[thisPage];
                 thisAnnotation = annotations[0];
                 if(thisAnnotation == null){
+                    coordinates=new Coordinate();
                     this.textarea = '';
                     isNew = true;
                 }else {
