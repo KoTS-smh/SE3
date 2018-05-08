@@ -5,10 +5,10 @@
                 <el-menu :default-active="activeIndex" class="el-menu" mode="horizontal" @select="handleSelect">
                 <el-menu-item index="1">标注中心</el-menu-item>
                 <span style="color: dodgerblue">{{myName}}</span>
-                <el-dropdown>
+                <el-dropdown @command="handleCommand">
                     <i class="el-icon-arrow-down" style="margin-right: 10px"></i>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item @click="logout">退出</el-dropdown-item>
+                        <el-dropdown-item command="logout">退出</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-menu>
@@ -115,17 +115,47 @@
     let tag;
     let thisTag;
     let coordinates = [];
+
+     Draw.prototype.refresh = ()=>{
+        canDraw = true;
+        this.pen.clearRect(0,0,this.penal.width,this.penal.height);
+    };
+
+    Draw.prototype.drawFirst = ()=>{
+        if(thisAnnotation.coordinates.length !== 0){
+            canDraw = false;
+            this.pen.beginPath();
+            let x = thisAnnotation.coordinates[1].x;
+            let y = thisAnnotation.coordinates[1].y;
+            let originX =thisAnnotation.coordinates[0].x;
+            let originY =thisAnnotation.coordinates[0].y;
+            let newOriginX = originX;
+            let newOriginY = originY;
+            if(x < originX){
+                newOriginX = x;
+            }
+            if(y < originY){
+                newOriginY = y;
+            }
+            this.pen.rect(newOriginX,newOriginY,Math.abs(x-originX),Math.abs(y-originY));
+            this.pen.stroke();
+            this.pen.closePath();
+        }
+    }
+
     export default {
-        created(){
+        mounted(){
             this.myName = localStorage.getItem("username");
             if(this.myName == null){
                 this.$router.push("/homepage")
             }
             if(this.$route.query == null){
-                this.$router.go(-1)
+                this.$router.push("/homepage")
             }else if(this.$route.query.taskOrderId == null){
-                this.$router.go(-1)
+                this.$router.push("/homepage")
             }
+            draw = new Draw();
+            draw.init();
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
                     taskOrderId:this.$route.query.taskOrderId,
@@ -369,15 +399,17 @@
                 draw = new Draw();
                 draw.drawFirst();
             },
-            logout(){
-                axios.get("http://localhost:8080/user/logout",{
-                    params:{
-                        username:localStorage.getItem("username")
-                    }
-                });
-                localStorage.removeItem("username");
-                localStorage.removeItem("userId");
-                this.$router.push("/homepage")
+            handleCommand(command) {
+                if (command === 'logout') {
+                    axios.get("http://localhost:8080/user/logout", {
+                        params: {
+                            username: localStorage.getItem("username")
+                        }
+                    });
+                    localStorage.removeItem("username");
+                    localStorage.removeItem("userId");
+                    this.$router.push("/homepage")
+                }
             }
         },
 
@@ -395,33 +427,7 @@
         this.pen.lineWidth = 1;
     };
 
-    Draw.prototype.refresh = ()=>{
-        canDraw = true;
-        this.pen.clearRect(0,0,this.penal.width,this.penal.height);
-    };
-
-    Draw.prototype.drawFirst = ()=>{
-        if(thisAnnotation.coordinates.length !== 0){
-            canDraw = false;
-            this.pen.beginPath();
-            let x = thisAnnotation.coordinates[1].x;
-            let y = thisAnnotation.coordinates[1].y;
-            let originX =thisAnnotation.coordinates[0].x;
-            let originY =thisAnnotation.coordinates[0].y;
-            let newOriginX = originX;
-            let newOriginY = originY;
-            if(x < originX){
-                newOriginX = x;
-            }
-            if(y < originY){
-                newOriginY = y;
-            }
-            this.pen.rect(newOriginX,newOriginY,Math.abs(x-originX),Math.abs(y-originY));
-            this.pen.stroke();
-            this.pen.closePath();
-        }
-    }
-
+   
 
 </script>
 

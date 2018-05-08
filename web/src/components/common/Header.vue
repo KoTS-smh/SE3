@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-        <div class="logo">MRGS后台管理系统</div>
+        <div class="logo">MRGS众包标注系统</div>
         <div class="user-info">
             <el-dropdown trigger="click" @command="handleCommand">
                 <span class="el-dropdown-link">

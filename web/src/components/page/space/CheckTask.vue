@@ -41,6 +41,8 @@
             <el-row >
                 <el-button type="primary" class="choiceBtn" @click="acceptTask()">接受任务</el-button>
                 <el-button type="success" class="choiceBtn" @click="startAnno()">开始标注</el-button>
+                <el-button type="info" class="choiceBtn" @click="leave()">返&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;回</el-button>
+
             </el-row>
             </div>
             <div v-show="showInfo">
@@ -84,7 +86,7 @@ export default {
                 tagType: '',
                 taskLevel: 2,
                 totalPoint: 20,
-                taskId: '3',
+                taskId: '',
                 degree: 10
             },
             rules: {
@@ -93,6 +95,9 @@ export default {
         }
     },
     methods: {
+            leave(){
+              this.$router.go(-1)
+            },
             getTask() {
             var userId = localStorage.getItem("userId");
             var taskId = this.taskData.taskId;
@@ -223,7 +228,7 @@ export default {
                 });
             },
             toTaskInfo(){
-                //todo
+                this.$router.push("/publishedTasks");
             },
             acceptTask(){
                 let isAccepted = false;
@@ -261,7 +266,7 @@ export default {
             }
         },
     mounted() {
-        var username = localStorage.getItem('username')
+        var username = localStorage.getItem('username');
         if(username != null && username.length > 0) {
             //donothing
         }else {

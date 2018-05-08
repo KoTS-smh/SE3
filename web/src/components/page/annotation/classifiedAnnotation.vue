@@ -10,10 +10,10 @@
                         <el-menu-item index="2-2" @click="removeTask">移除</el-menu-item>
                     </el-submenu>
                     <span style="color: dodgerblue">{{myName}}</span>
-                    <el-dropdown>
+                    <el-dropdown @command="handleCommand">
                         <i class="el-icon-arrow-down" style="margin-right: 10px"></i>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item @click="logout">退出</el-dropdown-item>
+                            <el-dropdown-item command="logout">退出</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </el-menu>
@@ -105,16 +105,18 @@
     let coordinates = [];
     let words = [];
     export default {
-        created(){
+        mounted(){
             this.myName = localStorage.getItem("username");
             if(this.myName == null){
                 this.$router.push("/homepage")
             }
             if(this.$route.query == null){
-                this.$router.go(-1)
+                this.$router.push("/homepage")
             }else if(this.$route.query.taskOrderId == null){
-                this.$router.go(-1)
+                this.$router.push("/homepage")
             }
+            draw = new Draw();
+            draw.init();
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
                     taskOrderId:this.$route.query.taskOrderId,
@@ -214,10 +216,11 @@
                 thisPage = val;
                 annotations = annotationMap[thisPage];
                 thisAnnotation = annotations[0];
-                if(thisAnnotation ==null){
+                if(thisAnnotation ==null||thisAnnotation === undefined){
                     for(let i =0;i<classifiedLen;i++){
                         document.getElementById('text'+i).value = '';
                     }
+                    coordinates=new Coordinate();
                     isNew = true;
                 }else {
                     words = thisAnnotation.words;
@@ -227,6 +230,7 @@
                     coordinates = thisAnnotation.coordinates;
                     this.showAnnotation();
                 }
+                console.log(annotationInfo);
                 this.fullscreenLoading = false;
             },
             save(){
@@ -238,7 +242,8 @@
                 annotations[0] = thisAnnotation;
                 annotationMap[thisPage] = annotations;
                 annotationInfo.annotationMap=annotationMap;
-                axios.post('http://localhost:8080/annotation/save',{
+                console.log(annotationInfo);
+                axios.post('http://localhost:8080/annotation/update',{
                     annotationInfo:JSON.stringify(annotationInfo)
                 }).then((response)=>{
                     if(response.data.code!==0){
@@ -277,7 +282,7 @@
                     annotations = [];
                     annotationMap[thisPage] = annotations;
                     annotationInfo.annotationMap=annotationMap;
-                    axios.post('http://localhost:8080/annotation/deleteOne',{
+                    axios.post('http://localhost:8080/annotation/update',{
                         annotationInfo:JSON.stringify(annotationInfo)
                     }).then((response)=>{
                         if(response.data.code!==0){
@@ -356,6 +361,7 @@
             },
             showAnnotation(){
                 draw = new Draw();
+                draw.init();
                 draw.drawFirst();
             },
             submitTask(){
@@ -446,15 +452,17 @@
                     taskOrder:JSON.stringify(taskOrder),
                 })
             },
-            logout(){
-                axios.get("http://localhost:8080/user/logout",{
-                    params:{
-                        username:localStorage.getItem("username")
-                    }
-                });
-                localStorage.removeItem("username");
-                localStorage.removeItem("userId");
-                this.$router.push("/homepage")
+            handleCommand(command) {
+                if (command === 'logout') {
+                    axios.get("http://localhost:8080/user/logout", {
+                        params: {
+                            username: localStorage.getItem("username")
+                        }
+                    });
+                    localStorage.removeItem("username");
+                    localStorage.removeItem("userId");
+                    this.$router.push("/homepage")
+                }
             }
         },
         name: "classifiedAnnotation"
@@ -527,9 +535,11 @@
     };
 
     Draw.prototype.drawFirst = ()=>{
-        if(thisAnnotation.coordinates !==null){
+            if(thisAnnotation.coordinates.length !== 0){
             canDraw = false;
             this.pen.beginPath();
+            this.pen.strokeStyle = 'black';
+            this.pen.lineWidth = 1;
             let x = thisAnnotation.coordinates[1].x;
             let y = thisAnnotation.coordinates[1].y;
             let originX =thisAnnotation.coordinates[0].x;

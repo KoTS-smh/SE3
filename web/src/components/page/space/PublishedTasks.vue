@@ -14,10 +14,10 @@
                 <el-option key="3" label="草稿" value="草稿"></el-option>
             </el-select>
 
-            <el-button type="primary">新建</el-button>
+            <el-button type="primary" @click="toCreate">新建任务</el-button>
         </div>
 
-        <el-table :data="tableData" border style="width: 100%" ref="multipleTable" >
+        <el-table :data="tableData" style="width: 100%" ref="multipleTable" >
             <el-table-column prop="taskId" label="任务Id" width="70"></el-table-column>
             <el-table-column prop="taskname" label="任务名称" width="100"></el-table-column>
             <el-table-column prop="postUserId" label="上传者ID" width="100"></el-table-column>

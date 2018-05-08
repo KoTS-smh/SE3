@@ -132,7 +132,6 @@ public class TaskOrderDaoImpl implements TaskOrderDao{
 
     @Override
     public void deleteTaskOrder(long taskOrderId,long userId) {
-        //todo
         File file = new File(Path.taskOrderPath + userId + ".json");
         if(file.exists()){
             try {
@@ -143,7 +142,7 @@ public class TaskOrderDaoImpl implements TaskOrderDao{
                     if(object.getLong("taskOrderId")==taskOrderId){
                         File file2 = new File(Path.taskPath);
                         String s = FileUtils.readFileToString(file2, "UTF-8");
-                        JSONArray tasks = new JSONArray(content);
+                        JSONArray tasks = new JSONArray(s);
                         for(int j=0;j<tasks.length();j++){
                             if(tasks.getJSONObject(j).getLong("taskId")==object.getLong("taskId")){
                                 JSONArray ids = tasks.getJSONObject(j).getJSONArray("acceptUserIds");

@@ -66,8 +66,8 @@
                                 <el-input type="textarea" v-model="form.taskInfo" style="width: 260px" :rows="2" resize="none"></el-input>
                             </el-form-item>
                             <el-form-item>
-                                <el-button type="primary" @click="onSubmit" style="width: 100px">立即创建</el-button>
-                                <el-button style="width: 100px">取消</el-button>
+                                <el-button type="primary" @click="onSubmit" style="width: 260px">立即创建</el-button>
+                                <!--<el-button style="width: 100px" @click="cancel">取消</el-button>-->
                             </el-form-item>
                         </el-form>
                 </div>
@@ -159,7 +159,7 @@ export default {
           taskLevel: 0,
           imgUrlList: [],
           isFinished: false,
-            classifiedInfo:['','','','']
+          classifiedInfo:['','','','']
         },
         action: 'http://upload.qiniu.com/', // 替换自己的上传链接
         accept: 'image/png, image/jpeg, image/gif, image/jpg, image/bmp',

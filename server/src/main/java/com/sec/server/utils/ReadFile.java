@@ -85,7 +85,7 @@ public class ReadFile {
             for(int i = 0;i < array.length();++i){
                 JSONObject tmp = (JSONObject) array.get(i);
                 if(tmp.getLong("taskId") == taskId){
-                    int numOfPics = tmp.getJSONArray("imgList").length();
+                    int numOfPics = tmp.getJSONArray("imgUrlList").length();
                     System.out.println("in function " + numOfPics);
                     return numOfPics;
                 }

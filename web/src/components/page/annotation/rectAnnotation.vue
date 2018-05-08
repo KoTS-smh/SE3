@@ -10,10 +10,10 @@
                         <el-menu-item index="2-2" @click="removeTask">移除</el-menu-item>
                     </el-submenu>
                     <span style="color: dodgerblue">{{myName}}</span>
-                    <el-dropdown>
+                    <el-dropdown @command="handleCommand">
                         <i class="el-icon-arrow-down" style="margin-right: 10px"></i>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item @click="logout">退出</el-dropdown-item>
+                            <el-dropdown-item command="logout">退出</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </el-menu>
@@ -22,7 +22,7 @@
                 <el-container style="height: 656px">
                     <el-main style="height: 596px;display: flex;align-items:center;justify-content: center" v-loading.fullscreen.lock="fullscreenLoading">
                         <div style="width: 100%;height: 100%" >
-                            <canvas id="canvas" :style="{backgroundImage:imgUrl,width:imgX+'px',height:imgY+'px'}">
+                            <canvas id="canvas" :style="{backgroundImage:imgUrl,width:imgX+'px',height:imgY+'px'}" onload="loadthis">
                             </canvas>
                         </div>
                     </el-main>
@@ -109,7 +109,7 @@
     let thisAnnotation;
     let img =new Image();
     let isNew = false;
-    let draw;
+    let draw ;
     let canDraw = true;
     let tag;
     let thisTag;
@@ -125,16 +125,18 @@
     let coordinates = [];
     let words = [];
     export default {
-        created(){
+        mounted(){
             this.myName = localStorage.getItem("username");
             if(this.myName == null){
                 this.$router.push("/homepage")
             }
             if(this.$route.query == null){
-                this.$router.go(-1)
+                this.$router.push("/homepage")
             }else if(this.$route.query.taskOrderId == null){
-                this.$router.go(-1)
+                this.$router.push("/homepage")
             }
+            draw = new Draw();
+            draw.init();
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
                     taskOrderId:this.$route.query.taskOrderId,
@@ -240,6 +242,7 @@
                 annotations = annotationMap[thisPage];
                 thisAnnotation = annotations[0];
                 if(thisAnnotation == null){
+                    coordinates=new Coordinate();
                     this.textarea = '';
                     isNew = true;
                 }else {
@@ -476,15 +479,17 @@
                     taskOrder:JSON.stringify(taskOrder),
                 })
             },
-            logout(){
-                axios.get("http://localhost:8080/user/logout",{
-                    params:{
-                        username:localStorage.getItem("username")
-                    }
-                });
-                localStorage.removeItem("username");
-                localStorage.removeItem("userId");
-                this.$router.push("/homepage")
+            handleCommand(command) {
+                if (command === 'logout') {
+                    axios.get("http://localhost:8080/user/logout", {
+                        params: {
+                            username: localStorage.getItem("username")
+                        }
+                    });
+                    localStorage.removeItem("username");
+                    localStorage.removeItem("userId");
+                    this.$router.push("/homepage")
+                }
             }
         },
         name: "rectAnnotation"
@@ -494,6 +499,11 @@
         draw = new Draw();
         draw.init();
     });
+
+    function loadthis() {
+        draw = new Draw();
+        draw.init();
+    }
 
     let Draw = ()=>{
         this.penal = document.getElementById('canvas');

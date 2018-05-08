@@ -5,10 +5,10 @@
                 <el-menu :default-active="activeIndex" class="el-menu" mode="horizontal" @select="handleSelect">
                     <el-menu-item index="1">标注中心</el-menu-item>
                     <span style="color: dodgerblue">{{myName}}</span>
-                    <el-dropdown>
+                    <el-dropdown @command="handleCommand">
                         <i class="el-icon-arrow-down" style="margin-right: 10px"></i>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item @click="logout">退出</el-dropdown-item>
+                            <el-dropdown-item command="logout">退出</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </el-menu>
@@ -115,15 +115,15 @@
     let tag;
     let thisTag;
     export default {
-        created(){
+        mounted(){
             this.myName = localStorage.getItem("username");
             if(this.myName == null){
                 this.$router.push("/homepage")
             }
             if(this.$route.query == null){
-                this.$router.go(-1)
+                this.$router.push("/homepage")
             }else if(this.$route.query.taskOrderId == null){
-                this.$router.go(-1)
+                this.$router.push("/homepage")
             }
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
@@ -358,15 +358,17 @@
                     })
                 }
             },
-            logout(){
-                axios.get("http://localhost:8080/user/logout",{
-                    params:{
-                        username:localStorage.getItem("username")
-                    }
-                });
-                localStorage.removeItem("username");
-                localStorage.removeItem("userId");
-                this.$router.push("/homepage")
+            handleCommand(command) {
+                if (command === 'logout') {
+                    axios.get("http://localhost:8080/user/logout", {
+                        params: {
+                            username: localStorage.getItem("username")
+                        }
+                    });
+                    localStorage.removeItem("username");
+                    localStorage.removeItem("userId");
+                    this.$router.push("/homepage")
+                }
             }
         },
         name: "allAnnotationRate"

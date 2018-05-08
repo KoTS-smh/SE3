@@ -217,7 +217,9 @@ public class UserDaoImpl implements UserDao {
 
     //将User放入JSONObject中
     private JSONObject putUser (User user,JSONObject jsonObject){
-        jsonObject.put("password",user.getPassword());
+        if(user.getPassword() != null&&!user.getPassword().equals("")) {
+            jsonObject.put("password", user.getPassword());
+        }
         jsonObject.put("userId",user.getUserId());
         jsonObject.put("username",user.getUsername());
         jsonObject.put("description",user.getDescription());
