@@ -114,6 +114,8 @@
     let isNew = false;
     let tag;
     let thisTag;
+    let points;
+    let user;
     export default {
         mounted(){
             this.myName = localStorage.getItem("username");
@@ -148,6 +150,7 @@
                         userId:taskOrder.acceptUserId
                     }
                 }).then((response)=>{
+                    user = response.data.data;
                     this.toRateName = response.data.data.username;
                 }).catch(()=>{
                     this.$message({
@@ -169,6 +172,7 @@
                     }
                     this.totalNum = task.imgUrlList.length;
                     this.process = annotated / this.totalNum*100;
+                    points=task.totalPoints;
                     img.addEventListener('load',() =>{
                         this.imgX =img.width;
                         this.imgY = img.height;
@@ -341,6 +345,10 @@
                                     });
                                 });
                             }
+                            user.point+=points;
+                            axios.post('http://localhost:8080/user/update',{
+                                userModel:JSON.stringify(user)
+                            })
                         }).catch(() => {
                             this.$confirm('网络异常，评分未正常保存, 是否继续?', '提示', {
                                 confirmButtonText: '确定',

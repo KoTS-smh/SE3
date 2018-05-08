@@ -113,6 +113,8 @@
     let draw;
     let canDraw = true;
     let coordinates = [];
+    let user;
+    let points;
     export default {
         mounted(){
             this.myName = localStorage.getItem("username");
@@ -150,6 +152,7 @@
                     }
                 }).then((response)=>{
                     this.toRateName = response.data.data.username;
+                    user = response.data.data;
                 }).catch(()=>{
                     this.$message({
                         showClose:true,
@@ -163,6 +166,7 @@
                     task = response.data.data;
                     this.totalNum = task.imgUrlList.length;
                     this.process = annotated / this.totalNum*100;
+                    points =task.totalPoints;
                     img.addEventListener('load',() =>{
                         this.imgX =img.width;
                         this.imgY = img.height;
@@ -341,18 +345,22 @@
                                     });
                                 });
                             }
-                        }).catch(() => {
-                            this.$confirm('网络异常，评分未正常保存, 是否继续?', '提示', {
-                                confirmButtonText: '确定',
-                                cancelButtonText: '取消',
-                                type: 'warning'
-                            }).then(() => {
-                                this.$router.go(-1)
+                            user.point+=points;
+                            axios.post('http://localhost:8080/user/update',{
+                                userModel:JSON.stringify(user)
+                            })
                             }).catch(() => {
-                                this.$message({
-                                    type: 'info',
-                                    message: '已取消'
-                                });
+                                this.$confirm('网络异常，评分未正常保存, 是否继续?', '提示', {
+                                    confirmButtonText: '确定',
+                                    cancelButtonText: '取消',
+                                    type: 'warning'
+                                }).then(() => {
+                                    this.$router.go(-1)
+                                }).catch(() => {
+                                    this.$message({
+                                        type: 'info',
+                                        message: '已取消'
+                                    });
                             });
                         })
                     })
