@@ -240,7 +240,7 @@
                 annotations[0] = thisAnnotation;
                 annotationMap[thisPage] = annotations;
                 annotationInfo.annotationMap=annotationMap;
-                axios.post('http://localhost:8080/annotation/save',{
+                axios.post('http://localhost:8080/annotation/update',{
                     annotationInfo:JSON.stringify(annotationInfo)
                 }).then((response)=>{
                     if(response.data.code!==0){
