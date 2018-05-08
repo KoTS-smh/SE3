@@ -28,8 +28,10 @@ public class DataAnalysisController {
      */
     @RequestMapping("/getTaskMessage")
     public Result getTaskMessage(long taskId){
+
         List<TaskRateMessage> list = new ArrayList<>();
         list = dataAnalysisService.getTaskMessage(taskId);
+        System.out.println(list.size());
         return ResultUtils.success(list);
     }
 

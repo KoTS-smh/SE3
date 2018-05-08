@@ -346,10 +346,11 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
         List<TaskRateMessage> list = new ArrayList<>();
         for (JSONObject aJsonObjectList : jsonObjectList) {
             TaskRateMessage taskRateMessage = new TaskRateMessage();
-            taskRateMessage.setAcceptUserId(aJsonObjectList.getLong("acceptUserId"));
+//            taskRateMessage.setAcceptUserId(aJsonObjectList.getLong("acceptUserId"));
+            taskRateMessage.setTaskOrderId(aJsonObjectList.getLong("taskOrderId"));
             taskRateMessage.setAcceptUserName(aJsonObjectList.getString("acceptUserName"));
-            taskRateMessage.setRate(getCOD(new TaskOrder(aJsonObjectList.getLong("taskId"), aJsonObjectList.getLong("acceptUserId"))));
-//            taskRateMessage.setRate(aJsonObjectList.getDouble("rate"));
+//            taskRateMessage.setRate(getCOD(new TaskOrder(aJsonObjectList.getLong("taskId"), aJsonObjectList.getLong("acceptUserId"))));
+            taskRateMessage.setRate(aJsonObjectList.getDouble("rate"));
             if(aJsonObjectList.getBoolean("submited"))
                 taskRateMessage.setState("待评审");
             else{

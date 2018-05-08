@@ -1,19 +1,11 @@
 package com.sec.server.domain;
 
 public class TaskRateMessage {
-    private long acceptUserId;
     private String acceptUserName;
     private double rate;
     private String state;
     private boolean isSubmitted;
-
-    public long getAcceptUserId() {
-        return acceptUserId;
-    }
-
-    public void setAcceptUserId(long acceptUserId) {
-        this.acceptUserId = acceptUserId;
-    }
+    private long taskOrderId;
 
     public String getAcceptUserName() {
         return acceptUserName;
@@ -45,6 +37,14 @@ public class TaskRateMessage {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public void setTaskOrderId(Long taskOrderId) {
+        this.taskOrderId = taskOrderId;
+    }
+
+    public Long getTaskOrderId() {
+        return taskOrderId;
     }
 }
 

@@ -49,7 +49,7 @@
                 </div>
                 <div class="el-table" style="width: 100%">
                     <el-table :data="selectTable" style="width:100%">
-                        <el-table-column prop="acceptUserId" label="编号" sortable></el-table-column>
+                        <el-table-column prop="taskOrderId" label="编号" sortable></el-table-column>
                         <el-table-column prop="acceptUserName" label="用户名"></el-table-column>
                         <el-table-column prop="rate" label="进度" sortable>
                             <template slot-scope="scope">
@@ -59,7 +59,7 @@
                         <el-table-column prop="state" label="状态"></el-table-column>
                         <el-table-column label="操作">
                             <template slot-scope="scope">
-                                <el-button  type="text" v-show="scope.row.state=='待评审'">评审</el-button>
+                                <el-button  type="text" v-show="scope.row.state=='待评审'" @click="handleRate(scope.row)">评审</el-button>
                                 <el-button  type="text" v-show="scope.row.state!='待评审'" disabled>暂不可操作</el-button>
                             </template>
                         </el-table-column>
@@ -84,7 +84,8 @@ export default {
             select_cate: '',
             //弹出窗口的参数
             totalRate:0,
-            taskName:''
+            taskName:'',
+            taskId:''
         }
     },
     methods: {
@@ -95,6 +96,7 @@ export default {
             this.address = row.address;
             this.dialogVisible = true;
             this.taskName = row.taskname;
+            this.taskId = row.taskId;
             this.getTaskRateMessage(row.taskId);
         },
         calculateTotalRate(){
@@ -103,8 +105,6 @@ export default {
             for(var i = 0;i<tempData.length;i++){
                  tempRate += tempData[i].rate;
             }
-            console.log(tempRate);
-            console.log(tempData.length);
             this.totalRate = ((tempRate/tempData.length)*100).toFixed(2);
         },
         getTaskRateMessage(taskId){
@@ -115,9 +115,50 @@ export default {
                 }
             }).then(response => {
                 self.selectTable = response.data.data;
+                console.log(self.selectTable);
                 self.calculateTotalRate();
             }).catch(error => {
                 self.$message("获取失败");
+            })
+        },
+        handleRate(row){
+            var type;
+            axios.get("http://localhost:8080/task/taskInfo",{
+                "taskId": this.taskId
+            }).then(response=>{
+                type = response.data.data.annotationType;
+                if(type == 'option1'){
+                    this.$router.push({
+                        path: "/annotation/rate/rect", query: {
+                            taskOrderId: row.taskOrderId,
+                            userId:localStorage.getItem("userId")
+                        }
+                    })
+                }
+                else if(type == 'option2'){
+                    this.$router.push({
+                        path: "/annotation/rate/classified", query: {
+                            taskOrderId: row.taskOrderId,
+                            userId:localStorage.getItem("userId")
+                        }
+                    })
+                }
+                else if(type == 'option3'){
+                    this.$router.push({
+                        path: "/annotation/rate/region", query: {
+                            taskOrderId: row.taskOrderId,
+                            userId:localStorage.getItem("userId")
+                        }
+                    })
+                }
+                else{
+                    this.$router.push({
+                        path: "/annotation/rate/all", query: {
+                            taskOrderId: row.taskOrderId,
+                            userId:localStorage.getItem("userId")
+                        }
+                    })
+                }
             })
         },
         handleDelete(index, row){
@@ -211,9 +252,6 @@ export default {
                 console.log(err)
             })
         },
-        toCreate(){
-            this.$router.push("/createTask");
-        }
     },
 
     mounted() {

@@ -117,6 +117,7 @@
                     userId:this.$route.query.userId
                 }
             }).then((response) => {
+                console.log('here')
                 taskOrder=response.data.data;
                 thisPage = taskOrder.lastPic;
                 this.toRateId = taskOrder.acceptUserId;
@@ -146,6 +147,7 @@
                 axios.post('http://localhost:8080/task/taskInfo',{
                         taskId:taskOrder.taskId
                 }).then((response) => {
+                    console.log(response)
                     task = response.data.data;
                     classifiedInfo = task.classifiedInfo;
                     let str = '';

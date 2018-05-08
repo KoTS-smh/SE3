@@ -159,7 +159,7 @@ export default {
           taskLevel: 0,
           imgUrlList: [],
           isFinished: false,
-            classifiedInfo:['','','','']
+          classifiedInfo:['','','','']
         },
         action: 'http://upload.qiniu.com/', // 替换自己的上传链接
         accept: 'image/png, image/jpeg, image/gif, image/jpg, image/bmp',
