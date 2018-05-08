@@ -332,6 +332,8 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
                         JSONObject object = array.getJSONObject(j);
                         long id = 0;
                         id = object.getLong("taskId");
+                        System.out.println("taskid" + taskId);
+                        System.out.println("id" + id);
                         if (id == taskId) {
                             jsonObjectList.add(object);
                         }
@@ -347,7 +349,7 @@ public class DataAnalysisDaoImpl implements DataAnalysisDao {
         for (JSONObject aJsonObjectList : jsonObjectList) {
             TaskRateMessage taskRateMessage = new TaskRateMessage();
             taskRateMessage.setAcceptUserId(aJsonObjectList.getLong("acceptUserId"));
-            taskRateMessage.setAcceptUserName(aJsonObjectList.getString("acceptUserName"));
+            //taskRateMessage.setAcceptUserName(aJsonObjectList.getString("acceptUserName"));
             taskRateMessage.setRate(getCOD(new TaskOrder(aJsonObjectList.getLong("taskId"), aJsonObjectList.getLong("acceptUserId"))));
 //            taskRateMessage.setRate(aJsonObjectList.getDouble("rate"));
             if(aJsonObjectList.getBoolean("submited"))

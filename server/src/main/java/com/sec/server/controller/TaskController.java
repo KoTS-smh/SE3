@@ -11,6 +11,7 @@ import com.sec.server.utils.ReadFile;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,8 +69,11 @@ public class TaskController {
      */
     @RequestMapping("/task/taskInfo")
     public Result getTaskInfo(@RequestBody TaskModel taskModel){
+
         long taskId = taskModel.getTaskId();
         Task task = taskService.getTaskInfo(taskId);
+
+        JSONObject object = new JSONObject(task);
         return ResultUtils.success(task);
     }
 

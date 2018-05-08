@@ -115,6 +115,34 @@
     let tag;
     let thisTag;
     let coordinates = [];
+
+     Draw.prototype.refresh = ()=>{
+        canDraw = true;
+        this.pen.clearRect(0,0,this.penal.width,this.penal.height);
+    };
+
+    Draw.prototype.drawFirst = ()=>{
+        if(thisAnnotation.coordinates.length !== 0){
+            canDraw = false;
+            this.pen.beginPath();
+            let x = thisAnnotation.coordinates[1].x;
+            let y = thisAnnotation.coordinates[1].y;
+            let originX =thisAnnotation.coordinates[0].x;
+            let originY =thisAnnotation.coordinates[0].y;
+            let newOriginX = originX;
+            let newOriginY = originY;
+            if(x < originX){
+                newOriginX = x;
+            }
+            if(y < originY){
+                newOriginY = y;
+            }
+            this.pen.rect(newOriginX,newOriginY,Math.abs(x-originX),Math.abs(y-originY));
+            this.pen.stroke();
+            this.pen.closePath();
+        }
+    }
+
     export default {
         mounted(){
             this.myName = localStorage.getItem("username");
@@ -399,33 +427,7 @@
         this.pen.lineWidth = 1;
     };
 
-    Draw.prototype.refresh = ()=>{
-        canDraw = true;
-        this.pen.clearRect(0,0,this.penal.width,this.penal.height);
-    };
-
-    Draw.prototype.drawFirst = ()=>{
-        if(thisAnnotation.coordinates.length !== 0){
-            canDraw = false;
-            this.pen.beginPath();
-            let x = thisAnnotation.coordinates[1].x;
-            let y = thisAnnotation.coordinates[1].y;
-            let originX =thisAnnotation.coordinates[0].x;
-            let originY =thisAnnotation.coordinates[0].y;
-            let newOriginX = originX;
-            let newOriginY = originY;
-            if(x < originX){
-                newOriginX = x;
-            }
-            if(y < originY){
-                newOriginY = y;
-            }
-            this.pen.rect(newOriginX,newOriginY,Math.abs(x-originX),Math.abs(y-originY));
-            this.pen.stroke();
-            this.pen.closePath();
-        }
-    }
-
+   
 
 </script>
 

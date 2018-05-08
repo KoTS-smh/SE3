@@ -50,7 +50,7 @@
                 <div class="el-table" style="width: 100%">
                     <el-table :data="selectTable" style="width:100%">
                         <el-table-column prop="acceptUserId" label="编号" sortable></el-table-column>
-                        <el-table-column prop="acceptUserName" label="用户名"></el-table-column>
+                        <!-- <el-table-column prop="acceptUserName" label="用户名"></el-table-column> -->
                         <el-table-column prop="rate" label="进度" sortable>
                             <template slot-scope="scope">
                                 <el-progress type="line" :percentage="scope.row.rate*100"></el-progress>
@@ -114,6 +114,7 @@ export default {
                     taskId:taskId
                 }
             }).then(response => {
+                console.log(response);
                 self.selectTable = response.data.data;
                 self.calculateTotalRate();
             }).catch(error => {
@@ -200,7 +201,9 @@ export default {
             var userId = localStorage.getItem("userId");
             axios.post("http://localhost:8080/task/getAllPost", {"userId": userId, "password": ""})
             .then(response => {
+                
                 var mydata = response.data.data;
+                console.log(mydata);
                 var i = 0;
                 for(i = 0;i < mydata.length;++i){
                     mydata[i].endDate = new Date(mydata[i].endDate).Format("yyyy-MM-dd hh:mm:ss");
