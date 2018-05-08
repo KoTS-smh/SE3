@@ -116,7 +116,7 @@
     let thisTag;
     let coordinates = [];
     export default {
-        created(){
+        mounted(){
             this.myName = localStorage.getItem("username");
             if(this.myName == null){
                 this.$router.push("/homepage")
@@ -126,6 +126,8 @@
             }else if(this.$route.query.taskOrderId == null){
                 this.$router.push("/homepage")
             }
+            draw = new Draw();
+            draw.init();
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
                     taskOrderId:this.$route.query.taskOrderId,

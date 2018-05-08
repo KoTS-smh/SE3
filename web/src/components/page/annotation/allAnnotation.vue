@@ -115,7 +115,7 @@
         this.coordinates=coordinates;
     }
     export default {
-      created(){
+      mounted(){
           this.myName = localStorage.getItem("username");
           if(this.myName == null){
               this.$router.push("/homepage")
