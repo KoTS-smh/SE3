@@ -1,0 +1,43 @@
+connection:
+  url: jdbc:mysql://localhost:3306?useUnicode=true&characterEncoding=utf8&useSSL=false
+  username: root
+  password: 1973
+
+
+
+druid:
+
+  initialSize: 1
+
+  minIdle: 1
+
+  maxActive: 10
+
+  maxWait: 10000
+
+  timeBetweenEvictionRunsMillis: 60000
+
+  minEvictableIdleTimeMillis: 300000
+
+  validationQuery: select 'x'
+
+  testWhileIdle: true
+
+  testOnBorrow: false
+
+  testOnReturn: false
+
+  poolPreparedStatements: true
+  maxPoolPreparedStatementPerConnectionSize: 20
+
+  filters: stat,wall
+
+  loginUsername: admin
+
+  loginPassword: 123456
+
+mybatis:
+  mapperLocations: classpath:mapper/*.xml
+  typeAliasesPackage: com.sec.crowdsourcing.domain
+  configuration:
+     map-underscore-to-camel-case: true
