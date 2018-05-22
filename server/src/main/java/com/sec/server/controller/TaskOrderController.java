@@ -1,20 +1,11 @@
 package com.sec.server.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.sec.server.domain.TaskOrder;
 import com.sec.server.model.TaskOrderModel;
-import com.sec.server.model.TaskOrderWraper;
 import com.sec.server.model.UserModel;
-import com.sec.server.utils.ReadFile;
 import com.sec.server.utils.Result;
-import com.sec.server.utils.ResultUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import java.util.List;
 
 @RestController
 public class TaskOrderController {

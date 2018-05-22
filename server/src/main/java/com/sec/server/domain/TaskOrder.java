@@ -4,7 +4,6 @@ package com.sec.server.domain;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sec.server.utils.Path;
-import com.sec.server.utils.ReadFile;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -15,10 +14,9 @@ public class TaskOrder {
     private long taskOrderId;
     private long taskId;
     private long acceptUserId;
-    private String acceptUserName;
     private boolean submited;
     private int lastPic;
-    private int degreeOfCompletion;
+    private int degreeOfCompletion;//zuihaogaimingzi
     private int rate;
     private long annotationId;
     private Date beginDate;
@@ -26,39 +24,6 @@ public class TaskOrder {
 
     public TaskOrder(){}
 
-    public TaskOrder(long taskId, long acceptUserId){
-        this.taskId = taskId;
-        this.acceptUserId = acceptUserId;
-        String path = Path.taskOrderPath + acceptUserId + ".json";
-        File file = new File(path);
-        if(file.exists()){
-            try {
-                String content = FileUtils.readFileToString(file,"utf-8");
-                com.alibaba.fastjson.JSONArray jsonArray = JSON.parseArray(content);
-                if(jsonArray.size()==0){
-                    this.taskOrderId = 0;
-                }else {
-                    JSONObject object = jsonArray.getJSONObject(jsonArray.size() - 1);
-                    long length = object.getLong("taskOrderId");
-                    this.taskOrderId = length + 1;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }else {
-            this.taskOrderId = 0;
-        }
-
-        this.submited = false;
-        this.lastPic = 0;
-        this.degreeOfCompletion = 0;
-        this.rate = -1;
-        this.annotationId = 0;
-
-        Task task = ReadFile.getTask(taskId);
-        this.beginDate = task.getBeginDate();
-        this.endDate = task.getEndDate();
-    }
 
     public Date getEndDate() {
         return endDate;
@@ -141,11 +106,4 @@ public class TaskOrder {
         this.submited = submited;
     }
 
-    public String getAcceptUserName() {
-        return acceptUserName;
-    }
-
-    public void setAcceptUserName(String acceptUserName) {
-        this.acceptUserName = acceptUserName;
-    }
 }

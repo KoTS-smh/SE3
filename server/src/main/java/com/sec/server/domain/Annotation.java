@@ -4,11 +4,13 @@ import java.util.List;
 
 public class Annotation {
 
+    private int taskOrderId;
+
+    private int pictureNum;
+
     private String sentence;
 
-    private List<String> words;
-
-    private List<Coordinate> coordinates;
+    private String coordinates;//json str
 
     public String getSentence() {
         return sentence;
@@ -18,19 +20,12 @@ public class Annotation {
         this.sentence = sentence;
     }
 
-    public List<Coordinate> getCoordinates() {
+
+    public String getCoordinates() {
         return coordinates;
     }
 
-    public void setCoordinates(List<Coordinate> coordinates) {
+    public void setCoordinates(String coordinates) {
         this.coordinates = coordinates;
-    }
-
-    public List<String> getWords() {
-        return words;
-    }
-
-    public void setWords(List<String> words) {
-        this.words = words;
     }
 }

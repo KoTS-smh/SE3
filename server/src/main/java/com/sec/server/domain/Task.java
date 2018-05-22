@@ -9,20 +9,18 @@ import java.util.List;
 public class Task {
     private long taskId;
     private long postUserId;
-    private String taskname;
+    private String taskName;
     private String taskInfo;
-    private List<String> imgUrlList;
     private AnnotationType annotationType;
-    private List<String> classifiedInfo;
-    @JSONField(format="yyyy-MM-dd HH:mm:ss")
+    private String classifiedInfo;//gai cheng str
     private Date beginDate;
-    @JSONField (format="yyyy-MM-dd HH:mm:ss")
     private Date endDate;
     private int totalPoints;
-    private List<Long> acceptUserIds;
     private int taskLevel;
     private int maxParticipator;
     private boolean isFinished;
+    private int viewedTimes;
+    private int reward;
 
     public long getTaskId() {
         return taskId;
@@ -48,36 +46,12 @@ public class Task {
         this.taskInfo = taskInfo;
     }
 
-    public String getTaskname() {
-        return taskname;
-    }
-
-    public void setTaskname(String taskname) {
-        this.taskname = taskname;
-    }
-
-    public List<String> getImgUrlList() {
-        return imgUrlList;
-    }
-
-    public void setImgUrlList(List<String> imgUrlList) {
-        this.imgUrlList = imgUrlList;
-    }
-
     public AnnotationType getAnnotationType() {
         return annotationType;
     }
 
     public void setAnnotationType(AnnotationType annotationType) {
         this.annotationType = annotationType;
-    }
-
-    public List<String> getClassifiedInfo() {
-        return classifiedInfo;
-    }
-
-    public void setClassifiedInfo(List<String> classifiedInfo) {
-        this.classifiedInfo = classifiedInfo;
     }
 
     public Date getBeginDate() {
@@ -120,19 +94,43 @@ public class Task {
         this.maxParticipator = maxParticipator;
     }
 
-    public List<Long> getAcceptUserIds() {
-        return acceptUserIds;
-    }
-
-    public void setAcceptUserIds(List<Long> acceptUserIds) {
-        this.acceptUserIds = acceptUserIds;
-    }
-
     public boolean isFinished() {
         return isFinished;
     }
 
     public void setFinished(boolean finished) {
         isFinished = finished;
+    }
+
+    public int getViewedTimes() {
+        return viewedTimes;
+    }
+
+    public void setViewedTimes(int viewedTimes) {
+        this.viewedTimes = viewedTimes;
+    }
+
+    public int getReward() {
+        return reward;
+    }
+
+    public void setReward(int reward) {
+        this.reward = reward;
+    }
+
+    public String getClassifiedInfo() {
+        return classifiedInfo;
+    }
+
+    public void setClassifiedInfo(String classifiedInfo) {
+        this.classifiedInfo = classifiedInfo;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
     }
 }

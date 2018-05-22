@@ -1,4 +1,4 @@
-package com.sec.server.domain;
+package com.sec.server.model;
 
 public class SystemAdministratorMessage {
      private int userNumber;
