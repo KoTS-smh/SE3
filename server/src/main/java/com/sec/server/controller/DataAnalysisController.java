@@ -4,7 +4,6 @@ import com.sec.server.domain.SystemAdministratorMessage;
 import com.sec.server.domain.TaskRateMessage;
 import com.sec.server.model.PersonalDataModel;
 import com.sec.server.model.UserModel;
-import com.sec.server.service.DataAnalysisService;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,8 +16,8 @@ import java.util.List;
 
 @RestController
 public class DataAnalysisController {
-    @Resource(name = "dataAnalysisService")
-    private DataAnalysisService dataAnalysisService;
+//    @Resource(name = "dataAnalysisService")
+//    private DataAnalysisService dataAnalysisService;
 
     /**
      * 众包发起者获取任务的完成情况
@@ -29,10 +28,11 @@ public class DataAnalysisController {
     @RequestMapping("/getTaskMessage")
     public Result getTaskMessage(long taskId){
 
-        List<TaskRateMessage> list = new ArrayList<>();
-        list = dataAnalysisService.getTaskMessage(taskId);
-        System.out.println(list.size());
-        return ResultUtils.success(list);
+//        List<TaskRateMessage> list = new ArrayList<>();
+//        list = dataAnalysisService.getTaskMessage(taskId);
+//        System.out.println(list.size());
+//        return ResultUtils.success(list);
+        return null;
     }
 
     /**
@@ -45,8 +45,9 @@ public class DataAnalysisController {
      */
     @RequestMapping("/getSystemMessage")
     public Result getSystemMessage(){
-        SystemAdministratorMessage message = dataAnalysisService.getSystemMessage();
-        return ResultUtils.success(message);
+//        SystemAdministratorMessage message = dataAnalysisService.getSystemMessage();
+//        return ResultUtils.success(message);
+        return null;
     }
 
     /**
@@ -56,9 +57,10 @@ public class DataAnalysisController {
      */
     @RequestMapping("/personalData")
     public Result getPersonalData(@RequestBody UserModel userModel) {
-        long userId = userModel.getUserId();
-        PersonalDataModel personalDataModel = dataAnalysisService.getPersonalData(userId);
-        return ResultUtils.success(personalDataModel);
+//        long userId = userModel.getUserId();
+//        PersonalDataModel personalDataModel = dataAnalysisService.getPersonalData(userId);
+//        return ResultUtils.success(personalDataModel);
+        return null;
     }
 
     /**
@@ -68,6 +70,8 @@ public class DataAnalysisController {
      */
     @RequestMapping("/annotation/tags")
     public Result getTags(long taskId){
-        return ResultUtils.success(dataAnalysisService.getAnnotationTag(taskId));
+
+//       return ResultUtils.success(dataAnalysisService.getAnnotationTag(taskId));
+        return null;
     }
 }

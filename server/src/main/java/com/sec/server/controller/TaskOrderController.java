@@ -6,7 +6,6 @@ import com.sec.server.domain.TaskOrder;
 import com.sec.server.model.TaskOrderModel;
 import com.sec.server.model.TaskOrderWraper;
 import com.sec.server.model.UserModel;
-import com.sec.server.service.TaskOrderService;
 import com.sec.server.utils.ReadFile;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
@@ -19,8 +18,8 @@ import java.util.List;
 
 @RestController
 public class TaskOrderController {
-    @Resource(name = "taskOrderService")
-    private TaskOrderService taskOrderService;
+//    @Resource(name = "taskOrderService")
+//    private TaskOrderService taskOrderService;
 
     /**
      * 获取一个任务订单
@@ -30,8 +29,9 @@ public class TaskOrderController {
      */
     @RequestMapping("/taskOrder/orderInfo")
     public Result getTaskOrder(long taskOrderId,long userId){
-        TaskOrder taskOrder = taskOrderService.getTaskOrderById(taskOrderId,userId);
-        return ResultUtils.success(taskOrder);
+//        TaskOrder taskOrder = taskOrderService.getTaskOrderById(taskOrderId,userId);
+//        return ResultUtils.success(taskOrder);
+        return null;
     }
 
     /**
@@ -41,9 +41,10 @@ public class TaskOrderController {
      */
     @RequestMapping("/taskOrder/getAll")
     public Result getAllTaskOrder(@RequestBody UserModel userModel) {
-        long userId = userModel.getUserId();
-        List<TaskOrderWraper> list = taskOrderService.getAllTaskOrder(userId);
-        return ResultUtils.success(list);
+//        long userId = userModel.getUserId();
+//        List<TaskOrderWraper> list = taskOrderService.getAllTaskOrder(userId);
+//        return ResultUtils.success(list);
+        return null;
     }
 
     /**
@@ -53,11 +54,12 @@ public class TaskOrderController {
      */
     @RequestMapping("/taskOrder/createTaskOrder")
     public Result createTaskOrder(@RequestBody TaskOrderModel taskOrderModel){
-        long taskId = taskOrderModel.getTaskId();
-        long userId = taskOrderModel.getUserId();
-        TaskOrder taskOrder = new TaskOrder(taskId, userId);
-        taskOrderService.createTaskOrder(taskOrder);
-        return ResultUtils.success();
+//        long taskId = taskOrderModel.getTaskId();
+//        long userId = taskOrderModel.getUserId();
+//        TaskOrder taskOrder = new TaskOrder(taskId, userId);
+//        taskOrderService.createTaskOrder(taskOrder);
+//        return ResultUtils.success();
+        return null;
     }
 
     /**
@@ -67,9 +69,10 @@ public class TaskOrderController {
      */
     @RequestMapping("/taskOrder/update")
     public Result updateTaskOrder(@RequestBody String taskOrder){
-        JSONObject jsonObject = JSON.parseObject(taskOrder);
-        taskOrderService.updateTaskOrder(JSON.toJSONString(jsonObject.getJSONObject("taskOrder")));
-        return ResultUtils.success();
+//        JSONObject jsonObject = JSON.parseObject(taskOrder);
+//        taskOrderService.updateTaskOrder(JSON.toJSONString(jsonObject.getJSONObject("taskOrder")));
+//        return ResultUtils.success();
+        return null;
     }
 
     /**
@@ -80,8 +83,9 @@ public class TaskOrderController {
      */
     @RequestMapping("/taskOrder/delete")
     public Result deleteTaskOrder(long taskOrderId,long userId){
-        taskOrderService.deleteTaskOrder(taskOrderId,userId);
-        return ResultUtils.success();
+//        taskOrderService.deleteTaskOrder(taskOrderId,userId);
+//        return ResultUtils.success();
+        return null;
     }
 
     /**
@@ -91,9 +95,10 @@ public class TaskOrderController {
      */
     @RequestMapping("/taskOrder/getAllSubmited")
     public Result getAllSubmitted(@RequestBody UserModel userModel){
-        long userId = userModel.getUserId();
-        List<TaskOrder> list = ReadFile.getAllSubmited(userId);
-        return ResultUtils.success(list);
+//        long userId = userModel.getUserId();
+//        List<TaskOrder> list = ReadFile.getAllSubmited(userId);
+//        return ResultUtils.success(list);
+        return null;
     }
 
 

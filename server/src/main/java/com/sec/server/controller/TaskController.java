@@ -6,7 +6,6 @@ import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
 import com.sec.server.model.TaskModel;
 import com.sec.server.model.UserModel;
-import com.sec.server.service.TaskService;
 import com.sec.server.utils.ReadFile;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
@@ -21,8 +20,8 @@ import java.util.List;
 
 @RestController
 public class TaskController {
-    @Resource(name = "taskService")
-    private TaskService taskService;
+//    @Resource(name = "taskService")
+//    private TaskService taskService;
 
     /**
      * 获得用户发起的所有任务
@@ -31,9 +30,9 @@ public class TaskController {
      */
     @RequestMapping("/task/getAllPost")
     public Result getAllPostTask(@RequestBody UserModel userModel){
-        long userId = userModel.getUserId();
-        List<Task> list = taskService.getAllPost(userId);
-        return ResultUtils.success(list);
+//        long userId = userModel.getUserId();
+//        List<Task> list = taskService.getAllPost(userId);
+        return null;
     }
 
     /**
@@ -43,10 +42,11 @@ public class TaskController {
      */
     @RequestMapping("/task/getAllFinished")
     public Result getAllFinishedTask(@RequestBody UserModel userModel) {
-        long userId = userModel.getUserId();
-        List<Task> list  = ReadFile.getAllFinished(userId);
-        JSONArray array = new JSONArray(list);
-        return ResultUtils.success(array.toString());
+//        long userId = userModel.getUserId();
+//        List<Task> list  = ReadFile.getAllFinished(userId);
+//        JSONArray array = new JSONArray(list);
+//        return ResultUtils.success(array.toString());
+        return null;
     }
 
     /**
@@ -56,10 +56,11 @@ public class TaskController {
      */
     @RequestMapping("/task/getAllunFinished")
     public Result getAllunFinishedTask(@RequestBody UserModel userModel) {
-        long userId = userModel.getUserId();
-        List<Task> list  = ReadFile.getAllunFinished(userId);
-        JSONArray array = new JSONArray(list);
-        return ResultUtils.success(array.toString());
+//        long userId = userModel.getUserId();
+//        List<Task> list  = ReadFile.getAllunFinished(userId);
+//        JSONArray array = new JSONArray(list);
+//        return ResultUtils.success(array.toString());
+        return null;
     }
 
     /**
@@ -70,11 +71,12 @@ public class TaskController {
     @RequestMapping("/task/taskInfo")
     public Result getTaskInfo(@RequestBody TaskModel taskModel){
 
-        long taskId = taskModel.getTaskId();
-        Task task = taskService.getTaskInfo(taskId);
-
-        JSONObject object = new JSONObject(task);
-        return ResultUtils.success(task);
+//        long taskId = taskModel.getTaskId();
+//        Task task = taskService.getTaskInfo(taskId);
+//
+//        JSONObject object = new JSONObject(task);
+//        return ResultUtils.success(task);
+        return null;
     }
 
     /**
@@ -84,12 +86,13 @@ public class TaskController {
      */
     @RequestMapping("/task/create")
     public Result createTask(@RequestBody String task){
-        try {
-            taskService.createTask(task);
-        }catch (Exception e){
-            throw new ResultException(ResultCode.UNKNOWN_ERROR);
-        }
-        return ResultUtils.success();
+//        try {
+//            taskService.createTask(task);
+//        }catch (Exception e){
+//            throw new ResultException(ResultCode.UNKNOWN_ERROR);
+//        }
+//        return ResultUtils.success();
+        return null;
     }
 
     /**
@@ -99,13 +102,14 @@ public class TaskController {
      */
     @RequestMapping("/task/update")
     public Result updateTask(@RequestBody String task){
-        task = task.substring(1, task.length() - 1);
-        try {
-            taskService.updateTask(task);
-        }catch (Exception e){
-            throw new ResultException(ResultCode.UNKNOWN_ERROR);
-        }
-        return ResultUtils.success();
+//        task = task.substring(1, task.length() - 1);
+//        try {
+//            taskService.updateTask(task);
+//        }catch (Exception e){
+//            throw new ResultException(ResultCode.UNKNOWN_ERROR);
+//        }
+//        return ResultUtils.success();
+        return null;
     }
 
     /**
@@ -115,12 +119,13 @@ public class TaskController {
      */
     @RequestMapping("/task/delete")
     public Result deleteTask(long taskId){
-        try {
-            taskService.deleteTask(taskId);
-        }catch (Exception e){
-            throw new ResultException(ResultCode.UNKNOWN_ERROR);
-        }
-        return ResultUtils.success();
+//        try {
+//            taskService.deleteTask(taskId);
+//        }catch (Exception e){
+//            throw new ResultException(ResultCode.UNKNOWN_ERROR);
+//        }
+//        return ResultUtils.success();
+        return null;
     }
 
 }

@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.HttpMessageConverter;
 
 @SpringBootApplication
-@MapperScan("com.sec.server.Dao")
+@MapperScan("com.sec.server.dao")
 public class ServerApplication {
 
     public static void main(String[] args) {

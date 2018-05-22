@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -29,10 +30,22 @@ public class UserController {
      */
     @RequestMapping("/user/login")
     public Result login(@RequestBody UserModel userModel) {
-        System.out.print(userModel.getUsername());
-        User user = userService.login(userModel.getUsername(),userModel.getPassword());
-        System.out.print(user.getUsername());
-        return ResultUtils.success(user);
+//        System.out.println(userModel.getUsername());
+//        System.out.print(userModel.getUsername());
+//        User user = userService.login(userModel.getUsername(),userModel.getPassword());
+//        System.out.print(user.getUsername());
+//        return ResultUtils.success(user);
+        String username = userModel.getUsername();
+        String password = userModel.getPassword();
+        User user = userService.login(username, password);
+
+        if(user != null) {
+            return ResultUtils.success(user);
+        }else{
+            throw new ResultException(ResultCode.UNKNOWN_ERROR);
+        }
+
+
     }
 
     /**
@@ -42,7 +55,6 @@ public class UserController {
      */
     @RequestMapping("/user/register")
     public Result register(@RequestBody UserModel userModel){
-        System.out.print(userModel.getUsername());
         userService.register(userModel);
         return ResultUtils.success();
     }
@@ -54,7 +66,9 @@ public class UserController {
      */
     @RequestMapping("/user/getUser")
     public Result getUser(long userId){
-        User user = userService.get(userId);
+//        User user = userService.get(userId);
+//        return ResultUtils.success(user);
+        User user = userService.getUserById(userId);
         return ResultUtils.success(user);
     }
 
@@ -65,8 +79,9 @@ public class UserController {
      */
     @RequestMapping("/user/update")
     public Result update(@RequestBody UserModel userModel){
-        User user = userService.updateUser(userModel);
-        return ResultUtils.success(user);
+        User user = new User(userModel);
+        User outUser = userService.updateUser(user);
+        return ResultUtils.success(outUser);
     }
 
     /**
@@ -76,6 +91,8 @@ public class UserController {
      */
     @RequestMapping("/user/delete")
     public Result delete(long userId){
+//        userService.deleteUser(userId);
+//        return ResultUtils.success();
         userService.deleteUser(userId);
         return ResultUtils.success();
     }
@@ -90,9 +107,12 @@ public class UserController {
     }
 
     @RequestMapping("/user/logout")
-    public Result logout(String username){
-        System.out.println("here");
-        userService.logout(username);
+    public Result logout(long userId){
+//        System.out.println("here");
+//        userService.logout(username);
+//        return ResultUtils.success();
+        System.out.println("this is userID " + userId);
+        userService.logout(userId);
         return ResultUtils.success();
     }
 

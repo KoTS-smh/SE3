@@ -28,7 +28,7 @@
                         <el-select v-model="form.education" placeholder="请选择">
                             <el-option key="juniorMiddle" label="初中" value="juniorMiddle"></el-option>
                             <el-option key="seniorMiddle" label="高中" value="seniorMiddle"></el-option>
-                            <el-option key="juniorCollege" label="大学专科" value="junior"></el-option>
+                            <el-option key="juniorCollege" label="大学专科" value="juniorCollege"></el-option>
                             <el-option key="undergraduate" label="大学本科" value="undergraduate"></el-option>
                             <el-option key="master" label="硕士" value="master"></el-option>
                             <el-option key="doctor" label="博士" value="doctor"></el-option>
@@ -36,16 +36,20 @@
                     </el-form-item>
                     <!--手机号修改区域-->
                     <el-form-item label="手机号">
-                        <el-input v-model="form.tel_phone"></el-input>
+                        <el-input v-model="form.telPhone"></el-input>
                     </el-form-item>
                     <!--邮箱输入区域-->
                     <el-form-item label="邮箱">
-                        <el-input v-model="form.Email">
+                        <el-input v-model="form.email">
                         </el-input>
                     </el-form-item>
                     <!--积分显示区域-->
                     <el-form-item label="积分">
                         {{form.point}}
+                    </el-form-item>
+                    <!--余额显示区域-->
+                    <el-form-item label="余额">
+                        {{form.balance}}
                     </el-form-item>
                     <!--等级显示区域-->
                     <el-form-item label="等级">
@@ -79,11 +83,12 @@
                     education: '',
                     sex: '',
                     description: '',
-                    tel_phone:'',
-                    Email:'',
+                    telPhone:'',
+                    email:'',
                     point:'',
                     userLevel:'',
-                    password:''
+                    password:'',
+                    balance: ''
                 }
             }
         },
@@ -107,6 +112,7 @@
                         userId: userId
                     }
                 }).then(response => {
+                    console.log(response);
                     this.form = response.data.data;
                 }).catch(()=>{
                     this.$message('网络异常！');
@@ -116,6 +122,7 @@
                 const self = this;
 
                 axios.post('http://localhost:8080/user/update',this.form).then(response => {
+                    console.log(response);
                     self.$message('修改成功');
                 }).catch( (err)=> {
                     self.$message('修改失败');

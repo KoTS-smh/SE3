@@ -7,8 +7,6 @@ import com.sec.server.enums.Education;
 import com.sec.server.enums.Sex;
 import com.sec.server.enums.UserLevel;
 import junit.framework.TestCase;
-import org.apache.juli.logging.Log;
-import org.apache.juli.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -75,7 +73,7 @@ public class UserModuleTest extends TestCase {
         User userInfo = new User();
         userInfo.setUsername("wrs333");
         userInfo.setPassword("0");
-        userInfo.setTel_phone("110");
+        userInfo.setTelPhone("110");
         //转成json数据
         String requestJson = com.alibaba.fastjson.JSONObject.toJSONString(userInfo);
         String responseString = mockMvc.perform(
@@ -98,7 +96,7 @@ public class UserModuleTest extends TestCase {
         //设置对象参数
         User user = new User();
         user.setUserId(3);
-        user.setTel_phone("111");
+        user.setTelPhone("111");
         user.setEmail("www");
         user.setUsername("wrs333");
         user.setPassword("0");

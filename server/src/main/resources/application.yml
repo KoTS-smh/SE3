@@ -1,7 +1,7 @@
 connection:
   url: jdbc:mysql://localhost:3306?useUnicode=true&characterEncoding=utf8&useSSL=false
   username: root
-  password: 1973
+  password: 123456
 
 
 
@@ -41,3 +41,7 @@ mybatis:
   typeAliasesPackage: com.sec.crowdsourcing.domain
   configuration:
      map-underscore-to-camel-case: true
+     default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+
+
+

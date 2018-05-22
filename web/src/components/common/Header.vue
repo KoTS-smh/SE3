@@ -34,7 +34,8 @@
                 if(command === 'logout'){
                     axios.get('http://localhost:8080/user/logout', {
                         params:{
-                            username: localStorage.getItem("username")
+                            // username: localStorage.getItem("username")
+                            userId: localStorage.getItem("userId")
                         }
                     }).then(response => {
                         localStorage.removeItem("userId");

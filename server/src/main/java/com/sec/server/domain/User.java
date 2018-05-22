@@ -4,19 +4,38 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sec.server.enums.Education;
 import com.sec.server.enums.Sex;
 import com.sec.server.enums.UserLevel;
+import com.sec.server.model.UserModel;
+
 
 public class User {
+
     private long userId;
     private String username;
     private String password;
     private UserLevel userLevel;
     private int point;
-    private String tel_phone;
+    private String telPhone;
     private Sex sex;
     private Education education;
     private String description;
     private String Email;
+    //余额
+    private double balance;
 
+    public User() {
+    }
+
+    public User(UserModel userModel) {
+        if(userModel.getUserId() != 0)
+            this.userId = userModel.getUserId();
+        this.username = userModel.getUsername();
+        this.password = userModel.getPassword();
+        this.telPhone = userModel.getTelPhone();
+        this.sex = userModel.getSex();
+        this.education = userModel.getEducation();
+        this.description = userModel.getDescription();
+        this.Email = userModel.getEmail();
+    }
 
     public long getUserId() {
         return userId;
@@ -91,11 +110,19 @@ public class User {
         Email = email;
     }
 
-    public String getTel_phone() {
-        return tel_phone;
+    public String getTelPhone() {
+        return telPhone;
     }
 
-    public void setTel_phone(String tel_phone) {
-        this.tel_phone = tel_phone;
+    public void setTelPhone(String telPhone) {
+        this.telPhone = telPhone;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 }

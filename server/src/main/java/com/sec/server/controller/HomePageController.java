@@ -15,8 +15,9 @@ public class HomePageController {
 
     @RequestMapping("/getContent")
     public Result getContent() {
-        List<Picture_CardModel> modelList = ReadFile.getAllUnFinishTasks();
-        JSONArray array = new JSONArray(modelList);
-        return ResultUtils.success(array.toString());
+//        List<Picture_CardModel> modelList = ReadFile.getAllUnFinishTasks();
+//        JSONArray array = new JSONArray(modelList);
+//        return ResultUtils.success(array.toString());
+        return null;
     }
 }

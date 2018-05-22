@@ -10,7 +10,7 @@ public class UserModel {
     private long userId;
     private String username;
     private String password;
-    private String tel_phone;
+    private String telPhone;
     private int point;
     private Sex sex;
     private Education education;
@@ -37,8 +37,8 @@ public class UserModel {
     }
 
     @NotBlank(message = "电话号码不能为空")
-    public String getTel_phone() {
-        return tel_phone;
+    public String getTelPhone() {
+        return telPhone;
     }
 
     public Sex getSex() {
@@ -89,8 +89,8 @@ public class UserModel {
         this.userLevel = userLevel;
     }
 
-    public void setTel_phone(String tel_phone) {
-        this.tel_phone = tel_phone;
+    public void setTelPhone(String telPhone) {
+        this.telPhone = telPhone;
     }
 
     @NotBlank(message = "用户Id不能为空")

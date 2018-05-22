@@ -16,12 +16,13 @@ public class SearchController {
 
     @RequestMapping("search/getTask")
     public Result searchTask(String message, String taskType){
-        System.out.println("ffffffhere");
-        System.out.println(message);
-        System.out.println(taskType);
-        List<Picture_CardModel> list = ReadFile.searchTask(message, taskType);
-        JSONArray array = new JSONArray(list);
-        return ResultUtils.success(array.toString());
+//        System.out.println("ffffffhere");
+//        System.out.println(message);
+//        System.out.println(taskType);
+//        List<Picture_CardModel> list = ReadFile.searchTask(message, taskType);
+//        JSONArray array = new JSONArray(list);
+//        return ResultUtils.success(array.toString());
+        return null;
     }
 
     @RequestMapping("search/getUser")

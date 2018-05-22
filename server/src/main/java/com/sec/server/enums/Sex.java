@@ -1,6 +1,9 @@
 package com.sec.server.enums;
 
-public enum Sex {
+import java.util.HashMap;
+import java.util.Map;
+
+public enum Sex{
     Man,
-    Woman
+    Woman;
 }

@@ -65,7 +65,15 @@
                 console.log(username);
                 axios.post('http://localhost:8080/user/login', this.ruleForm).then(function(response){
                    if(response.data.code !== 0){
-                       self.open();
+                       if(response.data.code == 12450) {
+                           self.$message('用户已登陆')
+                       }else if( response.data.code == 10010) {
+                           self.$message('用户不存在')
+                       }else if (response.data.code == 10001) {
+                           self.$message('密码错误')
+                       }else {
+                           self.$message('登陆失败，未知错误')
+                       }
                    }else{
                        localStorage.setItem("username", username);
                        localStorage.setItem("userId", response.data.data.userId);
