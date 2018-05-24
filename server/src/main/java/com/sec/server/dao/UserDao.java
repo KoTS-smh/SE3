@@ -2,8 +2,10 @@ package com.sec.server.dao;
 
 import com.sec.server.domain.User;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Repository;
 
 @Mapper
+@Repository
 public interface UserDao {
     @Insert("insert into MRGSDB.users(userId,email,description,education,password," +
             "point,sex,telPhone,userLevel,username) values (#{userId},#{email}," +

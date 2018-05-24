@@ -18,6 +18,7 @@ public class CreateToken {
         }catch (Exception e){
             e.printStackTrace();
         }
+        System.out.println(token);
         return token;
     }
 
@@ -27,7 +28,7 @@ public class CreateToken {
         String secretKey = "2vWVIw3WJfk314YN3e24ZnixdJMbyoZ14FXiqF--";
 
         String token = CreateToken.uploadToken(bucket, accessKey, secretKey);
-        System.out.println(token);
+
 
     }
 }

@@ -1,18 +1,21 @@
 package com.sec.server.domain;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.sec.server.enums.AnnotationType;
+import com.sec.server.exception.ResultException;
+import com.sec.server.model.TaskModel;
+import com.sec.server.utils.StringList2String;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 public class Task {
     private long taskId;
     private long postUserId;
-    private String taskName;
+    private String taskname;
     private String taskInfo;
     private AnnotationType annotationType;
-    private String classifiedInfo;//gai cheng str
+    private String classifiedInfo;//改成str
     private Date beginDate;
     private Date endDate;
     private int totalPoints;
@@ -21,6 +24,40 @@ public class Task {
     private boolean isFinished;
     private int viewedTimes;
     private int reward;
+
+    public Task(){}
+
+    public Task(TaskModel taskModel) {
+        this.postUserId = taskModel.getPostUserId();
+        this.taskname = taskModel.getTaskname();
+        this.taskInfo = taskModel.getTaskInfo();
+        this.annotationType = taskModel.getAnnotationType();
+
+        if(taskModel.getClassifiedInfo().get(0).equals("")){
+            this.classifiedInfo = "";
+        }
+        else
+        {
+            this.classifiedInfo = StringList2String.join(",", taskModel.getClassifiedInfo());
+        }
+
+
+        try {
+            this.beginDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(taskModel.getBeginDate());
+            this.endDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(taskModel.getEndDate());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new ResultException("时间格式错误", 12120);
+        }
+
+        this.totalPoints = taskModel.getTotalPoints();
+        this.taskLevel = taskModel.getTaskLevel();
+        this.maxParticipator = taskModel.getMaxParticipator();
+        this.isFinished = taskModel.isFinished();
+        this.viewedTimes = 0;
+        this.reward = 0;
+
+    }
 
     public long getTaskId() {
         return taskId;
@@ -126,11 +163,11 @@ public class Task {
         this.classifiedInfo = classifiedInfo;
     }
 
-    public String getTaskName() {
-        return taskName;
+    public String getTaskname() {
+        return taskname;
     }
 
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
+    public void setTaskname(String taskname) {
+        this.taskname = taskname;
     }
 }

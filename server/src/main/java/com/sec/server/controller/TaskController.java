@@ -1,16 +1,25 @@
 package com.sec.server.controller;
 
+import com.sec.server.domain.Task;
 import com.sec.server.model.TaskModel;
 import com.sec.server.model.UserModel;
+import com.sec.server.service.TaskService;
 import com.sec.server.utils.Result;
+import com.sec.server.utils.ResultUtils;
+import org.json.JSONArray;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 public class TaskController {
 //    @Resource(name = "taskService")
 //    private TaskService taskService;
+    @Resource(name = "taskService")
+    private TaskService taskService;
 
     /**
      * 获得用户发起的所有任务
@@ -21,7 +30,9 @@ public class TaskController {
     public Result getAllPostTask(@RequestBody UserModel userModel){
 //        long userId = userModel.getUserId();
 //        List<Task> list = taskService.getAllPost(userId);
-        return null;
+        long postUserId = userModel.getUserId();
+        List<Task> list = taskService.getAllPostTask(postUserId);
+        return ResultUtils.success(list);
     }
 
     /**
@@ -31,11 +42,9 @@ public class TaskController {
      */
     @RequestMapping("/task/getAllFinished")
     public Result getAllFinishedTask(@RequestBody UserModel userModel) {
-//        long userId = userModel.getUserId();
-//        List<Task> list  = ReadFile.getAllFinished(userId);
-//        JSONArray array = new JSONArray(list);
-//        return ResultUtils.success(array.toString());
-        return null;
+        long postUserId = userModel.getUserId();
+        List<Task> list = taskService.getAllFinishedTask(postUserId);
+        return ResultUtils.success(list);
     }
 
     /**
@@ -45,11 +54,9 @@ public class TaskController {
      */
     @RequestMapping("/task/getAllunFinished")
     public Result getAllunFinishedTask(@RequestBody UserModel userModel) {
-//        long userId = userModel.getUserId();
-//        List<Task> list  = ReadFile.getAllunFinished(userId);
-//        JSONArray array = new JSONArray(list);
-//        return ResultUtils.success(array.toString());
-        return null;
+        long postUserId = userModel.getUserId();
+        List<Task> list = taskService.getAllunFinishedTask(postUserId);
+        return ResultUtils.success(list);
     }
 
     /**
@@ -65,40 +72,45 @@ public class TaskController {
 //
 //        JSONObject object = new JSONObject(task);
 //        return ResultUtils.success(task);
-        return null;
+        long taskId = taskModel.getTaskId();
+        Task task = taskService.getTask(taskId);
+
+        return ResultUtils.success(task);
     }
 
     /**
      * 新建一个任务
-     * @param task 任务信息
      * @return 返回操作信息
      */
     @RequestMapping("/task/create")
-    public Result createTask(@RequestBody String task){
+    public Result createTask(@RequestBody TaskModel taskModel){
 //        try {
 //            taskService.createTask(task);
 //        }catch (Exception e){
 //            throw new ResultException(ResultCode.UNKNOWN_ERROR);
 //        }
 //        return ResultUtils.success();
-        return null;
+        List<String> urlList = taskModel.getImgUrlList();
+        //todo save urls
+
+        Task task = new Task(taskModel);
+        System.out.println(taskModel.getTaskInfo());
+        System.out.println("in controller " + task.getTaskInfo());
+
+        taskService.createTask(task);
+        return ResultUtils.success();
     }
 
     /**
      * 修改任务信息
-     * @param task 任务信息
+     * @param taskModel 任务信息
      * @return 返回操作信息
      */
     @RequestMapping("/task/update")
-    public Result updateTask(@RequestBody String task){
-//        task = task.substring(1, task.length() - 1);
-//        try {
-//            taskService.updateTask(task);
-//        }catch (Exception e){
-//            throw new ResultException(ResultCode.UNKNOWN_ERROR);
-//        }
-//        return ResultUtils.success();
-        return null;
+    public Result updateTask(@RequestBody TaskModel taskModel){
+        Task task = new Task(taskModel);
+        taskService.updataTask(task);
+        return ResultUtils.success();
     }
 
     /**
@@ -108,13 +120,8 @@ public class TaskController {
      */
     @RequestMapping("/task/delete")
     public Result deleteTask(long taskId){
-//        try {
-//            taskService.deleteTask(taskId);
-//        }catch (Exception e){
-//            throw new ResultException(ResultCode.UNKNOWN_ERROR);
-//        }
-//        return ResultUtils.success();
-        return null;
+        taskService.deleteTask(taskId);
+        return ResultUtils.success();
     }
 
 }

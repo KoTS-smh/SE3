@@ -15,7 +15,7 @@
             <el-button type="primary"  @click="newTask">接取任务</el-button>
         </div>
         <el-table :data="tableData"  style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange">
-            <el-table-column prop="taskName" label="任务名称" width="140"></el-table-column>
+            <el-table-column prop="taskname" label="任务名称" width="140"></el-table-column>
             <el-table-column prop="taskId" label="任务Id" width="140"></el-table-column>
             <el-table-column prop="submited" label="任务状态" width="140"></el-table-column>
             <el-table-column prop="degreeOfCompletion" label="完成度" width="140"></el-table-column>

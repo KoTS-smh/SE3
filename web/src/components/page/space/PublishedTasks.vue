@@ -41,7 +41,7 @@
             <div>
                 <div>
                     <el-form>
-                        <el-form-item label="任务名称">{{taskName}}</el-form-item>
+                        <el-form-item label="任务名称">{{taskname}}</el-form-item>
                         <el-form-item label="总进度" label-width="50pt">
                             <el-progress type="line" :text-inside="true" :stroke-width="18" :percentage="totalRate" style="width:100%;margin-top: 10px" ></el-progress>
                         </el-form-item>
@@ -84,7 +84,7 @@ export default {
             select_cate: '',
             //弹出窗口的参数
             totalRate:0,
-            taskName:'',
+            taskname:'',
             taskId:''
         }
     },
@@ -95,7 +95,7 @@ export default {
         handleEdit(index, row){
             this.address = row.address;
             this.dialogVisible = true;
-            this.taskName = row.taskname;
+            this.taskname = row.taskname;
             this.taskId = row.taskId;
             this.getTaskRateMessage(row.taskId);
         },
@@ -162,24 +162,23 @@ export default {
             })
         },
         handleDelete(index, row){
-            if(this.tableData[index].acceptUserIds.length === 0){
+            
                 axios.get("http://localhost:8080/task/delete",{
                     params:{
                         taskId:row.taskId
                     }
                 }).then((response)=>{
+                    console.log(response);
                     if(response.data.code ===0){
                         this.$message.success("删除成功！");
                         this.placeData();
                     }else {
-                        this.$message.error("删除失败！")
+                        this.$message.error(response.data.msg);
                     }
                 }).catch(()=>{
                     this.$message.error("网络异常！")
                 })
-            }else {
-                this.$message.info("该任务已有人参与，无法删除！")
-            }
+            
         },
         saveChange() {
             this.dialogVisible = false
@@ -209,27 +208,28 @@ export default {
             var userId = localStorage.getItem("userId");
             var mydata;
             if(selection === "进行中"){
-                axios.post("http://localhost:8080/task/getAllFinished", {"userId": userId, "password": ""})
+                axios.post("http://localhost:8080/task/getAllunFinished", {"userId": userId, "password": ""})
                 .then(response => {
-                    mydata = JSON.parse(response.data.data);
+                    console.log(response);
+                    mydata = response.data.data;
                     var i = 0;
                     for(i = 0;i < mydata.length;++i){
-                        mydata[i].endDate = this.convertDate(mydata[i].endDate);
-                        mydata[i].beginDate = this.convertDate(mydata[i].beginDate)
+                        mydata[i].endDate = new Date(mydata[i].endDate).Format("yyyy-MM-dd hh:mm:ss");
+                        mydata[i].beginDate =new Date(mydata[i].beginDate).Format("yyyy-MM-dd hh:mm:ss");
                     }
                     this.tableData = mydata;
                 }).catch(err => {
                     console.log(err)
                 })
             }else if(selection === "已结束"){
-                axios.post("http://localhost:8080/task/getAllunFinished", {"userId": userId, "password": ""})
+                axios.post("http://localhost:8080/task/getAllFinished", {"userId": userId, "password": ""})
                 .then(response => {
                     console.log(response);
-                    mydata = JSON.parse(response.data.data);
+                    mydata = response.data.data;
                     var i = 0;
                     for(i = 0;i < mydata.length;++i){
-                        mydata[i].endDate = this.convertDate(mydata[i].endDate);
-                        mydata[i].beginDate = this.convertDate(mydata[i].beginDate)
+                        mydata[i].endDate = new Date(mydata[i].endDate).Format("yyyy-MM-dd hh:mm:ss");
+                        mydata[i].beginDate =new Date(mydata[i].beginDate).Format("yyyy-MM-dd hh:mm:ss");
                     }
                     this.tableData = mydata;
                 }).catch(err => {
@@ -241,6 +241,7 @@ export default {
             var userId = localStorage.getItem("userId");
             axios.post("http://localhost:8080/task/getAllPost", {"userId": userId, "password": ""})
             .then(response => {
+                console.log(response);
                 var mydata = response.data.data;
                 var i = 0;
                 for(i = 0;i < mydata.length;++i){
@@ -252,6 +253,9 @@ export default {
                 console.log(err)
             })
         },
+        toCreate() {
+            this.$router.push('/createTask');
+        }
     },
 
     mounted() {
