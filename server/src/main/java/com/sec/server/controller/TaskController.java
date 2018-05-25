@@ -66,12 +66,6 @@ public class TaskController {
      */
     @RequestMapping("/task/taskInfo")
     public Result getTaskInfo(@RequestBody TaskModel taskModel){
-
-//        long taskId = taskModel.getTaskId();
-//        Task task = taskService.getTaskInfo(taskId);
-//
-//        JSONObject object = new JSONObject(task);
-//        return ResultUtils.success(task);
         long taskId = taskModel.getTaskId();
         Task task = taskService.getTask(taskId);
 
@@ -84,19 +78,8 @@ public class TaskController {
      */
     @RequestMapping("/task/create")
     public Result createTask(@RequestBody TaskModel taskModel){
-//        try {
-//            taskService.createTask(task);
-//        }catch (Exception e){
-//            throw new ResultException(ResultCode.UNKNOWN_ERROR);
-//        }
-//        return ResultUtils.success();
         List<String> urlList = taskModel.getImgUrlList();
-        //todo save urls
-
         Task task = new Task(taskModel);
-        System.out.println(taskModel.getTaskInfo());
-        System.out.println("in controller " + task.getTaskInfo());
-
         taskService.createTask(task);
         return ResultUtils.success();
     }

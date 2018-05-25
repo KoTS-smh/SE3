@@ -17,7 +17,7 @@
                 <el-container style="height: 656px">
                     <el-main style="height: 596px;display: flex;align-items:center;justify-content: center" v-loading.fullscreen.lock="fullscreenLoading">
                         <div style="width: 100%;height: 100%" >
-                            <canvas id="canvas" :style="{backgroundImage:imgUrl,width:imgX+'px',height:imgY+'px'}">
+                            <canvas id="canvas" :style="{backgroundImage:imgUrls,width:imgX+'px',height:imgY+'px'}">
                             </canvas>
                         </div>
                     </el-main>
@@ -172,7 +172,7 @@
                         this.imgY = img.height;
                     });
                     img.src = task.imgUrlList[thisPage - 1];
-                    this.imgUrl = "url('"+img.src+"')";
+                    this.imgUrls = "url('"+img.src+"')";
                 });
                 axios.get('http://localhost:8080//annotation/tags',{
                     params:{
@@ -230,7 +230,7 @@
                 totalNum:null,
                 imgX:null,
                 imgY:null,
-                imgUrl: '',
+                imgUrls: '',
                 fullscreenLoading:true,
                 process:0,
                 ratePoint:null,
@@ -257,7 +257,7 @@
                     this.fullscreenLoading = false;
                 });
                 img.src = task.imgUrlList[val - 1];
-                this.imgUrl = "url('"+img.src+"')";
+                this.imgUrls = "url('"+img.src+"')";
                 thisPage = val;
                 annotations = annotationMap[thisPage];
                 thisAnnotation = annotations[0];

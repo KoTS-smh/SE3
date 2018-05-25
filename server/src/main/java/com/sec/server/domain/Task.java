@@ -8,6 +8,7 @@ import com.sec.server.utils.StringList2String;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class Task {
     private long taskId;
@@ -24,6 +25,7 @@ public class Task {
     private boolean isFinished;
     private int viewedTimes;
     private int reward;
+    private List<String> imgUrls;
 
     public Task(){}
 
@@ -41,7 +43,6 @@ public class Task {
             this.classifiedInfo = StringList2String.join(",", taskModel.getClassifiedInfo());
         }
 
-
         try {
             this.beginDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(taskModel.getBeginDate());
             this.endDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(taskModel.getEndDate());
@@ -56,6 +57,7 @@ public class Task {
         this.isFinished = taskModel.isFinished();
         this.viewedTimes = 0;
         this.reward = 0;
+        this.imgUrls = taskModel.getImgUrlList();
 
     }
 
@@ -169,5 +171,14 @@ public class Task {
 
     public void setTaskname(String taskname) {
         this.taskname = taskname;
+    }
+
+
+    public List<String> getImgUrls() {
+        return imgUrls;
+    }
+
+    public void setImgUrls(List<String> imgUrls) {
+        this.imgUrls = imgUrls;
     }
 }

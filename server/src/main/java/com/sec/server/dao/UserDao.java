@@ -4,6 +4,8 @@ import com.sec.server.domain.User;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Mapper
 @Repository
 public interface UserDao {
@@ -18,6 +20,9 @@ public interface UserDao {
 
     @Select("select * from MRGSDB.users where userId=#{userId}")
     User getUserById(long userId);
+
+    @Select("select * from MRGSDB.users")
+    List<User> getAllUsers();
 
     @Update("update MRGSDB.users set sex=#{sex},education=#{education},telPhone=#{telPhone}," +
             "email=#{email},description=#{description} WHERE userId=#{userId}")

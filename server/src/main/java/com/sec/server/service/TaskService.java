@@ -18,5 +18,7 @@ public interface TaskService {
 
     List<Task> getAllunFinishedTask(long postUserId);
 
+    List<Task> getEveryUnFinishedTask();
+
     Task getTask(long taskId);
 }

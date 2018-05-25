@@ -1,5 +1,6 @@
 package com.sec.server.service.serviceImpl;
 
+import com.sec.server.dao.ImgUrlDao;
 import com.sec.server.dao.TaskDao;
 import com.sec.server.domain.Task;
 import com.sec.server.enums.ResultCode;
@@ -7,6 +8,7 @@ import com.sec.server.exception.ResultException;
 import com.sec.server.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,9 +17,21 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskDao taskDao;
 
+    @Autowired
+    private ImgUrlDao imgUrlDao;
+
     @Override
+    @Transactional
     public void createTask(Task task) {
-        taskDao.addTask(task);
+        List<String> urlLists = task.getImgUrls();
+        try {
+            taskDao.addTask(task);
+            imgUrlDao.insertUrlList(urlLists, task.getTaskId());
+        }catch (Exception e) {
+            throw new ResultException("数据库错误", 11100);
+        }
+
+
     }
 
     @Override
@@ -50,6 +64,12 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Task> getAllunFinishedTask(long postUserId) {
         List<Task> taskList = taskDao.getAllunFinishedTask(postUserId);
+        return taskList;
+    }
+
+    @Override
+    public List<Task> getEveryUnFinishedTask() {
+        List<Task> taskList = taskDao.getEveryUnFinishedTask();
         return taskList;
     }
 

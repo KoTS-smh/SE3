@@ -182,6 +182,7 @@ export default {
         uploadFile (res) {
             this.hashes.push(`http://p6r9un2qj.bkt.clouddn.com/${res.hash}`);
             this.keys.push(`http://p6r9un2qj.bkt.clouddn.com/${res.key}`);
+            console.log(`http://p6r9un2qj.bkt.clouddn.com/${res.key}`);
             this.form.imgUrlList.push(`http://p6r9un2qj.bkt.clouddn.com/${res.key}`);
             this.imgList.push({src:`http://p6r9un2qj.bkt.clouddn.com/${res.key}`})
         },

@@ -3,17 +3,22 @@ package com.sec.server.dao;
 import com.sec.server.domain.Task;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.MappedTypes;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Mapper
+@Repository
 public interface TaskDao {
-    @Insert("insert into mrgsdb.task(taskId, postUserId, taskName, taskInfo, annotationType, classifiedInfo, beginDate, endDate, totalPoints, taskLevel, maxParticipator, isFinished, viewedTimes,reward) " +
-            "VALUES (#{taskId},#{postUserId},#{taskName},#{taskInfo}, #{annotationType}, #{classifiedInfo}, #{beginDate}, #{endDate}, #{totalPoints}, #{taskLevel}, #{maxParticipator}, #{isFinished}, #{viewedTimes},#{reward})")
-    void addTask(Task task);
+    @Insert("insert into MRGSDB.task(postUserId, taskname, taskInfo, annotationType, classifiedInfo, beginDate, endDate, totalPoints, taskLevel, maxParticipator, isFinished, viewedTimes,reward) " +
+            "VALUES (#{postUserId},#{taskname},#{taskInfo}, #{annotationType}, #{classifiedInfo}, #{beginDate}, #{endDate}, #{totalPoints}, #{taskLevel}, #{maxParticipator}, #{isFinished}, #{viewedTimes},#{reward})")
+    @Options(useGeneratedKeys = true, keyProperty = "taskId", keyColumn = "taskId")
+    int addTask(Task task);
 
-    @Update("update mrgsdb.task set taskName = #{taskName},taskInfo = #{taskInfo},endDate = #{endDate},totalPoints = #{totalPoints},taskLevel = #{taskLevel},maxParticipator = #{maxParticipator},reward = #{reward}")
+    @Update("update MRGSDB.task set taskName = #{taskName},taskInfo = #{taskInfo},endDate = #{endDate},totalPoints = #{totalPoints},taskLevel = #{taskLevel},maxParticipator = #{maxParticipator},reward = #{reward} where taskId = #{taskId}")
     void updateTask(Task task);
 
-    @Delete("delete from mrgsdb.task where taskId = #{taskId}")
+    @Delete("delete from MRGSDB.task where taskId = #{taskId}")
     void deleteTask(@Param("taskId") long taskId);
 
     @Select("select * from mrgsdb.task where taskId = #{taskId}")
@@ -24,4 +29,43 @@ public interface TaskDao {
 
     @Update("update mrgsdb.task set isFinished = true")
     void finishTask(@Param("taskId") long taskId);
+
+    @Select("select * from MRGSDB.task where postUserId = #{postUserId}")
+    @Results({
+            @Result(property = "imgUrls",column = "taskId", javaType = List.class,
+                    many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
+            )})
+    List<Task> getAllPostTask(@Param("postUserId") long postUserId);
+
+    @Select("select * from MRGSDB.task where isFinished = 1 and postUserId = #{postUserId}")
+    @Results({
+            @Result(property = "imgUrls",column = "taskId", javaType = List.class,
+                    many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
+            )
+    })
+    List<Task> getAllFinishedTask(@Param("postUserId") long postUserId);
+
+    @Select("select * from MRGSDB.task where isFinished = 0 and postUserId = #{postUserId}")
+    @Results({
+            @Result(property = "imgUrls",column = "taskId", javaType = List.class,
+                    many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
+            )
+    })
+    List<Task> getAllunFinishedTask(@Param("postUserId") long postUserId);
+
+    @Select("select * from MRGSDB.task where taskId = #{taskId}")
+    @Results({
+            @Result(property = "imgUrls",column = "taskId", javaType = List.class,
+                    many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
+            )
+    })
+    Task getTask(@Param("taskId") long taskId);
+
+    @Select("select * from MRGSDB.task")
+    @Results({
+            @Result(property = "imgUrls",column = "taskId", javaType = List.class,
+                    many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
+            )
+    })
+    List<Task> getEveryUnFinishedTask();
 }
