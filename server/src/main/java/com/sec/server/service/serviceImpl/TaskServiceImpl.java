@@ -2,9 +2,11 @@ package com.sec.server.service.serviceImpl;
 
 import com.sec.server.dao.ImgUrlDao;
 import com.sec.server.dao.TaskDao;
+import com.sec.server.dao.TaskOrderDao;
 import com.sec.server.domain.Task;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
+import com.sec.server.model.TaskModel;
 import com.sec.server.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private ImgUrlDao imgUrlDao;
+
+    @Autowired
+    private TaskOrderDao taskOrderDao;
 
     @Override
     @Transactional
@@ -74,8 +79,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task getTask(long taskId) {
+    public TaskModel getTask(long taskId) {
         Task task = taskDao.getTask(taskId);
-        return task;
+        List<Long> acceptUserList = taskOrderDao.getAcceptUserIds(taskId);
+        TaskModel taskModel = new TaskModel(task);
+        taskModel.setAcceptUserIds(acceptUserList);
+        return taskModel;
     }
 }

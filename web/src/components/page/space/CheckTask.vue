@@ -99,10 +99,11 @@ export default {
               this.$router.go(-1)
             },
             getTask() {
-            var userId = localStorage.getItem("userId");
+            var acceptUserId = localStorage.getItem("userId");
             var taskId = this.taskData.taskId;
             axios.post("http://localhost:8080/task/taskInfo", {"taskId": taskId})
             .then((response) => {
+                console.log(response);
                 if(response.data.code === 0) {
                     var indata = response.data.data;
                     task = indata;
@@ -142,7 +143,7 @@ export default {
                 let taskOrderId;
                 let submited;
                 axios.post("http://localhost:8080/taskOrder/getAll",{
-                    userId:localStorage.getItem("userId")
+                    acceptUserId:localStorage.getItem("userId")
                 }).then((response)=>{
                    if(response.data.code === 0){
                        for(let i=0;i<response.data.data.length;i++){
@@ -166,7 +167,7 @@ export default {
                                    this.$router.push({
                                        path: "/annotation/rate/rect", query: {
                                            taskOrderId: taskOrderId,
-                                           userId:localStorage.getItem("userId")
+                                           acceptUserId:localStorage.getItem("userId")
                                        }
                                    })
                                }
@@ -182,7 +183,7 @@ export default {
                                    this.$router.push({
                                        path: "/annotation/rate/classified", query: {
                                            taskOrderId: taskOrderId,
-                                           userId:localStorage.getItem("userId")
+                                           acceptUserId:localStorage.getItem("userId")
                                        }
                                    })
                                }
@@ -198,7 +199,7 @@ export default {
                                    this.$router.push({
                                        path: "/annotation/rate/region", query: {
                                            taskOrderId: taskOrderId,
-                                           userId:localStorage.getItem("userId")
+                                           acceptUserId:localStorage.getItem("userId")
                                        }
                                    })
                                }
@@ -214,7 +215,7 @@ export default {
                                    this.$router.push({
                                        path: "/annotation/rate/all", query: {
                                            taskOrderId: taskOrderId,
-                                           userId:localStorage.getItem("userId")
+                                           acceptUserId:localStorage.getItem("userId")
                                        }
                                    })
                                }
@@ -241,7 +242,7 @@ export default {
                 if(!isAccepted) {
                     axios.post("http://localhost:8080/taskOrder/createTaskOrder", {
                         taskId: this.taskData.taskId,
-                        userId: localStorage.getItem("userId")
+                        acceptUserId: localStorage.getItem("userId")
                     }).then((response) => {
                         if (response.data.code === 0) {
                             this.$message.success('接受成功！');

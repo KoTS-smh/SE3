@@ -34,14 +34,17 @@ public interface TaskDao {
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,
                     many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
-            )})
+            ),
+            @Result(property = "taskId", column = "taskId")
+    })
     List<Task> getAllPostTask(@Param("postUserId") long postUserId);
 
     @Select("select * from MRGSDB.task where isFinished = 1 and postUserId = #{postUserId}")
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,
                     many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
-            )
+            ),
+            @Result(property = "taskId", column = "taskId")
     })
     List<Task> getAllFinishedTask(@Param("postUserId") long postUserId);
 
@@ -49,7 +52,8 @@ public interface TaskDao {
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,
                     many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
-            )
+            ),
+            @Result(property = "taskId", column = "taskId")
     })
     List<Task> getAllunFinishedTask(@Param("postUserId") long postUserId);
 
@@ -57,15 +61,20 @@ public interface TaskDao {
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,
                     many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
-            )
+            ),
+            @Result(property = "taskId", column = "taskId")
     })
     Task getTask(@Param("taskId") long taskId);
 
-    @Select("select * from MRGSDB.task")
+    @Select("select * from MRGSDB.task where isFinished = 0")
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,
                     many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
-            )
+            ),
+            @Result(property = "taskId", column = "taskId")
     })
     List<Task> getEveryUnFinishedTask();
+
+    @Select("select taskName from MRGSDB.task where taskId = #{taskId}")
+    String getTaskName(long taskId);
 }

@@ -148,7 +148,7 @@ export default {
         ],
         dialogTableVisible: false,
         form: {
-            postUserId: localStorage.getItem("userId"),
+            postUserId: localStorage.getItem("acceptUserId"),
             acceptUserIds:[],
           taskname: '',
           beginDate: '',

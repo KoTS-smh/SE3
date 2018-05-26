@@ -49,7 +49,7 @@ public class DataAnalysisController {
      */
     @RequestMapping("/personalData")
     public Result getPersonalData(@RequestBody UserModel userModel) {
-//        long userId = userModel.getUserId();
+//        long userId = userModel.getAcceptUserId();
 //        PersonalDataModel personalDataModel = dataAnalysisService.getPersonalData(userId);
 //        return ResultUtils.success(personalDataModel);
         return null;

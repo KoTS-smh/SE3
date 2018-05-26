@@ -82,7 +82,7 @@
                        }else{
                            self.$router.push({path: '/homepage', query:{"username": username, "isLogin":true}});
                        }
-                       
+
                    }
                 }).catch(function(err){
                     console.log(err);

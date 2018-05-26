@@ -131,24 +131,24 @@
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
                     taskOrderId:this.$route.query.taskOrderId,
-                    userId:this.$route.query.userId
+                    acceptUserId:this.$route.query.acceptUserId
                 }
             }).then((response) => {
                 taskOrder=response.data.data;
                 thisPage = taskOrder.lastPic;
                 this.toRateId = taskOrder.acceptUserId;
-                annotated = taskOrder.degreeOfCompletion;
+                annotated = taskOrder.finishedPics;
                 if(taskOrder.rate !=null){
                     this.ratePoint = taskOrder.rate;
                     this.canNotRate = true;
                 }
                 this.currentPage = thisPage;
-                if(localStorage.getItem("userId") ==taskOrder.acceptUserId){
+                if(localStorage.getItem("acceptUserId") ==taskOrder.acceptUserId){
                     this.rateBtn = false;
                 }
                 axios.get('http://localhost:8080/user/getUser',{
                     params:{
-                        userId:taskOrder.acceptUserId
+                        acceptUserId:taskOrder.acceptUserId
                     }
                 }).then((response)=>{
                     this.toRateName = response.data.data.username;
@@ -378,7 +378,7 @@
                         }
                     });
                     localStorage.removeItem("username");
-                    localStorage.removeItem("userId");
+                    localStorage.removeItem("acceptUserId");
                     this.$router.push("/homepage")
                 }
             }

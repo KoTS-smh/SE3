@@ -28,7 +28,7 @@ public class TaskController {
      */
     @RequestMapping("/task/getAllPost")
     public Result getAllPostTask(@RequestBody UserModel userModel){
-//        long userId = userModel.getUserId();
+//        long userId = userModel.getAcceptUserId();
 //        List<Task> list = taskService.getAllPost(userId);
         long postUserId = userModel.getUserId();
         List<Task> list = taskService.getAllPostTask(postUserId);
@@ -67,9 +67,10 @@ public class TaskController {
     @RequestMapping("/task/taskInfo")
     public Result getTaskInfo(@RequestBody TaskModel taskModel){
         long taskId = taskModel.getTaskId();
-        Task task = taskService.getTask(taskId);
+        TaskModel taskModel1 = taskService.getTask(taskId);
+        System.out.println(taskModel1.getTaskId());
 
-        return ResultUtils.success(task);
+        return ResultUtils.success(taskModel1);
     }
 
     /**

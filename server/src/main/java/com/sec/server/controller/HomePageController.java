@@ -28,6 +28,7 @@ public class HomePageController {
         List<Picture_CardModel> modelList = new ArrayList<>();
         for(Task tmp : taskList){
             Picture_CardModel model = new Picture_CardModel();
+            System.out.println("this is taskId " + tmp.getTaskId());
             model.setId(tmp.getTaskId());
             model.setName(tmp.getTaskname());
             model.setDescription(tmp.getTaskInfo());

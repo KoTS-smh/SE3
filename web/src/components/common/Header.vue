@@ -35,10 +35,10 @@
                     axios.get('http://localhost:8080/user/logout', {
                         params:{
                             // username: localStorage.getItem("username")
-                            userId: localStorage.getItem("userId")
+                            acceptUserId: localStorage.getItem("acceptUserId")
                         }
                     }).then(response => {
-                        localStorage.removeItem("userId");
+                        localStorage.removeItem("acceptUserId");
                         localStorage.removeItem("username");
                     }).catch(err => {
                         console.log(err);

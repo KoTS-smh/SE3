@@ -1,7 +1,9 @@
 package com.sec.server.model;
 
+import com.sec.server.domain.Task;
 import com.sec.server.enums.AnnotationType;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class TaskModel {
@@ -18,6 +20,33 @@ public class TaskModel {
     private boolean isFinished;
     private List<String> classifiedInfo;
     private AnnotationType annotationType;
+    private List<Long> acceptUserIds;
+
+    public TaskModel() {}
+
+    public TaskModel(Task task) {
+        this.taskId = task.getTaskId();
+        this.postUserId = task.getPostUserId();
+        this.taskname = task.getTaskname();
+        this.beginDate = task.getBeginDate().toString();
+        this.endDate = task.getEndDate().toString();
+        this.taskInfo = task.getTaskInfo();
+        this.totalPoints = task.getTotalPoints();
+        this.maxParticipator = task.getMaxParticipator();
+        this.taskLevel = task.getTaskLevel();
+        this.imgUrlList = task.getImgUrls();
+        this.isFinished = task.isFinished();
+        this.classifiedInfo = Arrays.asList(task.getClassifiedInfo().split(","));
+        this.annotationType = task.getAnnotationType();
+    }
+
+    public List<Long> getAcceptUserIds() {
+        return acceptUserIds;
+    }
+
+    public void setAcceptUserIds(List<Long> acceptUserIds) {
+        this.acceptUserIds = acceptUserIds;
+    }
 
     public long getTaskId() {
         return taskId;

@@ -140,12 +140,12 @@
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
                     taskOrderId:this.$route.query.taskOrderId,
-                    userId:localStorage.getItem("userId")
+                    acceptUserId:localStorage.getItem("acceptUserId")
                 }
             }).then((response) => {
                 taskOrder=response.data.data;
                 thisPage = taskOrder.lastPic;
-                annotated = taskOrder.degreeOfCompletion;
+                annotated = taskOrder.finishedPics;
                 this.currentPage = thisPage;
                 axios.post('http://localhost:8080/task/taskInfo',{
                         taskId:taskOrder.taskId
@@ -352,7 +352,7 @@
             },
             leave(){
                 taskOrder.lastPic = thisPage;
-                taskOrder.degreeOfCompletion = annotated;
+                taskOrder.finishedPics = annotated;
               axios.patch('http://localhost:8080/taskOrder/update',{
                       taskOrder:JSON.stringify(taskOrder)
               }).then((response)=>{
@@ -405,7 +405,7 @@
                     }).then(() => {
                         taskOrder.submited = true;
                         taskOrder.lastPic = thisPage;
-                        taskOrder.degreeOfCompletion = annotated;
+                        taskOrder.finishedPics = annotated;
                         axios.post('http://localhost:8080/taskOrder/update', {
                             taskOrder: JSON.stringify(taskOrder)
                         }).then((response) => {
@@ -444,7 +444,7 @@
                     axios.get('http://localhost:8080/taskOrder/delete',{
                         params:{
                             taskOrderId:taskOrder.taskOrderId,
-                            userId:localStorage.getItem("userId")
+                            acceptUserId:localStorage.getItem("acceptUserId")
                         }
                         }).then((response)=>{
                         if(response.data.code!==0){
@@ -474,7 +474,7 @@
             },
             autoSave(){
                 taskOrder.lastPic = thisPage;
-                taskOrder.degreeOfCompletion = annotated;
+                taskOrder.finishedPics = annotated;
                 axios.patch('http://localhost:8080/taskOrder/update',{
                     taskOrder:JSON.stringify(taskOrder),
                 })
@@ -487,7 +487,7 @@
                         }
                     });
                     localStorage.removeItem("username");
-                    localStorage.removeItem("userId");
+                    localStorage.removeItem("acceptUserId");
                     this.$router.push("/homepage")
                 }
             }

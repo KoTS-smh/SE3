@@ -1,6 +1,7 @@
 package com.sec.server.service;
 
 import com.sec.server.domain.Task;
+import com.sec.server.model.TaskModel;
 
 import java.util.List;
 
@@ -20,5 +21,5 @@ public interface TaskService {
 
     List<Task> getEveryUnFinishedTask();
 
-    Task getTask(long taskId);
+    TaskModel getTask(long taskId);
 }

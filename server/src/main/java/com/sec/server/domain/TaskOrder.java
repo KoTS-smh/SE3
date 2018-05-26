@@ -1,13 +1,6 @@
 package com.sec.server.domain;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.sec.server.utils.Path;
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 
 public class TaskOrder {
@@ -16,14 +9,17 @@ public class TaskOrder {
     private long acceptUserId;
     private boolean submited;
     private int lastPic;
-    private int degreeOfCompletion;//zuihaogaimingzi
+    private int finishedPics;//zuihaogaimingzi
     private int rate;
-    private long annotationId;
     private Date beginDate;
     private Date endDate;
 
     public TaskOrder(){}
 
+    public TaskOrder(long taskId, long acceptUserId) {
+        this.taskId = taskId;
+        this.acceptUserId = acceptUserId;
+    }
 
     public Date getEndDate() {
         return endDate;
@@ -66,14 +62,6 @@ public class TaskOrder {
         this.rate = rate;
     }
 
-    public long getAnnotationId() {
-        return annotationId;
-    }
-
-    public void setAnnotationId(long annotationId) {
-        this.annotationId = annotationId;
-    }
-
     public long getTaskOrderId() {
         return taskOrderId;
     }
@@ -82,12 +70,12 @@ public class TaskOrder {
         this.taskOrderId = taskOrderId;
     }
 
-    public int getDegreeOfCompletion() {
-        return degreeOfCompletion;
+    public int getFinishedPics() {
+        return finishedPics;
     }
 
-    public void setDegreeOfCompletion(int degreeOfCompletion) {
-        this.degreeOfCompletion = degreeOfCompletion;
+    public void setFinishedPics(int finishedPics) {
+        this.finishedPics = finishedPics;
     }
 
     public Date getBeginDate() {

@@ -4,7 +4,7 @@
             <el-header>
                 <!-- <TopContainer></TopContainer> -->
                 <component :is="currentView"></component>
-                
+
             </el-header>
             <el-main style="height:100%">
                 <BHeader></BHeader>
@@ -38,7 +38,7 @@
             component1: TopContainer,
             component2: TopContainerAfterLogin,
         },
-        
+
         data() {
             return {
                 showMask: false,
@@ -82,8 +82,8 @@
             }
         },
         mounted() {
-            var userId = localStorage.getItem('userId');
-            if(userId != null && userId.length > 0){
+            var acceptUserId = localStorage.getItem('acceptUserId');
+            if(acceptUserId != null && acceptUserId.length > 0){
                 this.currentView = 'component2'
             }else{
                 this.currentView = 'component1'
