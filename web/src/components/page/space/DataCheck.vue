@@ -37,8 +37,8 @@ export default {
     },
     methods: {
         placeData() {
-            var acceptUserId = localStorage.getItem('acceptUserId');
-            axios.post("http://localhost:8080/personalData", {"acceptUserId": acceptUserId, "password": ''})
+            var userId = localStorage.getItem('userId');
+            axios.post("http://localhost:8080/personalData", {"userId": userId, "password": ''})
             .then(response => {
                 console.log(response);
                 this.form = response.data.data

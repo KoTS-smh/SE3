@@ -131,7 +131,7 @@ export default {
                     this.$router.push({
                         path: "/annotation/rate/rect", query: {
                             taskOrderId: row.taskOrderId,
-                            acceptUserId:localStorage.getItem("acceptUserId")
+                            acceptUserId:localStorage.getItem("userId")
                         }
                     })
                 }
@@ -139,7 +139,7 @@ export default {
                     this.$router.push({
                         path: "/annotation/rate/classified", query: {
                             taskOrderId: row.taskOrderId,
-                            acceptUserId:localStorage.getItem("acceptUserId")
+                            acceptUserId:localStorage.getItem("userId")
                         }
                     })
                 }
@@ -147,7 +147,7 @@ export default {
                     this.$router.push({
                         path: "/annotation/rate/region", query: {
                             taskOrderId: row.taskOrderId,
-                            acceptUserId:localStorage.getItem("acceptUserId")
+                            acceptUserId:localStorage.getItem("userId")
                         }
                     })
                 }
@@ -155,7 +155,7 @@ export default {
                     this.$router.push({
                         path: "/annotation/rate/all", query: {
                             taskOrderId: row.taskOrderId,
-                            acceptUserId:localStorage.getItem("acceptUserId")
+                            acceptUserId:localStorage.getItem("userId")
                         }
                     })
                 }
@@ -205,10 +205,10 @@ export default {
         },
         handleChange() {
             var selection = this.select_cate;
-            var acceptUserId = localStorage.getItem("acceptUserId");
+            var userId = localStorage.getItem("userId");
             var mydata;
             if(selection === "进行中"){
-                axios.post("http://localhost:8080/task/getAllunFinished", {"acceptUserId": acceptUserId, "password": ""})
+                axios.post("http://localhost:8080/task/getAllunFinished", {"userId": userId, "password": ""})
                 .then(response => {
                     console.log(response);
                     mydata = response.data.data;
@@ -222,7 +222,7 @@ export default {
                     console.log(err)
                 })
             }else if(selection === "已结束"){
-                axios.post("http://localhost:8080/task/getAllFinished", {"acceptUserId": acceptUserId, "password": ""})
+                axios.post("http://localhost:8080/task/getAllFinished", {"userId": userId, "password": ""})
                 .then(response => {
                     console.log(response);
                     mydata = response.data.data;
@@ -238,8 +238,8 @@ export default {
             }
         },
         placeData(){
-            var acceptUserId = localStorage.getItem("acceptUserId");
-            axios.post("http://localhost:8080/task/getAllPost", {"acceptUserId": acceptUserId, "password": ""})
+            var userId = localStorage.getItem("userId");
+            axios.post("http://localhost:8080/task/getAllPost", {"userId": userId, "password": ""})
             .then(response => {
                 console.log(response);
                 var mydata = response.data.data;

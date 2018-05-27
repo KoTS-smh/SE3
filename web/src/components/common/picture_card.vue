@@ -15,8 +15,9 @@
     </div>
     <div class="card-footer justify-between" style="height: 40px">
       <div class="left" >
-        <span ><icon name="eye" style="margin-top:12px; margin-left:10px"></icon>{{ views }}</span>
-        <span ><icon name="comments" style="margin-top:12px"></icon>{{ comments }}</span>
+        <span ><icon name="eye" style="margin-top:12px; margin-left:10px; margin-right:3px"></icon>{{ viewedTimes }}</span>
+        <span ><icon name="money-bill-alt" style="margin-top:12px; margin-right:4px"></icon>{{ reward }}</span>
+        <span v-if="this.upRate != ''" style="background-color:#1CC1E9;color:#FFFFFF">{{ upRate }}</span>
         <el-button class="moreBtn" size="mini" round @click="getInfo" style="float: right; margin-top:5px; margin-right:10px">more</el-button>
       </div>
 
@@ -49,13 +50,17 @@
         type: String,
         default: "The sorrowful gust of wind that blew right between you and me, Where did it find the loneliness it carried on the breeze, Looking up at the sky after shedding a stream of tears, I could see for miles of blue,It's never been so clear"
       },
-      views: {
+      viewedTimes: {
         type: Number,
         default: 0
       },
-      comments: {
+      reward: {
         type: Number,
         default: 0
+      },
+      upRate: {
+        type: String,
+        default: ''
       }
     },
     methods: {

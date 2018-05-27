@@ -57,6 +57,15 @@ public interface TaskDao {
     })
     List<Task> getAllunFinishedTask(@Param("postUserId") long postUserId);
 
+    @Select("select * from MRGSDB.task")
+    @Results({
+            @Result(property = "imgUrls",column = "taskId", javaType = List.class,
+                    many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
+            ),
+            @Result(property = "taskId", column = "taskId")
+    })
+    List<Task> getAllTask();
+
     @Select("select * from MRGSDB.task where taskId = #{taskId}")
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,

@@ -68,7 +68,6 @@ public class TaskController {
     public Result getTaskInfo(@RequestBody TaskModel taskModel){
         long taskId = taskModel.getTaskId();
         TaskModel taskModel1 = taskService.getTask(taskId);
-        System.out.println(taskModel1.getTaskId());
 
         return ResultUtils.success(taskModel1);
     }

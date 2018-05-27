@@ -24,8 +24,9 @@ public class Task {
     private int maxParticipator;
     private boolean isFinished;
     private int viewedTimes;
-    private int reward;
+    private double reward;
     private List<String> imgUrls;
+    private String upRate;
 
     public Task(){}
 
@@ -149,11 +150,11 @@ public class Task {
         this.viewedTimes = viewedTimes;
     }
 
-    public int getReward() {
+    public double getReward() {
         return reward;
     }
 
-    public void setReward(int reward) {
+    public void setReward(double reward) {
         this.reward = reward;
     }
 
@@ -180,5 +181,13 @@ public class Task {
 
     public void setImgUrls(List<String> imgUrls) {
         this.imgUrls = imgUrls;
+    }
+
+    public String getUpRate() {
+        return upRate;
+    }
+
+    public void setUpRate(String upRate) {
+        this.upRate = upRate;
     }
 }

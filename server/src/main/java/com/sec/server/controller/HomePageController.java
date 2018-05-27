@@ -21,19 +21,17 @@ public class HomePageController {
 
     @RequestMapping("/getContent")
     public Result getContent() {
-//        List<Picture_CardModel> modelList = ReadFile.getAllUnFinishTasks();
-//        JSONArray array = new JSONArray(modelList);
-//        return ResultUtils.success(array.toString());
         List<Task> taskList = taskService.getEveryUnFinishedTask();
         List<Picture_CardModel> modelList = new ArrayList<>();
         for(Task tmp : taskList){
             Picture_CardModel model = new Picture_CardModel();
-            System.out.println("this is taskId " + tmp.getTaskId());
             model.setId(tmp.getTaskId());
             model.setName(tmp.getTaskname());
             model.setDescription(tmp.getTaskInfo());
             model.setUrl(tmp.getImgUrls().get(0));
-
+            model.setViewedTimes(tmp.getViewedTimes());
+            model.setReward(tmp.getReward());
+            model.setUpRate(tmp.getUpRate());
             modelList.add(model);
         }
 

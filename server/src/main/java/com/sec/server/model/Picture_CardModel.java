@@ -14,6 +14,10 @@ public class Picture_CardModel {
     private long id;
     private String url;
     private String description;
+    private int viewedTimes;
+    private double reward;
+    private String upRate;
+
 
     public String getName() {
         return name;
@@ -45,5 +49,29 @@ public class Picture_CardModel {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getViewedTimes() {
+        return viewedTimes;
+    }
+
+    public void setViewedTimes(int viewedTimes) {
+        this.viewedTimes = viewedTimes;
+    }
+
+    public double getReward() {
+        return reward;
+    }
+
+    public void setReward(double reward) {
+        this.reward = reward;
+    }
+
+    public String getUpRate() {
+        return upRate;
+    }
+
+    public void setUpRate(String upRate) {
+        this.upRate = upRate;
     }
 }

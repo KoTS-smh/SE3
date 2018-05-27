@@ -82,8 +82,8 @@
             }
         },
         mounted() {
-            var acceptUserId = localStorage.getItem('acceptUserId');
-            if(acceptUserId != null && acceptUserId.length > 0){
+            var userId = localStorage.getItem('userId');
+            if(userId != null && userId.length > 0){
                 this.currentView = 'component2'
             }else{
                 this.currentView = 'component1'

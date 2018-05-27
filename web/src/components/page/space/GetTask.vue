@@ -96,7 +96,7 @@ export default {
     },
     methods: {
         getTask() {
-            var acceptUserId = localStorage.getItem("acceptUserId");
+            var acceptUserId = localStorage.getItem("userId");
             var taskId = this.taskData.taskId;
             axios.post("http://localhost:8080/taskOrder/createTaskOrder", {"acceptUserId": acceptUserId, "taskId": taskId})
             .then(response => {

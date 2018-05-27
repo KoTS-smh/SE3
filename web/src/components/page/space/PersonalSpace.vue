@@ -10,7 +10,7 @@
                 <el-form ref="form" :model="form" label-width="80px">
                     <!--ID显示区域-->
                     <el-form-item label="ID">
-                        {{form.acceptUserId}}
+                        {{form.userId}}
                     </el-form-item>
                     <!--用户名的显示修改区域-->
                     <el-form-item label="用户名">
@@ -78,7 +78,7 @@
         data: function(){
             return {
                 form: {
-                    acceptUserId:'',
+                    userId:'',
                     username: '',
                     education: '',
                     sex: '',
@@ -106,10 +106,10 @@
             //todo 加载当前登录用户信息
             getUserMessage(){
                 const self = this;
-                var acceptUserId = localStorage.getItem("acceptUserId");
+                var userId = localStorage.getItem("userId");
                 axios.get('http://localhost:8080/user/getUser',{
                     params:{
-                        acceptUserId: acceptUserId
+                        userId: userId
                     }
                 }).then(response => {
                     console.log(response);

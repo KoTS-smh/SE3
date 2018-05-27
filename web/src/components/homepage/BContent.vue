@@ -21,7 +21,7 @@
 			<!-- </div> -->
 
       <el-col :sm="12" :md="6" v-for="(card, index) in showCardList" :key="card.id">
-        <picture-card :name="card.name" :url="card.url" :description="card.description" :id="card.id" :views="card.views" :comments="card.comments" @remove="removeItem(card)" @getInfo="getInfo(card)"></picture-card>
+        <picture-card :name="card.name" :url="card.url" :description="card.description" :id="card.id" :viewedTimes="card.viewedTimes" :reward="card.reward" :upRate="card.upRate" @remove="removeItem(card)" @getInfo="getInfo(card)"></picture-card>
       </el-col>
 
     </el-row>
@@ -75,7 +75,6 @@
 			  
 			  var array = JSON.parse(response.data.data)
 			  this.card_list = array
-			  console.log(array.length)
 		  })
 	  },
 

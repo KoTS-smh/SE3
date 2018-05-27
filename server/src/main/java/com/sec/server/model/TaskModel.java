@@ -36,7 +36,11 @@ public class TaskModel {
         this.taskLevel = task.getTaskLevel();
         this.imgUrlList = task.getImgUrls();
         this.isFinished = task.isFinished();
-        this.classifiedInfo = Arrays.asList(task.getClassifiedInfo().split(","));
+
+        if(task.getClassifiedInfo() != null) {
+            this.classifiedInfo = Arrays.asList(task.getClassifiedInfo().split(","));
+        }
+
         this.annotationType = task.getAnnotationType();
     }
 

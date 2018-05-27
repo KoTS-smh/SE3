@@ -112,7 +112,6 @@ public class UserController {
 //        System.out.println("here");
 //        userService.logout(username);
 //        return ResultUtils.success();
-        System.out.println("this is userID " + userId);
         userService.logout(userId);
         return ResultUtils.success();
     }

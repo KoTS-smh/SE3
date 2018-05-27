@@ -32,4 +32,7 @@ public interface TaskOrderDao {
 
     @Select("select acceptUserId from MRGSDB.taskOrder where taskId = #{taskId}")
     List<Long> getAcceptUserIds(long taskId);
+
+    @Select("select count(*) from MRGSDB.taskOrder where taskId = #{taskId}")
+    int getAcceptNum(long taskId);
 }

@@ -22,4 +22,6 @@ public interface TaskService {
     List<Task> getEveryUnFinishedTask();
 
     TaskModel getTask(long taskId);
+
+    void checkTaskEveryDay();
 }

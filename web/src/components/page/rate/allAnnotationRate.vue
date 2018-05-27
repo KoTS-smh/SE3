@@ -130,24 +130,24 @@
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
                     taskOrderId:this.$route.query.taskOrderId,
-                    acceptUserId:this.$route.query.acceptUserId
+                    userId:this.$route.query.userId
                 }
             }).then((response) => {
                 taskOrder=response.data.data;
                 thisPage = 1;
-                this.toRateId = taskOrder.acceptUserId;
+                this.toRateId = taskOrder.userId;
                 annotated = taskOrder.finishedPics;
                 if(taskOrder.rate != null){
                     this.ratePoint = taskOrder.rate;
                     this.canNotRate = true;
                 }
                 this.currentPage = thisPage;
-                if(localStorage.getItem("acceptUserId") ==taskOrder.acceptUserId){
+                if(localStorage.getItem("userId") ==taskOrder.userId){
                     this.rateBtn = false;
                 }
                 axios.get('http://localhost:8080/user/getUser',{
                     params:{
-                        acceptUserId:taskOrder.acceptUserId
+                        userId:taskOrder.userId
                     }
                 }).then((response)=>{
                     user = response.data.data;
@@ -163,7 +163,7 @@
                         taskId:taskOrder.taskId
                 }).then((response) => {
                     task = response.data.data;
-                    if(task.postUserId == localStorage.getItem("acceptUserId")){
+                    if(task.postUserId == localStorage.getItem("userId")){
                         if(this.ratePoint != null){
                             this.canNotRate = true;
                         }
@@ -374,7 +374,7 @@
                         }
                     });
                     localStorage.removeItem("username");
-                    localStorage.removeItem("acceptUserId");
+                    localStorage.removeItem("userId");
                     this.$router.push("/homepage")
                 }
             }

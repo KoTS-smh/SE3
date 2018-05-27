@@ -135,7 +135,7 @@
                         axios.get('http://localhost:8080/taskOrder/delete', {
                             params: {
                                 taskOrderId: row.taskOrderId,
-                                acceptUserId: localStorage.getItem("acceptUserId")
+                                userId: localStorage.getItem("userId")
                             }
                         }).then((response) => {
                             if (response.data.code !== 0) {
@@ -167,10 +167,10 @@
             },
             handleChange() {
                 var selection = this.select_cate;
-                var acceptUserId = localStorage.getItem("acceptUserId");
+                var userId = localStorage.getItem("userId");
                 var mydata;
                 if(selection === "已完成"){
-                    axios.post("http://localhost:8080/taskOrder/getAllSubmited", {"acceptUserId": acceptUserId, "password": ""})
+                    axios.post("http://localhost:8080/taskOrder/getAllSubmited", {"userId": userId, "password": ""})
                     .then(response => {
                         console.log(response);
                         mydata = JSON.parse(response.data.data);
@@ -188,7 +188,7 @@
                         this.tableData = mydata;
                     })
                 }else if(selection === "未完成"){
-                    axios.post("http://localhost:8080/taskOrder/getAllunSubmited", {"acceptUserId": acceptUserId, "password": ""})
+                    axios.post("http://localhost:8080/taskOrder/getAllunSubmited", {"userId": userId, "password": ""})
                     .then(response => {
                         mydata = JSON.parse(response.data.data);
                         var i = 0;
@@ -243,8 +243,8 @@
 
             placeTheData() {
                 var username = localStorage.getItem('username');
-                var acceptUserId = localStorage.getItem('acceptUserId');
-                axios.post('http://localhost:8080/taskOrder/getAll', {"username": username, "password": '', "acceptUserId": acceptUserId})
+                var userId = localStorage.getItem('userId');
+                axios.post('http://localhost:8080/taskOrder/getAll', {"username": username, "password": '', "acceptUserId": userId})
                 .then(response => {
                     for(let j = 0;j < response.data.data.length; j++){
                         if(response.data.data[j].submited === false){

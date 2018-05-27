@@ -128,7 +128,7 @@
           axios.get('http://localhost:8080/taskOrder/orderInfo',{
               params:{
                   taskOrderId:this.$route.query.taskOrderId,
-                  acceptUserId:localStorage.getItem("acceptUserId")
+                  userId:localStorage.getItem("userId")
               }
           }).then((response) => {
               taskOrder=response.data.data;
@@ -418,7 +418,7 @@
                   axios.get('http://localhost:8080/taskOrder/delete',{
                       params:{
                           taskOrderId:taskOrder.taskOrderId,
-                          acceptUserId:localStorage.getItem("acceptUserId")
+                          userId:localStorage.getItem("userId")
                       }
                   }).then((response)=>{
                       if(response.data.code!==0){
@@ -451,7 +451,7 @@
               taskOrder.finishedPics = annotated;
               axios.patch('http://localhost:8080/taskOrder/update',{
                   taskOrder:JSON.stringify(taskOrder),
-                  acceptUserId:localStorage.getItem("acceptUserId")
+                  userId:localStorage.getItem("userId")
               })
           },
           handleCommand(command) {
@@ -462,7 +462,7 @@
                       }
                   });
                   localStorage.removeItem("username");
-                  localStorage.removeItem("acceptUserId");
+                  localStorage.removeItem("userId");
                   this.$router.push("/homepage")
               }
           }
