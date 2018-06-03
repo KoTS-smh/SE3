@@ -72,6 +72,10 @@ export default new Router({
                 {
                     path: '/dataCheck',
                     component: resolve => require(['../components/page/space/DataCheck.vue'], resolve)
+                },
+                {
+                    path: '/recommendTask',
+                    component: resolve => require(['../components/page/space/RecommendTask.vue'], resolve)
                 }
             ]
         },

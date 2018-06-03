@@ -1,15 +1,14 @@
 package com.sec.server.model;
 
+import com.sec.server.domain.Task;
+import com.sec.server.enums.TaskTag;
+
+import java.util.List;
+
 /**
- * 与前端主页中的picture_card 结构对应
- * name
- * id
- * url
- * description
- * views 待完成
- * comments 待完成
+ * 推荐任务界面的信息包装类
  */
-public class Picture_CardModel {
+public class Recommend_CardModel {
     private String name;
     private long id;
     private String url;
@@ -17,19 +16,19 @@ public class Picture_CardModel {
     private int viewedTimes;
     private double reward;
     private String upRate;
+    private List<TaskTag> tagList;
 
+    public Recommend_CardModel(){}
 
-    public Picture_CardModel(){}
-
-    public Picture_CardModel(long id, String name, String url, String description, int viewedTimes,
-                             double reward, String upRate) {
-        this.name = name;
-        this.id = id;
-        this.url = url;
-        this.description = description;
-        this.viewedTimes = viewedTimes;
-        this.reward = reward;
-        this.upRate = upRate;
+    public Recommend_CardModel(Task task) {
+        this.name = task.getTaskname();
+        this.id = task.getTaskId();
+        this.url = task.getImgUrls().get(0);
+        this.description = task.getTaskInfo();
+        this.viewedTimes = task.getViewedTimes();
+        this.reward = task.getReward();
+        this.upRate = task.getUpRate();
+        this.tagList = task.getTaskTags();
     }
 
     public String getName() {
@@ -86,5 +85,13 @@ public class Picture_CardModel {
 
     public void setUpRate(String upRate) {
         this.upRate = upRate;
+    }
+
+    public List<TaskTag> getTagList() {
+        return tagList;
+    }
+
+    public void setTagList(List<TaskTag> tagList) {
+        this.tagList = tagList;
     }
 }

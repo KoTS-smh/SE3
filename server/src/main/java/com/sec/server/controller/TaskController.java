@@ -1,6 +1,8 @@
 package com.sec.server.controller;
 
 import com.sec.server.domain.Task;
+import com.sec.server.model.Picture_CardModel;
+import com.sec.server.model.Recommend_CardModel;
 import com.sec.server.model.TaskModel;
 import com.sec.server.model.UserModel;
 import com.sec.server.service.TaskService;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -68,7 +71,6 @@ public class TaskController {
     public Result getTaskInfo(@RequestBody TaskModel taskModel){
         long taskId = taskModel.getTaskId();
         TaskModel taskModel1 = taskService.getTask(taskId);
-
         return ResultUtils.success(taskModel1);
     }
 
@@ -81,6 +83,7 @@ public class TaskController {
         List<String> urlList = taskModel.getImgUrlList();
         Task task = new Task(taskModel);
         taskService.createTask(task);
+
         return ResultUtils.success();
     }
 
@@ -105,6 +108,24 @@ public class TaskController {
     public Result deleteTask(long taskId){
         taskService.deleteTask(taskId);
         return ResultUtils.success();
+    }
+
+    @RequestMapping("/task/recommend")
+    public Result getRecommendTasks(@RequestBody UserModel userModel){
+        long userId = userModel.getUserId();
+        List<Task> recommendList = taskService.getRecommendTask(userId);
+//        List<Picture_CardModel> modelList = new ArrayList<>();
+//        for(Task tmp : recommendList) {
+//            Picture_CardModel model = new Picture_CardModel(tmp.getTaskId(), tmp.getTaskname(), tmp.getImgUrls().get(0), tmp.getTaskInfo(), tmp.getViewedTimes(), tmp.getReward(), tmp.getUpRate());
+//            modelList.add(model);
+//
+//        }
+        List<Recommend_CardModel> modelList = new ArrayList<>();
+        for(Task tmp : recommendList) {
+            Recommend_CardModel model = new Recommend_CardModel(tmp);
+            modelList.add(model);
+        }
+        return ResultUtils.success(modelList);
     }
 
 }

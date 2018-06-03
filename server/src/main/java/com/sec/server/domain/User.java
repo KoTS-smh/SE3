@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sec.server.enums.Education;
 import com.sec.server.enums.Sex;
 import com.sec.server.enums.UserLevel;
+import com.sec.server.enums.UserProfession;
 import com.sec.server.model.UserModel;
 
 
@@ -21,6 +22,7 @@ public class User {
     private String Email;
     //余额
     private double balance;
+    private UserProfession profession;
 
     public User() {
     }
@@ -124,5 +126,13 @@ public class User {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public UserProfession getProfession() {
+        return profession;
+    }
+
+    public void setProfession(UserProfession profession) {
+        this.profession = profession;
     }
 }

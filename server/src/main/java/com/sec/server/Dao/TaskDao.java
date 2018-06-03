@@ -10,12 +10,12 @@ import java.util.List;
 @Mapper
 @Repository
 public interface TaskDao {
-    @Insert("insert into MRGSDB.task(postUserId, taskname, taskInfo, annotationType, classifiedInfo, beginDate, endDate, totalPoints, taskLevel, maxParticipator, isFinished, viewedTimes,reward) " +
-            "VALUES (#{postUserId},#{taskname},#{taskInfo}, #{annotationType}, #{classifiedInfo}, #{beginDate}, #{endDate}, #{totalPoints}, #{taskLevel}, #{maxParticipator}, #{isFinished}, #{viewedTimes},#{reward})")
+    @Insert("insert into MRGSDB.task(postUserId, taskname, taskInfo, annotationType, classifiedInfo, beginDate, endDate, totalPoints, taskLevel, maxParticipator, isFinished, viewedTimes,reward,taskTagString,quality) " +
+            "VALUES (#{postUserId},#{taskname},#{taskInfo}, #{annotationType}, #{classifiedInfo}, #{beginDate}, #{endDate}, #{totalPoints}, #{taskLevel}, #{maxParticipator}, #{isFinished}, #{viewedTimes},#{reward},#{taskTagString},#{quality})")
     @Options(useGeneratedKeys = true, keyProperty = "taskId", keyColumn = "taskId")
     int addTask(Task task);
 
-    @Update("update MRGSDB.task set taskName = #{taskName},taskInfo = #{taskInfo},endDate = #{endDate},totalPoints = #{totalPoints},taskLevel = #{taskLevel},maxParticipator = #{maxParticipator},reward = #{reward} where taskId = #{taskId}")
+    @Update("update MRGSDB.task set taskName = #{taskName},taskInfo = #{taskInfo},endDate = #{endDate},totalPoints = #{totalPoints},taskLevel = #{taskLevel},maxParticipator = #{maxParticipator},reward = #{reward},taskTagString = #{taskTagString},quality = #{quality} where taskId = #{taskId}")
     void updateTask(Task task);
 
     @Delete("delete from MRGSDB.task where taskId = #{taskId}")

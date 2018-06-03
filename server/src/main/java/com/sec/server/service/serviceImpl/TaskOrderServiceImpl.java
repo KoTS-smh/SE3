@@ -45,6 +45,9 @@ public class TaskOrderServiceImpl implements TaskOrderService {
 
     @Override
     public void createTaskOrder(TaskOrder taskOrder) {
+        Task task = taskDao.getTask(taskOrder.getTaskId());
+        taskOrder.setBeginDate(task.getBeginDate());
+        taskOrder.setEndDate(task.getEndDate());
         taskOrderDao.insertTaskOrder(taskOrder);
     }
 

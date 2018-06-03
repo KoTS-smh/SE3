@@ -9,8 +9,9 @@ import java.util.List;
 @Mapper
 @Repository
 public interface TaskOrderDao {
-    @Insert("insert into MRGSDB.taskOrder(taskId,acceptUserId,submited,lastPic," +
-            "finishedPics,rate) values (#{taskId},#{acceptUserId},0,0,0,0)")
+    @Insert("insertUser into MRGSDB.taskOrder(taskId,acceptUserId,submited,lastPic," +
+            "finishedPics,rate,beginDate,endDate) values (#{taskId},#{acceptUserId},0,0,0,0," +
+            "#{beginDate},#{endDate})")
     @Options(useGeneratedKeys = true, keyProperty = "taskOrderId", keyColumn = "taskOrderId")
     int insertTaskOrder(TaskOrder taskOrder);
 
@@ -35,4 +36,7 @@ public interface TaskOrderDao {
 
     @Select("select count(*) from MRGSDB.taskOrder where taskId = #{taskId}")
     int getAcceptNum(long taskId);
+
+    @Select("select taskId from MRGSDB.taskOrder where acceptUserId = #{acceptUserId}")
+    List<Long> getAcceptedTasks(long acceptUserId);
 }

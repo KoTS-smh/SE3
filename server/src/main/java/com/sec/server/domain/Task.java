@@ -1,12 +1,14 @@
 package com.sec.server.domain;
 
 import com.sec.server.enums.AnnotationType;
+import com.sec.server.enums.TaskTag;
 import com.sec.server.exception.ResultException;
 import com.sec.server.model.TaskModel;
 import com.sec.server.utils.StringList2String;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,8 +29,13 @@ public class Task {
     private double reward;
     private List<String> imgUrls;
     private String upRate;
+    private List<TaskTag> taskTags;
+    private String taskTagString;
+    private double quality;
 
-    public Task(){}
+    public Task(){
+        this.taskTags = new ArrayList<>();
+    }
 
     public Task(TaskModel taskModel) {
         this.postUserId = taskModel.getPostUserId();
@@ -59,6 +66,8 @@ public class Task {
         this.viewedTimes = 0;
         this.reward = 0;
         this.imgUrls = taskModel.getImgUrlList();
+        this.taskTagString = "";
+        this. taskTags = new ArrayList<>();
 
     }
 
@@ -189,5 +198,33 @@ public class Task {
 
     public void setUpRate(String upRate) {
         this.upRate = upRate;
+    }
+
+    public List<TaskTag> getTaskTags() {
+        return taskTags;
+    }
+
+    public void setTaskTags(List<TaskTag> taskTags) {
+        this.taskTags = taskTags;
+    }
+
+    public String getTaskTagString() {
+        return taskTagString;
+    }
+
+    public void setTaskTagString(String taskTagString) {
+        this.taskTagString = taskTagString;
+    }
+
+    public double getQuality() {
+        return quality;
+    }
+
+    public void setQuality(double quality) {
+        this.quality = quality;
+    }
+
+    public void insertTag(TaskTag tag) {
+        this.taskTags.add(tag);
     }
 }

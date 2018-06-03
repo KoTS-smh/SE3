@@ -1,13 +1,6 @@
 <template>
   <div class="lee-picture-card">
-    <!-- <div class="card-actions justify-box">
-      <el-button type="primary" size="small">
-        <icon name="pencil-alt"></icon>
-      </el-button>
-      <el-button type="danger" size="small" @click="removeItem">
-        <icon name="trash"></icon>
-      </el-button>
-    </div> -->
+  
     <div class="preview" :style="{ backgroundImage: 'url(' + url + ')' }"></div>
     <div class="card-info" style="border-bottom:1px solid gainsboro;height:50px">
       <span class="large-text">&nbsp;&nbsp;{{ name }} - {{ id }}</span>
@@ -15,8 +8,8 @@
     </div>
     <div class="card-footer justify-between" style="height: 40px">
       <div class="left" >
-        <span ><icon name="eye" style="margin-top:12px; margin-left:10px; margin-right:3px"></icon>{{ viewedTimes }}</span>
-        <span ><icon name="money-bill-alt" style="margin-top:12px; margin-right:4px"></icon>{{ reward }}</span>
+        <span ><icon name="eye" style="margin-top:12px; margin-left:5px"></icon>{{ viewedTimes }}</span>
+        <span ><icon name="money-bill-alt" style="margin-top:12px margin-left:5px"></icon> {{ reward }}</span>
         <span v-if="this.upRate != ''" style="background-color:#1CC1E9;color:#FFFFFF">{{ upRate }}</span>
         <el-button class="moreBtn" size="mini" round @click="getInfo" style="float: right; margin-top:5px; margin-right:10px">more</el-button>
       </div>

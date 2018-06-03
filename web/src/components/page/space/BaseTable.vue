@@ -246,6 +246,7 @@
                 var userId = localStorage.getItem('userId');
                 axios.post('http://localhost:8080/taskOrder/getAll', {"username": username, "password": '', "acceptUserId": userId})
                 .then(response => {
+                    console.log(response);
                     for(let j = 0;j < response.data.data.length; j++){
                         if(response.data.data[j].submited === false){
                             response.data.data[j].submited = "未提交";

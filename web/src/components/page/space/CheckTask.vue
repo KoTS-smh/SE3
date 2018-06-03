@@ -35,6 +35,12 @@
                 <el-form-item label="奖励积分" class="formItems">
                     <el-input v-model="taskData.totalPoint" readonly></el-input>
                 </el-form-item>
+                <el-form-item label="奖励金钱" class="formItems">
+                    <el-input v-model="taskData.reward + ' ¥'" readonly></el-input>
+                </el-form-item>
+                <el-form-item v-if="taskData.upRate != null" label="奖励增幅" class="formItems">
+                    <el-input v-model="taskData.upRate" readonly></el-input>
+                </el-form-item>
             </el-form>
         </div>
             <div v-show="showAccept">
@@ -87,7 +93,9 @@ export default {
                 taskLevel: 2,
                 totalPoint: 20,
                 taskId: '',
-                degree: 10
+                degree: 10,
+                reward: '',
+                upRate: ''
             },
             rules: {
             },
@@ -125,6 +133,8 @@ export default {
                     this.taskData.beginDate = (new Date(indata.beginDate)).Format("yyyy-MM-dd hh:mm:ss");
                     this.taskData.endDate = (new Date(indata.endDate)).Format("yyyy-MM-dd hh:mm:ss");
                     this.taskData.totalPoint = indata.totalPoints;
+                    this.taskData.reward = indata.reward;
+                    this.taskData.upRate = indata.upRate;
                     for (let i = 0; i < indata.imgUrlList.length; i++) {
                         this.images.push({src: indata.imgUrlList[i]})
                     }

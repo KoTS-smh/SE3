@@ -24,4 +24,6 @@ public interface TaskService {
     TaskModel getTask(long taskId);
 
     void checkTaskEveryDay();
+
+    List<Task> getRecommendTask(long userId);
 }

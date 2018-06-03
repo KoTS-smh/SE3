@@ -40,9 +40,6 @@ public class TaskOrderController {
      */
     @RequestMapping("/taskOrder/getAll")
     public Result getAllTaskOrder(@RequestBody SimpleUserModel simpleUserModel) {
-//        long userId = userModel.getAcceptUserId();
-        //List<TaskOrderWraper> list = taskOrderService.getAllTaskOrder(userId);
-//        return ResultUtils.success(list);
         List<TaskOrderModel> list = taskOrderService.getAllTaskOrder(simpleUserModel.getAcceptUserId());
         return ResultUtils.success(list);
     }
@@ -54,11 +51,6 @@ public class TaskOrderController {
      */
     @RequestMapping("/taskOrder/createTaskOrder")
     public Result createTaskOrder(@RequestBody SimpleTaskOrderModel simpleTaskOrderModel){
-//        long taskId = taskOrderModel.getTaskId();
-//        long userId = taskOrderModel.getAcceptUserId();
-//        TaskOrder taskOrder = new TaskOrder(taskId, userId);
-//        taskOrderService.createTaskOrder(taskOrder);
-//        return ResultUtils.success();
 
         TaskOrder taskOrder = new TaskOrder(simpleTaskOrderModel.getTaskId(), simpleTaskOrderModel.getAcceptUserId());
         taskOrderService.createTaskOrder(taskOrder);

@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
         user.setPoint(0);
         user.setBalance(0);
         try {
-            userDao.insert(user);
+            userDao.insertUser(user);
         }catch (Exception e){
             throw new ResultException(ResultCode.UNKNOWN_ERROR);
         }

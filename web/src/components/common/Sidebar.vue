@@ -45,6 +45,10 @@
                             {
                                 index: 'createTask',
                                 title: '新建任务'
+                            },
+                            {
+                                index: 'recommendTask',
+                                title: '推荐任务'
                             }
                         ]
                     },
@@ -63,7 +67,7 @@
                                 index: 'dataCheck',
                                 title: '数据统计',
 
-                            },
+                            }
                         ]
                     },
                     // {

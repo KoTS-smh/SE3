@@ -21,6 +21,8 @@ public class TaskModel {
     private List<String> classifiedInfo;
     private AnnotationType annotationType;
     private List<Long> acceptUserIds;
+    private double reward;
+    private String upRate;
 
     public TaskModel() {}
 
@@ -42,6 +44,8 @@ public class TaskModel {
         }
 
         this.annotationType = task.getAnnotationType();
+        this.reward = task.getReward();
+        this.upRate = task.getUpRate();
     }
 
     public List<Long> getAcceptUserIds() {
@@ -154,5 +158,21 @@ public class TaskModel {
 
     public void setAnnotationType(AnnotationType annotationType) {
         this.annotationType = annotationType;
+    }
+
+    public double getReward() {
+        return reward;
+    }
+
+    public void setReward(double reward) {
+        this.reward = reward;
+    }
+
+    public String getUpRate() {
+        return upRate;
+    }
+
+    public void setUpRate(String upRate) {
+        this.upRate = upRate;
     }
 }

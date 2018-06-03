@@ -9,11 +9,11 @@ import java.util.List;
 @Mapper
 @Repository
 public interface UserDao {
-    @Insert("insert into MRGSDB.users(userId,email,description,education,password," +
-            "point,sex,telPhone,userLevel,username) values (#{userId},#{email}," +
+    @Insert("insertUser into MRGSDB.users(userId,email,description,education,password," +
+            "point,sex,telPhone,userLevel,username,profession) values (#{userId},#{email}," +
             "#{description},#{education},#{password},#{point},#{sex},#{telPhone}," +
-            "#{userLevel},#{username})")
-    void insert(User user);
+            "#{userLevel},#{username},#{profession})")
+    void insertUser(User user);
 
     @Select("select * from MRGSDB.users where username=#{username}")
     User getUser(String username);
@@ -25,7 +25,7 @@ public interface UserDao {
     List<User> getAllUsers();
 
     @Update("update MRGSDB.users set sex=#{sex},education=#{education},telPhone=#{telPhone}," +
-            "email=#{email},description=#{description} WHERE userId=#{userId}")
+            "email=#{email},description=#{description},profession=#{profession} WHERE userId=#{userId}")
     void updateUser(User user);
 
     @Delete("delete from MRGSDB.users where userId=#{userId}")
