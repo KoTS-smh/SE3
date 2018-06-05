@@ -1,6 +1,7 @@
 package com.sec.server.service;
 
 import com.sec.server.domain.Task;
+import com.sec.server.model.Picture_CardModel;
 import com.sec.server.model.TaskModel;
 
 import java.util.List;
@@ -26,4 +27,6 @@ public interface TaskService {
     void checkTaskEveryDay();
 
     List<Task> getRecommendTask(long userId);
+
+    List<Picture_CardModel> searchTask(String message, String taskType, String tag);
 }

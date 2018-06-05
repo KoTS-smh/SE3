@@ -41,6 +41,15 @@
         搜索表单
         -->     <div style="text-align: center">
                     <img style="margin-right:20px;" src="https://ws1.sinaimg.cn/large/0073JsqJly1fr1uiup7upj302e00raa0.jpg">
+                    <el-select v-model="tag" placeholder="请选择" style="width: 100px">
+                        <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+
                     <el-input v-model="input" placeholder="请输入内容" style="width:200px; "></el-input>
                     <el-button type="primary" icon="el-icon-search" @click="searchTask">搜索</el-button>
                 </div>
@@ -114,7 +123,40 @@
                 
                 canRoute: true,
                 input: '',
-                activeName: 'second'
+                activeName: 'second',
+                options: [{
+                    value: 0,
+                    label: '动物'
+                }, {
+                    value: '1',
+                    label: '人物'
+                }, {
+                    value: '2',
+                    label: '自然'
+                }, {
+                    value: '3',
+                    label: '日常用品'
+                }, {
+                    value: '4',
+                    label: '建筑'
+                },{
+                    value: '5',
+                    label: '科技'
+                },{
+                    value: '6',
+                    label: '食物'
+                },{
+                    value: '7',
+                    label: '交通'
+                },{
+                    value: '8',
+                    label: '家具'
+                },{
+                    value: '9',
+                    label: '工业产品'
+                }
+                ],
+                tag: '请选择'
             };
         },
         computed: {
@@ -140,8 +182,8 @@
             },
             
             searchTask() {
-                
-                this.$refs.mycontent.searchForTasks(this.input, this.activeName);
+                console.log(this.tag);
+                this.$refs.mycontent.searchForTasks(this.input, this.activeName, this.tag);
             },
             handleClick(tab, event) {
                 console.log(tab, event);

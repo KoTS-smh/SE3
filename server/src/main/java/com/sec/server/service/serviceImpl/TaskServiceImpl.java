@@ -10,6 +10,7 @@ import com.sec.server.domain.User;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.enums.TaskTag;
 import com.sec.server.exception.ResultException;
+import com.sec.server.model.Picture_CardModel;
 import com.sec.server.model.TaskModel;
 import com.sec.server.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,6 +192,32 @@ public class TaskServiceImpl implements TaskService {
         return recommmendTasks;
     }
 
+    @Override
+    public List<Picture_CardModel> searchTask(String message, String taskType, String tag) {
+        List<Picture_CardModel> list = new ArrayList<>();
+        if(taskType.equals("all")){
+
+            List<Task> taskList = taskDao.searchForAllTasks(message);
+
+            for(Task tmp : taskList) {
+                tmp = placeTaskTag(tmp);
+            }
+
+            if(tag.equals("请选择")) {
+                //do nothing
+            }else {
+                taskList = taskFilter(taskList, tag);
+            }
+            if(taskList.size() > 0) {
+                for(Task task : taskList) {
+                    list.add(new Picture_CardModel(task));
+                }
+            }
+
+        }
+       return list;
+    }
+
     private Task checkTask(Task task) {
         Date beginDate = task.getBeginDate();
         Date endDate = task.getEndDate();
@@ -306,5 +333,47 @@ public class TaskServiceImpl implements TaskService {
         return outList;
     }
 
+    private List<Task> taskFilter(List<Task> tasks, String tagNum) {
+        TaskTag taskTag = null;
+        if(tagNum.equals("0"))
+            taskTag = TaskTag.ANIMAL;
+        else if(tagNum.equals("1"))
+            taskTag = TaskTag.HUMAN;
+        else if(tagNum.equals("2"))
+            taskTag = TaskTag.NATURE;
+        else if(tagNum.equals("3"))
+            taskTag = TaskTag.DAILYSTUFF;
+        else if(tagNum.equals("4"))
+            taskTag = TaskTag.BUILDING;
+        else if(tagNum.equals("5"))
+            taskTag = TaskTag.TECHNOLOGY;
+        else if(tagNum.equals("6"))
+            taskTag = TaskTag.FOOD;
+        else if(tagNum.equals("7"))
+            taskTag = TaskTag.TRAFFIC;
+        else if(tagNum.equals("8"))
+            taskTag = TaskTag.FURNITURE;
+        else if(tagNum.equals("9"))
+            taskTag = TaskTag.INDUSTRY;
+
+
+        List<Task> retList = new ArrayList<>();
+        for(Task tmp : tasks) {
+//            if(!tmp.getTaskTags().contains(taskTag)){
+//                if(tasks.size() == 1) {
+//                    return new ArrayList<Task>();
+//                }else{
+//                    tasks.remove(tmp);
+//                }
+//            }
+            if(tmp.getTaskTags().contains(taskTag))
+                retList.add(tmp);
+
+
+        }
+
+        return retList;
+
+    }
 
 }
