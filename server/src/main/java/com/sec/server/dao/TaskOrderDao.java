@@ -58,14 +58,6 @@ public interface TaskOrderDao {
     List<TaskOrder> getAllSubmited(long acceptUserId);
 
     /**
-     * 获取一个工人的等级情况
-     * @param userId 工人Id
-     * @return 工人的等级信息 message
-     */
-    @Select("select * from MRGSDB.honer where userId = #{userId}")
-    HonerMessage getTagLevel(long userId);
-
-    /**
      * 更新任务订单
      * @param taskOrder 任务订单Id
      */
