@@ -1,25 +1,8 @@
 <template>
   <div class="pictures">
     <el-row :gutter="10">
-	  
-			  
-		  <!-- <div class="block pagination" style="padding: 10px;text-align: right"> -->
-				<!-- <el-col :span="17">
-				<h1 style="margin-top:6px">任务列表</h1>
-				</el-col>
-				<el-col :span="7">
-				<el-pagination
-				@size-change="handleSizeChange"
-				@current-change="handleCurrentChange"
-				:current-page.sync="currentPage"
-				:page-sizes="[8, 16, 24, 32]"
-				:page-size="perPage"
-				layout="total, sizes, prev, pager, next"
-				:total="card_list.length">
-				</el-pagination>	
-				</el-col>				 -->
-			<!-- </div> -->
-      <el-col :sm="12" :md="6" v-for="(card, index) in showCardList" :key="card.id">
+	
+      <el-col :sm="12" :md="6" v-for="(card, index) in card_list" :key="card.id">
         <picture-card :name="card.name" :url="card.url" :description="card.description" :id="card.id" :views="card.views" :comments="card.comments" @remove="removeItem(card)" @getInfo="getInfo(card)"></picture-card>
       </el-col>
 
@@ -96,7 +79,7 @@
 		  var taskId = item.id;
 		  this.$router.push({path: 'checkTask', query:{"taskId":taskId}})
 	  },
-      searchForTasks(input, activeName) {
+      searchForTasks(input, activeName, tag) {
         console.log(activeName);
           var taskType;
           if(activeName == 0){
@@ -113,12 +96,13 @@
           axios.get('http://localhost:8080/search/getTask', {
               params:{
                   message: input,
-                  taskType: taskType
+                  taskType: taskType,
+                  taskTag: tag
               }
           }).then(response => {
               console.log(response.data)
-              var array = JSON.parse(response.data.data)
-              this.card_list = array
+              // var array = JSON.parse(response.data.data)
+              this.card_list = response.data.data
           })
       }
     },
@@ -126,7 +110,7 @@
         searchInfo: function() {
             this.toSearch = this.searchInfo;
             if(this.toSearch != null && this.toSearch.length > 0) {
-
+                
             }
         }
     },

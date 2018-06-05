@@ -1,5 +1,7 @@
 package com.sec.server.model;
 
+import com.sec.server.domain.Task;
+
 /**
  * 与前端主页中的picture_card 结构对应
  * name
@@ -30,6 +32,16 @@ public class Picture_CardModel {
         this.viewedTimes = viewedTimes;
         this.reward = reward;
         this.upRate = upRate;
+    }
+
+    public Picture_CardModel(Task task) {
+        this.name = task.getTaskname();
+        this.id = task.getTaskId();
+        this.url = task.getImgUrls().get(0);
+        this.description = task.getTaskInfo();
+        this.viewedTimes = task.getViewedTimes();
+        this.reward = task.getReward();
+        this.upRate = task.getUpRate();
     }
 
     public String getName() {
