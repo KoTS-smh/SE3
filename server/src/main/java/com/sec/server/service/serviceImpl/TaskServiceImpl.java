@@ -9,6 +9,7 @@ import com.sec.server.domain.TaskOrder;
 import com.sec.server.domain.User;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.enums.TaskTag;
+import com.sec.server.enums.UserProfession;
 import com.sec.server.exception.ResultException;
 import com.sec.server.model.Picture_CardModel;
 import com.sec.server.model.TaskModel;
@@ -150,8 +151,6 @@ public class TaskServiceImpl implements TaskService {
 
         List<Integer> mostTagged = getMostTagged(tagCounts);
 
-
-
         List<Long> acceptedTasks = taskOrderDao.getAcceptedTasks(userId);
         List<Task> tasksNotAccept = taskDao.getAllTask();
 
@@ -164,18 +163,18 @@ public class TaskServiceImpl implements TaskService {
 
         List<Task> recommmendTasks = new ArrayList<>();
 
+        //根据职业推荐
+        recommmendTasks = recommendByProfession(recommmendTasks, user);
+
         if(mostTagged.size() <= 10) {
             //用户之前进行的标注任务较少，此时推荐接取次数比较少的任务
             for(Task tmp : tasksNotAccept) {
-
                 if(recommmendTasks.size() > 10)
                     break;
-
                 if(tmp.getUpRate() != null && tmp.getUpRate().length() > 0) {
                     recommmendTasks.add(tmp);
                 }
             }
-
             return recommmendTasks;
         }
 
@@ -359,21 +358,62 @@ public class TaskServiceImpl implements TaskService {
 
         List<Task> retList = new ArrayList<>();
         for(Task tmp : tasks) {
-//            if(!tmp.getTaskTags().contains(taskTag)){
-//                if(tasks.size() == 1) {
-//                    return new ArrayList<Task>();
-//                }else{
-//                    tasks.remove(tmp);
-//                }
-//            }
             if(tmp.getTaskTags().contains(taskTag))
                 retList.add(tmp);
-
-
         }
 
         return retList;
 
+    }
+
+    /**
+     *
+     * @param tasks
+     * @param user
+     * @return
+     */
+    private List<Task> recommendByProfession(List<Task> tasks, User user) {
+        List<TaskTag> taskTagList = new ArrayList<>();
+        List<Task> retlist = new ArrayList<>();
+        if(user.getProfession().equals(UserProfession.ENGINEER)) {
+            taskTagList.add(TaskTag.INDUSTRY);
+            taskTagList.add(TaskTag.BUILDING);
+        }else if(user.getProfession().equals(UserProfession.DESIGNER)) {
+            taskTagList.add(TaskTag.DAILYSTUFF);
+            taskTagList.add(TaskTag.FURNITURE);
+            taskTagList.add(TaskTag.TECHNOLOGY);
+        }else if(user.getProfession().equals(UserProfession.CHEF)) {
+            taskTagList.add(TaskTag.FOOD);
+        }else {
+
+            return retlist;
+        }
+
+        for(Task task : tasks) {
+            if(retlist.size() >= 5)
+                return retlist;
+
+            List<TaskTag> tagsOfTask = task.getTaskTags();
+            if(have_common_tag(tagsOfTask, taskTagList))
+                retlist.add(task);
+        }
+
+        return retlist;
+    }
+
+    /**
+     * 判断两个taskTag的列表是否有交集
+     * @param list1 列表1
+     * @param list2 列表2
+     * @return 判断结果
+     */
+    private static boolean have_common_tag(List<TaskTag> list1, List<TaskTag> list2) {
+        for(TaskTag taskTag : list2) {
+            if(list1.contains(taskTag))
+                return true;
+        }
+
+        return false;
     }
 
 }

@@ -86,4 +86,13 @@ public interface TaskDao {
 
     @Select("select taskName from MRGSDB.task where taskId = #{taskId}")
     String getTaskName(long taskId);
+
+    @Select("select * from MRGSDB.task where taskName like CONCAT('%',#{taskName},'%')")
+    @Results({
+            @Result(property = "imgUrls",column = "taskId", javaType = List.class,
+                    many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
+            ),
+            @Result(property = "taskId", column = "taskId")
+    })
+    List<Task> searchForAllTasks(@Param("taskName") String taskName);
 }

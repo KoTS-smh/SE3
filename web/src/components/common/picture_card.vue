@@ -11,7 +11,7 @@
         <span ><icon name="eye" style="margin-top:12px; margin-left:5px"></icon>{{ viewedTimes }}</span>
         <span ><icon name="money-bill-alt" style="margin-top:12px margin-left:5px"></icon> {{ reward }}</span>
         <span v-if="this.upRate != ''" style="background-color:#1CC1E9;color:#FFFFFF">{{ upRate }}</span>
-        <el-button class="moreBtn" size="mini" round @click="getInfo" style="float: right; margin-top:5px; margin-right:10px">more</el-button>
+        <el-button class="moreBtn" size="mini" round @click="getInfo" style="float: right; margin-top:5px; margin-right:8px">more</el-button>
       </div>
 
     </div>

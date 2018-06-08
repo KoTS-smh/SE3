@@ -3,7 +3,6 @@
   	<div class="h-center">
         <search class="msearch"></search>
   	</div >
-
       <el-row>
         <el-col :span="4">&nbsp;</el-col>
         <el-col :span="16">
