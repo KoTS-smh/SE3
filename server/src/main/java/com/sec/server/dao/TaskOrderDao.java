@@ -20,7 +20,6 @@ public interface TaskOrderDao {
             "#{beginDate},#{endDate})")
     @Options(useGeneratedKeys = true, keyProperty = "taskOrderId", keyColumn = "taskOrderId")
     void insertTaskOrder(TaskOrder taskOrder);
-    //todo 上面把submited的改成了枚举类
 
     /**
      * 由Id获取任务订单
@@ -47,7 +46,6 @@ public interface TaskOrderDao {
             "where acceptUserId = #{acceptUserId} and submited = 0 " +
             "and taskId not in (select taskId from MRGSDB.task where annotationType != type )")
     List<TaskOrder> getAllFinishedTaskOrderOfAType(long acceptUserId, AnnotationType type);
-    //todo 这里好像也要改改
 
     /**
      * 获取一个工人所有提交的任务订单
