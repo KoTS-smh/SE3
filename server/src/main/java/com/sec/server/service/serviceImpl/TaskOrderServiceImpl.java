@@ -22,8 +22,7 @@ public class TaskOrderServiceImpl implements TaskOrderService {
 
     @Override
     public TaskOrder getTaskOrderById(long taskOrderId) {
-        TaskOrder taskOrder = taskOrderDao.getTaskOrder(taskOrderId);
-        return taskOrder;
+        return taskOrderDao.getTaskOrder(taskOrderId);
     }
 
     @Override

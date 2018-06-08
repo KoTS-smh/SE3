@@ -50,7 +50,6 @@ public class Task {
         {
             this.classifiedInfo = StringList2String.join(",", taskModel.getClassifiedInfo());
         }
-
         try {
             this.beginDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(taskModel.getBeginDate());
             this.endDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(taskModel.getEndDate());
@@ -182,7 +181,6 @@ public class Task {
     public void setTaskname(String taskname) {
         this.taskname = taskname;
     }
-
 
     public List<String> getImgUrls() {
         return imgUrls;

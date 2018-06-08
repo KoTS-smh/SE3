@@ -1,13 +1,17 @@
 package com.sec.server.domain;
 
 
+import com.sec.server.enums.TaskOrderState;
+
 import java.util.Date;
 
+
 public class TaskOrder {
+
     private long taskOrderId;
     private long taskId;
     private long acceptUserId;
-    private boolean submited;
+    private TaskOrderState submited;
     private int lastPic;
     private int finishedPics;//zuihaogaimingzi
     private int rate;
@@ -86,12 +90,11 @@ public class TaskOrder {
         this.beginDate = beginDate;
     }
 
-    public boolean getSubmited() {
+    public TaskOrderState getSubmited() {
         return submited;
     }
 
-    public void setSubmited(boolean submited) {
+    public void setSubmited(TaskOrderState submited) {
         this.submited = submited;
     }
-
 }
