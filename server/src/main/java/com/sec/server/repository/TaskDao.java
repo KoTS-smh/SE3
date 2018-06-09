@@ -1,4 +1,4 @@
-package com.sec.server.dao;
+package com.sec.server.repository;
 
 import com.sec.server.domain.Task;
 import org.apache.ibatis.annotations.*;
@@ -153,4 +153,7 @@ public interface TaskDao {
             @Result(property = "taskId", column = "taskId")
     })
     List<Task> searchForAllTasks(@Param("taskName") String taskName);
+
+    @Insert("insert into mrgsdb.task(quality) values(#{quality}) where taskId = #{taskId}")
+    void setTaskQuality(@Param("taskId") long taskId,@Param("quality") double quality);//todo 带测试
 }

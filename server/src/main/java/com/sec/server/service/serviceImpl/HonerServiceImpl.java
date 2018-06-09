@@ -3,6 +3,9 @@ package com.sec.server.service.serviceImpl;
 import com.sec.server.domain.HonerMessage;
 import com.sec.server.domain.TaskOrder;
 import com.sec.server.enums.AnnotationType;
+import com.sec.server.repository.HonerDao;
+import com.sec.server.repository.TaskOrderDao;
+import com.sec.server.repository.UserDao;
 import com.sec.server.service.HonerService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,9 +15,9 @@ import java.util.List;
 public class HonerServiceImpl implements HonerService {
 
     @Autowired
-    private com.sec.server.dao.UserDao userDao;
-    private com.sec.server.dao.TaskOrderDao taskOrderDao;
-    private com.sec.server.dao.HonerDao honerDao;
+    private UserDao userDao;
+    private TaskOrderDao taskOrderDao;
+    private HonerDao honerDao;
 
     /**
      * 计算用户在标框标注上的荣誉

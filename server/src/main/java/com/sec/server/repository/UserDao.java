@@ -1,4 +1,4 @@
-package com.sec.server.dao;
+package com.sec.server.repository;
 
 import com.sec.server.domain.User;
 import org.apache.ibatis.annotations.*;

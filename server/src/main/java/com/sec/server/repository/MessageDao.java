@@ -1,4 +1,4 @@
-package com.sec.server.dao;
+package com.sec.server.repository;
 
 import com.sec.server.domain.Message;
 import org.apache.ibatis.annotations.*;

@@ -1,6 +1,6 @@
 package com.sec.server.controller;
 
-import com.sec.server.dao.MessageDao;
+import com.sec.server.repository.MessageDao;
 import com.sec.server.domain.Message;
 import com.sec.server.domain.User;
 import com.sec.server.enums.ResultCode;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
