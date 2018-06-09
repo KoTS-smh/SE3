@@ -8,20 +8,57 @@ import java.util.List;
 
 
 public interface TaskService {
+
+    /**
+     * 创建任务
+     * @param task 任务信息
+     */
     void createTask(Task task);
 
-    void updataTask(Task task);
+    /**
+     * 更新任务
+     * @param task 任务信息
+     */
+    void updateTask(Task task);
 
+    /**
+     * 删除任务
+     * @param taskId 任务Id
+     */
     void deleteTask(long taskId);
 
+    /**
+     * 获得发布者所有发布的任务
+     * @param postUserId 发布者Id
+     * @return 任务列表 list
+     */
     List<Task> getAllPostTask(long postUserId);
 
+    /**
+     * 获得发布者所有发布完成的任务
+     * @param postUserId 发布者Id
+     * @return 任务列表 list
+     */
     List<Task> getAllFinishedTask(long postUserId);
 
+    /**
+     * 获得发布者所有发布未完成的任务
+     * @param postUserId 发布者Id
+     * @return 任务列表 list
+     */
     List<Task> getAllunFinishedTask(long postUserId);
 
+    /**
+     * 获得所有未完成的任务
+     * @return 任务列表 list
+     */
     List<Task> getEveryUnFinishedTask();
 
+    /**
+     * 获取任务
+     * @param taskId 任务Id
+     * @return 任务信息
+     */
     TaskModel getTask(long taskId);
 
     void checkTaskEveryDay();
@@ -29,4 +66,6 @@ public interface TaskService {
     List<Task> getRecommendTask(long userId);
 
     List<Picture_CardModel> searchTask(String message, String taskType, String tag);
+
+    void endAppointment(long taskId);
 }

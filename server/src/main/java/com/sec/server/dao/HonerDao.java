@@ -26,4 +26,21 @@ public interface HonerDao {
     @Update("update MRGSDB.honer set frameTagLevel = #{frameTagLevel},classifyTagLevel = #{classifyTagLevel}," +
             "wholeTagLevel = #{wholeTagLevel},regionTagLevel = #{regionTagLevel},totalLevel = #{totalLevel} WHERE userId = #{userId}")
     void setTagLevel(HonerMessage honerMessage);
+
+    /**
+     * 新建一个工人的荣誉
+     * @param userId 工人Id
+     */
+    @Insert("insertUserHoner into MRGSDB.honer(userId,frameTagLevel,frameTagPoint," +
+            "classifyTagLevel,classifyTagPoint,wholeTagLevel,wholeTagPoint," +
+            "regionTagLevel,regionTagPoint,totalLevel) " +
+            "values (#{userId},0,0,0,0,0,0,0,0,0)")
+    void insertUserHoner(long userId);
+
+    /**
+     * 删除一个工人的荣誉
+     * @param userId 工人Id
+     */
+    @Delete("delete MGRSDB.honer where userId = #{userId}")
+    void deleteUserHoner(long userId);
 }

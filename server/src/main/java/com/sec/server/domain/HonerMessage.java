@@ -8,6 +8,10 @@ public class HonerMessage {
     private int wholeTagLevel;
     private int regionTagLevel;
     private int totalLevel;
+    private double frameTagPoint;
+    private double classifyTagPoint;
+    private double wholeTagPoint;
+    private double regionTagPoint;
 
     public long getUserId() {
         return userId;
@@ -55,5 +59,37 @@ public class HonerMessage {
 
     public void setTotalLevel(int totalLevel) {
         this.totalLevel = totalLevel;
+    }
+
+    public double getFrameTagPoint() {
+        return frameTagPoint;
+    }
+
+    public void setFrameTagPoint(double frameTagPoint) {
+        this.frameTagPoint = frameTagPoint;
+    }
+
+    public double getClassifyTagPoint() {
+        return classifyTagPoint;
+    }
+
+    public void setClassifyTagPoint(double classifyTagPoint) {
+        this.classifyTagPoint = classifyTagPoint;
+    }
+
+    public double getWholeTagPoint() {
+        return wholeTagPoint;
+    }
+
+    public void setWholeTagPoint(double wholeTagPoint) {
+        this.wholeTagPoint = wholeTagPoint;
+    }
+
+    public double getRegionTagPoint() {
+        return regionTagPoint;
+    }
+
+    public void setRegionTagPoint(double regionTagPoint) {
+        this.regionTagPoint = regionTagPoint;
     }
 }

@@ -54,14 +54,6 @@ public class TaskOrderModel {
         this.taskOrderId = taskOrderId;
     }
 
-    public TaskOrderState getSubmited() {
-        return submited;
-    }
-
-    public void setSubmited(TaskOrderState submited) {
-        this.submited = submited;
-    }
-
     public int getLastPic() {
         return lastPic;
     }
@@ -109,5 +101,13 @@ public class TaskOrderModel {
 
     public void setTaskName(String taskName) {
         this.taskName = taskName;
+    }
+
+    public TaskOrderState getSubmited() {
+        return submited;
+    }
+
+    public void setSubmited(TaskOrderState submited) {
+        this.submited = submited;
     }
 }
