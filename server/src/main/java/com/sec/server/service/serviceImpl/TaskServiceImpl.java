@@ -44,7 +44,6 @@ public class TaskServiceImpl implements TaskService {
         taskDao.addTask(task);
         imgUrlDao.insertUrlList(urlLists, task.getTaskId());
 
-
     }
 
     @Override
@@ -215,26 +214,6 @@ public class TaskServiceImpl implements TaskService {
 
         }
        return list;
-    }
-
-    public static void main(String [] args){
-        HonerMessage h1 = new HonerMessage();
-        HonerMessage h2 = new HonerMessage();
-        HonerMessage h3 = new HonerMessage();
-
-        h1.setClassifyTagPoint(5);
-        h2.setClassifyTagPoint(1);
-        h3.setClassifyTagPoint(2);
-
-        ArrayList<HonerMessage> list = new ArrayList<>();
-
-        list.add(h1);
-        list.add(h2);
-        list.add(h3);
-        System.out.println(list.get(0).getClassifyTagPoint());
-        list.sort(Comparator.comparing(HonerMessage::getClassifyTagPoint));
-
-        System.out.println(list.get(0).getClassifyTagPoint());
     }
 
     /**

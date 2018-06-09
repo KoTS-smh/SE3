@@ -62,6 +62,7 @@ public class TaskOrderServiceImpl implements TaskOrderService {
         Task task = taskDao.getTask(taskOrder.getTaskId());
         taskOrder.setBeginDate(task.getBeginDate());
         taskOrder.setEndDate(task.getEndDate());
+        taskOrder.setSubmited(TaskOrderState.appoint);
         taskOrderDao.insertTaskOrder(taskOrder);
     }
 

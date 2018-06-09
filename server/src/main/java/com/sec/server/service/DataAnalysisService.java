@@ -4,7 +4,7 @@ import com.sec.server.domain.Task;
 
 import java.util.List;
 
-public interface DemoService{
+public interface DataAnalysisService {
 
     double calculateMinimumMoneyOfTask(Task task);
 

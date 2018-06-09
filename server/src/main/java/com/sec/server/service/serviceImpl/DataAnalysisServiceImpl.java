@@ -2,23 +2,23 @@ package com.sec.server.service.serviceImpl;
 
 import com.sec.server.dao.UserDao;
 import com.sec.server.dao.TaskOrderDao;
+import com.sec.server.dao.WaitingDao;
 import com.sec.server.domain.Task;
 import com.sec.server.domain.TaskOrder;
 import com.sec.server.domain.User;
-import com.sec.server.enums.AnnotationType;
 import com.sec.server.enums.TaskOrderState;
-import com.sec.server.service.DemoService;
+import com.sec.server.service.DataAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 
 import java.util.Date;
 import java.util.List;
 
-public class DemoServiceImpl implements DemoService {
+public class DataAnalysisServiceImpl implements DataAnalysisService {
 
     @Autowired
     private UserDao userDao;
     private TaskOrderDao taskOrderDao;
+    private WaitingDao waitingDao;
 
     /**
      * 计算任务的最小推荐金额
@@ -104,17 +104,15 @@ public class DemoServiceImpl implements DemoService {
         }
 
         //从等待列表中选择等待工人补足
-        List<Long> waitingWorkerList = taskOrderDao.getWaitingWorker(taskId);
+        String waitingList = waitingDao.getWaitingList(taskId);
+        String[] waitingWorkerList = waitingList.split(" ");
 
         for(int i = 0;i<replacedWorkerList.size();i++){
             TaskOrder taskOrder = new TaskOrder();
 
-            taskOrder.setAcceptUserId(waitingWorkerList.get(i));
+            taskOrder.setAcceptUserId(Integer.parseInt(waitingWorkerList[i]));
             taskOrder.setBeginDate(new Date());
             taskOrder.setEndDate(list.get(0).getEndDate());
-            taskOrder.setFinishedPics(0);
-            taskOrder.setLastPic(0);
-            taskOrder.setRate(0);
             taskOrder.setSubmited(TaskOrderState.unSubmitted);
             taskOrder.setTaskId(taskId);
 
