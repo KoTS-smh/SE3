@@ -1,7 +1,5 @@
 package com.sec.server.domain;
 
-import java.util.List;
-
 public class Annotation {
 
     private int taskOrderId;
@@ -10,7 +8,9 @@ public class Annotation {
 
     private String sentence;
 
-    private String coordinates;//json str
+    private String words;
+
+    private String coordinates;
 
     public String getSentence() {
         return sentence;
@@ -27,5 +27,29 @@ public class Annotation {
 
     public void setCoordinates(String coordinates) {
         this.coordinates = coordinates;
+    }
+
+    public int getTaskOrderId() {
+        return taskOrderId;
+    }
+
+    public void setTaskOrderId(int taskOrderId) {
+        this.taskOrderId = taskOrderId;
+    }
+
+    public int getPictureNum() {
+        return pictureNum;
+    }
+
+    public void setPictureNum(int pictureNum) {
+        this.pictureNum = pictureNum;
+    }
+
+    public String getWords() {
+        return words;
+    }
+
+    public void setWords(String words) {
+        this.words = words;
     }
 }

@@ -38,9 +38,14 @@ dependencies {
     compile group: 'com.alibaba',name:'druid-spring-boot-starter',version:'1.1.0'
     compile group: 'com.qiniu', name: 'qiniu-java-sdk', version: '6.1.7.1'
     compile("mysql:mysql-connector-java:5.1.6")
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-gradle-plugin
-    compile group: 'org.springframework.boot', name: 'spring-boot-gradle-plugin', version: '2.0.2.RELEASE', ext: 'pom'
-
-
-
+    compile 'edu.stanford.nlp:stanford-corenlp:3.9.1'
+    compile group: 'com.google.guava', name: 'guava', version: '25.1-jre'
+    compile files('opencv/opencv-341.jar')
+    compile files('corenlp/stanford-corenlp-3.9.1-models.jar')
+    compile files('corenlp/stanford-corenlp-3.9.1-models-english.jar')
+    compile 'javax.xml.bind:jaxb-api:2.3.0'
+    compile 'com.sun.xml.bind:jaxb-core:2.3.0'
+    compile 'com.sun.xml.bind:jaxb-impl:2.3.0'
+    compile 'org.glassfish.jaxb:jaxb-runtime:2.3.0'
+    compile 'javax.activation:activation:1.1.1'
 }

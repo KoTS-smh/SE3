@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@MapperScan("com.sec.server.dao")
+@MapperScan("com.sec.server.repository")
 public class ServerApplication {
 
     public static void main(String[] args) {

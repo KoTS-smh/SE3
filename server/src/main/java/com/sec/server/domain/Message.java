@@ -7,6 +7,15 @@ public class Message {
     private String title;
     private boolean isRead;
 
+    public Message(){}
+
+    public Message(long userId, String messageInfo, String title) {
+        this.userId = userId;
+        this.messageInfo = messageInfo;
+        this.title = title;
+        this.isRead = false;
+    }
+
     public long getMessageId() {
         return messageId;
     }

@@ -1,4 +1,4 @@
-package com.sec.server.dao;
+package com.sec.server.repository;
 
 import com.sec.server.domain.ImgUrl;
 import org.apache.ibatis.annotations.Insert;
@@ -24,4 +24,7 @@ public interface ImgUrlDao {
             "(#{taskId}, #{url})" +
             "</foreach>" + "</script>")
     void insertUrlList(@Param("urlList") List<String> urlList, @Param("taskId") long taskId);
+
+    @Select("select count(taskId) from mrgsdb.imgUrl where taskId = #{taskId}")
+    int getImageNum(long taskId);
 }

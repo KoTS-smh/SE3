@@ -1,7 +1,7 @@
 package com.sec.server.service.serviceImpl;
 
-import com.sec.server.dao.TaskDao;
-import com.sec.server.dao.TaskOrderDao;
+import com.sec.server.repository.TaskDao;
+import com.sec.server.repository.TaskOrderDao;
 import com.sec.server.domain.Task;
 import com.sec.server.domain.TaskOrder;
 import com.sec.server.enums.TaskOrderState;
@@ -17,9 +17,9 @@ import java.util.List;
 @Service(value = "taskOrderService")
 public class TaskOrderServiceImpl implements TaskOrderService {
     @Autowired
-    TaskOrderDao taskOrderDao;
+    private TaskOrderDao taskOrderDao;
     @Autowired
-    TaskDao taskDao;
+    private TaskDao taskDao;
 
     /**
      * 通过Id获取任务订单

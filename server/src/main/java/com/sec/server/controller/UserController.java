@@ -1,10 +1,11 @@
 package com.sec.server.controller;
 
-import com.sec.server.dao.MessageDao;
+import com.sec.server.repository.MessageDao;
 import com.sec.server.domain.Message;
 import com.sec.server.domain.User;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
+import com.sec.server.model.MessageModel;
 import com.sec.server.model.UserModel;
 import com.sec.server.service.UserService;
 import com.sec.server.utils.CreateToken;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -45,8 +45,6 @@ public class UserController {
         }else{
             throw new ResultException(ResultCode.UNKNOWN_ERROR);
         }
-
-
     }
 
     /**
@@ -129,7 +127,22 @@ public class UserController {
     public Result getMessage(@RequestBody UserModel userModel) {
         long userId = userModel.getUserId();
         List<Message> messages = messageDao.getMessages(userId);
+        System.out.println(messages.size());
         return ResultUtils.success(messages);
+    }
+
+    @RequestMapping("/user/setRead")
+    public Result setRead(@RequestBody MessageModel messageModel) {
+        long messageId = messageModel.getMessageId();
+        messageDao.setAsReaded(messageId);
+        return ResultUtils.success();
+    }
+
+    @RequestMapping("/user/deleteMessage")
+    public Result deleteMessage(@RequestBody MessageModel messageModel) {
+        long messageId = messageModel.getMessageId();
+        messageDao.deleteMessage(messageId);
+        return ResultUtils.success();
     }
 
 }

@@ -1,6 +1,6 @@
 package com.sec.server.service.serviceImpl;
 
-import com.sec.server.dao.UserDao;
+import com.sec.server.repository.UserDao;
 import com.sec.server.domain.User;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.enums.UserLevel;
