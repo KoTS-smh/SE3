@@ -1,15 +1,11 @@
 package com.sec.server.service.serviceImpl;
 
-import com.sec.server.dao.ImgUrlDao;
-import com.sec.server.dao.TaskDao;
-import com.sec.server.dao.TaskOrderDao;
-import com.sec.server.dao.UserDao;
+import com.sec.server.dao.*;
+import com.sec.server.domain.HonerMessage;
 import com.sec.server.domain.Task;
 import com.sec.server.domain.TaskOrder;
 import com.sec.server.domain.User;
-import com.sec.server.enums.ResultCode;
-import com.sec.server.enums.TaskTag;
-import com.sec.server.enums.UserProfession;
+import com.sec.server.enums.*;
 import com.sec.server.exception.ResultException;
 import com.sec.server.model.Picture_CardModel;
 import com.sec.server.model.TaskModel;
@@ -18,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service(value = "taskService")
 public class TaskServiceImpl implements TaskService {
@@ -36,6 +30,12 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private HonerDao honerDao;
+
+    @Autowired
+    private WaitingDao waitingDao;
+
 
     @Override
     public void createTask(Task task) {
@@ -48,7 +48,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void updataTask(Task task) {
+    public void updateTask(Task task) {
         taskDao.updateTask(task);
     }
 
@@ -131,7 +131,7 @@ public class TaskServiceImpl implements TaskService {
         //用户之前完成过的任务
         List<Task> taskList = new ArrayList<>();
         for(TaskOrder item : taskOrderList) {
-            if(item.getSubmited()) {
+            if(item.getSubmited().equals(TaskOrderState.submitted)) {
                 Task task = taskDao.getTask(item.getTaskId());
                 task = placeTaskTag(task);
                 taskList.add(task);
@@ -216,6 +216,101 @@ public class TaskServiceImpl implements TaskService {
         }
        return list;
     }
+
+    public static void main(String [] args){
+        HonerMessage h1 = new HonerMessage();
+        HonerMessage h2 = new HonerMessage();
+        HonerMessage h3 = new HonerMessage();
+
+        h1.setClassifyTagPoint(5);
+        h2.setClassifyTagPoint(1);
+        h3.setClassifyTagPoint(2);
+
+        ArrayList<HonerMessage> list = new ArrayList<>();
+
+        list.add(h1);
+        list.add(h2);
+        list.add(h3);
+        System.out.println(list.get(0).getClassifyTagPoint());
+        list.sort(Comparator.comparing(HonerMessage::getClassifyTagPoint));
+
+        System.out.println(list.get(0).getClassifyTagPoint());
+    }
+
+    /**
+     * 结束预约
+     * @param taskId 任务Id
+     */
+    @Override
+    public void endAppointment(long taskId) {
+        //获取任务信息
+        Task task = taskDao.getTask(taskId);
+
+        //获得所有预约的任务订单信息
+        List<TaskOrder> taskOrderList = taskOrderDao.getAllTaskOrderOfATask(taskId);
+
+        //判断人数是否超过预设
+        int number = task.getMaxParticipator();
+
+        //如果超过预设
+        if(taskOrderList.size()>number){
+
+            //获得所有人的荣誉信息
+            ArrayList<HonerMessage> honerMessageList = new ArrayList<>();
+
+            for (TaskOrder aTaskOrderList : taskOrderList) {
+                honerMessageList.add(honerDao.getTagLevel(aTaskOrderList.getAcceptUserId()));
+            }
+
+            //获取任务的类型
+            AnnotationType annotationType = task.getAnnotationType();
+
+            //从低到高排序
+            switch (annotationType){
+                case option1:
+                    honerMessageList.sort(Comparator.comparing(HonerMessage::getFrameTagPoint));
+                    break;
+                case option2:
+                    honerMessageList.sort(Comparator.comparing(HonerMessage::getClassifyTagLevel));
+                    break;
+                case option3:
+                    honerMessageList.sort(Comparator.comparing(HonerMessage::getRegionTagLevel));
+                    break;
+                case option4:
+                    honerMessageList.sort(Comparator.comparing(HonerMessage::getWholeTagLevel));
+                    break;
+            }
+
+            //声明等待列表
+            String waitingList = "";
+
+            //处理积分较低的工人的任务订单
+            for(int i = honerMessageList.size()-number;i>=0;i--){
+                //删除工人订单
+                taskOrderDao.deleteAppointTaskOrder(taskId,honerMessageList.get(i).getUserId());
+
+                //通知工人已经被加入等待列表 todo
+
+                //将工人加入等待列表
+                waitingList = waitingList + " " + honerMessageList.get(i).getUserId();
+
+            }
+
+            //写入数据库
+            waitingDao.insertWaitingMessage(taskId,waitingList);
+
+        }
+
+        //通知没被删除的人消息提示 todo
+
+        //更改任务订单状态
+        taskOrderList = taskOrderDao.getAllTaskOrderOfATask(taskId);
+
+        for (TaskOrder aTaskOrderList : taskOrderList) {
+            taskOrderDao.changeTaskOrderState(aTaskOrderList.getTaskOrderId(), TaskOrderState.unSubmitted);
+        }
+    }
+
 
     private Task checkTask(Task task) {
         Date beginDate = task.getBeginDate();

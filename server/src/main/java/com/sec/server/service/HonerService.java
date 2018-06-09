@@ -1,5 +1,10 @@
 package com.sec.server.service;
 
+import com.sec.server.domain.TaskOrder;
+import com.sec.server.enums.AnnotationType;
+
+import java.util.List;
+
 /**
  *
  * 计算荣誉头衔
@@ -22,5 +27,6 @@ public interface HonerService {
     //总荣誉
     void honerTotal(long userId);
 
-
+    //计算积分
+    double calculateTypePoint(long userId,AnnotationType annotationType);
 }

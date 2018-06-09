@@ -37,6 +37,7 @@ public class HonerServiceImpl implements HonerService {
         int frameTagLevel = honerMessage.getFrameTagLevel();
         //计算当前评分
         double point = calculatePoint(list);
+        honerMessage.setFrameTagPoint(point);
         //判断要怎么处理等级
         //      0   降级
         //      1   不变
@@ -67,6 +68,7 @@ public class HonerServiceImpl implements HonerService {
         int classifyTagLevel = honerMessage.getClassifyTagLevel();
         //计算当前评分
         double point = calculatePoint(list);
+        honerMessage.setClassifyTagPoint(point);
         //判断要怎么处理等级
         //      0   降级
         //      1   不变
@@ -97,6 +99,7 @@ public class HonerServiceImpl implements HonerService {
         int wholeTagLevel = honerMessage.getWholeTagLevel();
         //计算当前评分
         double point = calculatePoint(list);
+        honerMessage.setWholeTagPoint(point);
         //判断要怎么处理等级
         //      0   降级
         //      1   不变
@@ -127,6 +130,7 @@ public class HonerServiceImpl implements HonerService {
         int regionTagLevel = honerMessage.getRegionTagLevel();
         //计算当前评分
         double point = calculatePoint(list);
+        honerMessage.setRegionTagPoint(point);
         //判断要怎么处理等级
         //      0   降级
         //      1   不变
@@ -178,12 +182,30 @@ public class HonerServiceImpl implements HonerService {
         honerDao.setTagLevel(honerMessage);
     }
 
+    @Override
+    public double calculateTypePoint(long userId, AnnotationType annotationType) {
+        HonerMessage honerMessage = honerDao.getTagLevel(userId);
+
+        switch (annotationType){
+            case option1:
+                return honerMessage.getFrameTagPoint();
+            case option2:
+                return honerMessage.getClassifyTagPoint();
+            case option3:
+                return honerMessage.getRegionTagPoint();
+            case option4:
+                return honerMessage.getWholeTagPoint();
+        }
+
+        return 0;
+    }
+
     /**
      * 统计分数信息
      * @param list 任务订单列表
      * @return 评分 point
      */
-    private double calculatePoint(List<TaskOrder> list){
+     private double calculatePoint(List<TaskOrder> list){
         int count = 0;
         for (TaskOrder aList : list) {
             count += aList.getRate();

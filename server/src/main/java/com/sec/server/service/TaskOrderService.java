@@ -6,6 +6,7 @@ import com.sec.server.model.TaskOrderModel;
 import java.util.List;
 
 public interface TaskOrderService {
+
     TaskOrder getTaskOrderById(long taskOrderId);
 
     List<TaskOrderModel> getAllTaskOrder(long userId);
@@ -17,4 +18,7 @@ public interface TaskOrderService {
     void deleteTaskOrder(long taskOrderId);
 
     List<TaskOrder> getAllSubmited(long userId);
+
+    void endAppointment(long taskId);
+
 }
