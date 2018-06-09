@@ -95,7 +95,7 @@ public class TaskController {
     @RequestMapping("/task/update")
     public Result updateTask(@RequestBody TaskModel taskModel){
         Task task = new Task(taskModel);
-        taskService.updataTask(task);
+        taskService.updateTask(task);
         return ResultUtils.success();
     }
 
