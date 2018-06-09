@@ -9,7 +9,7 @@ import java.util.List;
 @Mapper
 @Repository
 public interface MessageDao {
-    @Insert("insert into MRSGDB.message(userId, messageInfo, title, isRead) values " +
+    @Insert("insert into MRGSDB.message(userId, messageInfo, title, isRead) values " +
             "(#{userId}, #{messageInfo}, #{title}, #{isRead})")
     @Options(useGeneratedKeys = true, keyProperty = "messageId", keyColumn = "messageId")
     void insertMessage(Message message);
@@ -18,5 +18,8 @@ public interface MessageDao {
     List<Message> getMessages(long userId);
 
     @Update("update MRGSDB.message set isRead = 1 where messageId = #{messageId}")
-    void setAsReaded(Message message);
+    void setAsReaded(long messageId);
+
+    @Delete("delete from MRGSDB.message where messageId = #{messageId}")
+    void deleteMessage(long messageId);
 }
