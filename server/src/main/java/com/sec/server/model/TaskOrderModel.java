@@ -1,6 +1,7 @@
 package com.sec.server.model;
 
 import com.sec.server.domain.TaskOrder;
+import com.sec.server.enums.TaskOrderState;
 
 import java.util.Date;
 
@@ -8,7 +9,7 @@ public class TaskOrderModel {
     private long taskId;
     private long acceptUserId;
     private long taskOrderId;
-    private boolean submited;
+    private TaskOrderState submited;
     private int lastPic;
     private String degreeOfCompletion;
     private int rate;
@@ -53,11 +54,11 @@ public class TaskOrderModel {
         this.taskOrderId = taskOrderId;
     }
 
-    public boolean isSubmited() {
+    public TaskOrderState getSubmited() {
         return submited;
     }
 
-    public void setSubmited(boolean submited) {
+    public void setSubmited(TaskOrderState submited) {
         this.submited = submited;
     }
 

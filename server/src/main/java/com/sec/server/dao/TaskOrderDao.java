@@ -15,7 +15,7 @@ public interface TaskOrderDao {
      * 工人接取任务
      * @param taskOrder 任务订单
      */
-    @Insert("insertUser into MRGSDB.taskOrder(taskId,acceptUserId,submited,lastPic," +
+    @Insert("insert into MRGSDB.taskOrder(taskId,acceptUserId,submited,lastPic," +
             "finishedPics,rate,beginDate,endDate) values (#{taskId},#{acceptUserId},1,0,0,0," +
             "#{beginDate},#{endDate})")
     @Options(useGeneratedKeys = true, keyProperty = "taskOrderId", keyColumn = "taskOrderId")

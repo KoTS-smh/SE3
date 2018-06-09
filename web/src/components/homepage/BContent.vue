@@ -1,8 +1,6 @@
 <template>
   <div class="pictures">
     <el-row :gutter="10">
-	  
-			  
 		  <!-- <div class="block pagination" style="padding: 10px;text-align: right"> -->
 				<el-col :span="17">
 				<h1 style="margin-top:6px">任务列表</h1>
@@ -45,7 +43,8 @@
           
         ],
         currentPage: 1,
-        perPage: 16
+        perPage: 16,
+        messageNum: ''
       };
     },
     computed: {
@@ -72,7 +71,6 @@
 	  placeData() {
 		  axios.post('http://localhost:8080/getContent').then(response => {
 			  console.log(response.data)
-			  
 			  var array = JSON.parse(response.data.data)
 			  this.card_list = array
 		  })

@@ -15,13 +15,24 @@
                   <!-- <el-menu-item index="/personalSpace" style="text-align: center; position:absolute; top:0px; right:150px;color: dodgerblue">
                     <span>{{myName}}</span>
                   </el-menu-item> -->
-                  <el-dropdown style="text-align: center; position:absolute; top:20px; right:200px;color: dodgerblue" @command="handlePersonCommand">
+                  <el-dropdown style="text-align: center; position:absolute; top:20px; right:250px;color: dodgerblue" @command="handlePersonCommand">
                       <span class="el-dropdown-link">
                           {{myName}}
                       </span>
                       <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item command="personalSpace">个人中心</el-dropdown-item>
                         <el-dropdown-item command="logout">退出登陆</el-dropdown-item>
+                      </el-dropdown-menu>
+                  </el-dropdown>
+
+                  <el-dropdown style="text-align: center;position:absolute; top:20px;right:200px;color: dodgerblue" @command="gotoMessageCenter">
+                      <el-badge :value="this.messageNum">
+                          <icon name="bell"></icon>
+                      </el-badge>
+                      
+
+                      <el-dropdown-menu slot="dropdown">
+                          <el-dropdown-item command="go">消息中心</el-dropdown-item>
                       </el-dropdown-menu>
                   </el-dropdown>
               </el-col>
@@ -46,12 +57,18 @@
 
 <script>
     import axios from 'axios'
+    import Icon from 'vue-awesome/components/Icon'
+    import 'vue-awesome/icons'
     export default {
+        components: {
+            Icon
+        },
         data() {
             return {
                 isLogin: true,
                 myName: '',
-                canRouter:true
+                canRouter:true,
+                messageNum:10
             }
         },
         methods: {
@@ -72,6 +89,12 @@
             placeUsername() {
                 var username = localStorage.getItem("username");
                 this.myName = username;
+                axios.post('http://localhost:8080/user/getMessageNum', {
+                    "userId": localStorage.getItem("userId")
+                }).then(response => {
+                    console.log(response)
+                    this.messageNum = response.data.data
+                })
             },
             handlePersonCommand(command) {
                 if(command == 'personalSpace') {
@@ -90,6 +113,9 @@
                         location.reload();
                     })
                 }
+            },
+            gotoMessageCenter(command) {
+                this.$router.push('publishedTasks');
             }
         },
         mounted() {

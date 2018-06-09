@@ -7,7 +7,7 @@ import com.sec.server.dao.UserDao;
 import com.sec.server.domain.Task;
 import com.sec.server.domain.TaskOrder;
 import com.sec.server.domain.User;
-import com.sec.server.enums.ResultCode;
+import com.sec.server.enums.TaskOrderState;
 import com.sec.server.enums.TaskTag;
 import com.sec.server.enums.UserProfession;
 import com.sec.server.exception.ResultException;
@@ -131,7 +131,7 @@ public class TaskServiceImpl implements TaskService {
         //用户之前完成过的任务
         List<Task> taskList = new ArrayList<>();
         for(TaskOrder item : taskOrderList) {
-            if(item.getSubmited()) {
+            if(item.getSubmited().equals(TaskOrderState.submitted)) {
                 Task task = taskDao.getTask(item.getTaskId());
                 task = placeTaskTag(task);
                 taskList.add(task);
@@ -181,6 +181,7 @@ public class TaskServiceImpl implements TaskService {
         for(Task tmp : tasksNotAccept) {
             if(recommmendTasks.size() > 10)
                 break;
+
             List<TaskTag> taskTags = tmp.getTaskTags();
             for(TaskTag taskTag : taskTags){
                if(mostTagged.contains(taskTag.ordinal()))
@@ -366,12 +367,6 @@ public class TaskServiceImpl implements TaskService {
 
     }
 
-    /**
-     *
-     * @param tasks
-     * @param user
-     * @return
-     */
     private List<Task> recommendByProfession(List<Task> tasks, User user) {
         List<TaskTag> taskTagList = new ArrayList<>();
         List<Task> retlist = new ArrayList<>();
@@ -412,7 +407,6 @@ public class TaskServiceImpl implements TaskService {
             if(list1.contains(taskTag))
                 return true;
         }
-
         return false;
     }
 

@@ -1,5 +1,7 @@
 package com.sec.server.controller;
 
+import com.sec.server.dao.MessageDao;
+import com.sec.server.domain.Message;
 import com.sec.server.domain.User;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.exception.ResultException;
@@ -8,6 +10,7 @@ import com.sec.server.service.UserService;
 import com.sec.server.utils.CreateToken;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +24,9 @@ public class UserController {
 
     @Resource(name = "userService")
     private UserService userService;
+
+    @Autowired
+    private MessageDao messageDao;
 
     /**
      * 判断用户登陆情况
@@ -109,6 +115,21 @@ public class UserController {
 //        return ResultUtils.success();
         userService.logout(userId);
         return ResultUtils.success();
+    }
+
+    @RequestMapping("/user/getMessageNum")
+    public Result getMessageNum(@RequestBody UserModel userModel) {
+        long userId = userModel.getUserId();
+        List<Message> messages = messageDao.getMessages(userId);
+
+        return ResultUtils.success(messages.size());
+    }
+
+    @RequestMapping("/user/getMessage")
+    public Result getMessage(@RequestBody UserModel userModel) {
+        long userId = userModel.getUserId();
+        List<Message> messages = messageDao.getMessages(userId);
+        return ResultUtils.success(messages);
     }
 
 }

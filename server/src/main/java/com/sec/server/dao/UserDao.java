@@ -14,7 +14,7 @@ public interface UserDao {
      * 新建一个用户
      * @param user 用户
      */
-    @Insert("insertUser into MRGSDB.users(userId,email,description,education,password," +
+    @Insert("insert into MRGSDB.users(userId,email,description,education,password," +
             "point,sex,telPhone,userLevel,username,profession) values (#{userId},#{email}," +
             "#{description},#{education},#{password},#{point},#{sex},#{telPhone}," +
             "#{userLevel},#{username},#{profession})")

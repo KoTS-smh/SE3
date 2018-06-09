@@ -76,6 +76,10 @@ export default new Router({
                 {
                     path: '/recommendTask',
                     component: resolve => require(['../components/page/space/RecommendTask.vue'], resolve)
+                },
+                {
+                    path: '/messageCenter',
+                    component: resolve => require(['../components/page/space/MessageCenter.vue'], resolve)
                 }
             ]
         },
