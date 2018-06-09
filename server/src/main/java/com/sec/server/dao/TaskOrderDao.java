@@ -104,11 +104,6 @@ public interface TaskOrderDao {
     List<TaskOrder> getAllTaskOrderOfATask(long taskId);
 
     /**
-     * 获取一个任务的等待工人列表
-     */
-    List<Long> getWaitingWorker(long taskId);
-
-    /**
      * 获得工人接受的所有任务
      * @param acceptUserId 工人Id
      * @return 任务列表 list
