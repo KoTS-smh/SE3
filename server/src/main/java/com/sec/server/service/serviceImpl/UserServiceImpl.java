@@ -6,6 +6,7 @@ import com.sec.server.enums.ResultCode;
 import com.sec.server.enums.UserLevel;
 import com.sec.server.exception.ResultException;
 import com.sec.server.model.UserModel;
+import com.sec.server.service.HonorService;
 import com.sec.server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+
+    private HonorService honorService;
 
     @Override
     public User login(String username, String password) {
@@ -50,6 +53,10 @@ public class UserServiceImpl implements UserService {
         user.setBalance(0);
         try {
             userDao.insertUser(user);
+            //获得刚刚新建的用户
+            List<User> list = userDao.getAllUsers();
+            //新建荣誉信息
+            honorService.createHonorMessage(list.get(list.size()-1).getUserId());
         }catch (Exception e){
             throw new ResultException(ResultCode.UNKNOWN_ERROR);
         }

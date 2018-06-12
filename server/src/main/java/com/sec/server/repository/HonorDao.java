@@ -12,14 +12,14 @@ public interface HonorDao {
      * @param userId 工人Id
      * @return 工人的等级信息 message
      */
-    @Select("select * from MRGSDB.honer where userId = #{userId}")
+    @Select("select * from MRGSDB.honor where userId = #{userId}")
     HonorMessage getTagLevel(long userId);
 
     /**
      * 修改一个工人荣誉等级情况
      * @param honorMessage 工人荣誉等级信息
      */
-    @Update("update MRGSDB.honer set frameTagLevel = #{frameTagLevel},classifyTagLevel = #{classifyTagLevel}," +
+    @Update("update MRGSDB.honor set frameTagLevel = #{frameTagLevel},classifyTagLevel = #{classifyTagLevel}," +
             "wholeTagLevel = #{wholeTagLevel},regionTagLevel = #{regionTagLevel},totalLevel = #{totalLevel} WHERE userId = #{userId}")
     void setTagLevel(HonorMessage honorMessage);
 
@@ -27,16 +27,16 @@ public interface HonorDao {
      * 新建一个工人的荣誉
      * @param userId 工人Id
      */
-    @Insert("insertUserHoner into MRGSDB.honer(userId,frameTagLevel,frameTagPoint," +
+    @Insert("insertUserHonor into MRGSDB.honor(userId,frameTagLevel,frameTagPoint," +
             "classifyTagLevel,classifyTagPoint,wholeTagLevel,wholeTagPoint," +
             "regionTagLevel,regionTagPoint,totalLevel) " +
             "values (#{userId},0,0,0,0,0,0,0,0,0)")
-    void insertUserHoner(long userId);
+    void insertUserHonor(long userId);
 
     /**
      * 删除一个工人的荣誉
      * @param userId 工人Id
      */
-    @Delete("delete MGRSDB.honer where userId = #{userId}")
-    void deleteUserHoner(long userId);
+    @Delete("delete MGRSDB.honor where userId = #{userId}")
+    void deleteUserHonor(long userId);
 }

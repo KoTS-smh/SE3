@@ -208,6 +208,16 @@ public class HonorServiceImpl implements HonorService {
     }
 
     /**
+     * 创建荣誉信息
+     * @param userId 用户Id
+     * @describe 每注册一个用户就新建一个对应的荣誉信息
+     */
+    @Override
+    public void createHonorMessage(long userId) {
+        honorDao.insertUserHonor(userId);
+    }
+
+    /**
      * 统计分数信息
      * @param list 任务订单列表
      * @return 评分 point
