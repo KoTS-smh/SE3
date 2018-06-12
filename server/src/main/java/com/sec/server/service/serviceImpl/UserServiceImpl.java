@@ -1,5 +1,6 @@
 package com.sec.server.service.serviceImpl;
 
+import com.sec.server.domain.HonorMessage;
 import com.sec.server.repository.UserDao;
 import com.sec.server.domain.User;
 import com.sec.server.enums.ResultCode;
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     private HonorService honorService;
+
 
     @Override
     public User login(String username, String password) {
@@ -56,7 +58,7 @@ public class UserServiceImpl implements UserService {
             //获得刚刚新建的用户
             List<User> list = userDao.getAllUsers();
             //新建荣誉信息
-            honorService.createHonorMessage(list.get(list.size()-1).getUserId());
+            honorService.createHonorMessage(user.getUserId());
         }catch (Exception e){
             throw new ResultException(ResultCode.UNKNOWN_ERROR);
         }

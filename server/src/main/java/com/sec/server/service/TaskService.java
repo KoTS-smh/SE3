@@ -81,7 +81,7 @@ public interface TaskService {
      * 任务结算方法
      * @param taskId 任务Id
      */
-    boolean finishTask(long taskId);
+    void finishTask(long taskId);
 
     // todo  每到十二点就运行一次这个方法判断有没有任务到了DDL
     void endTask();
