@@ -1,9 +1,13 @@
 package com.sec.server.domain;
 
 public class Message {
+    //信息Id
     private long messageId;
+    //接受信息的用户Id
     private long userId;
+    //信息正文
     private String messageInfo;
+    //信息标题
     private String title;
     private boolean isRead;
 

@@ -55,15 +55,4 @@ public class DataAnalysisController {
         return null;
     }
 
-    /**
-     * 获取一个任务中每张图片被标注的tag信息
-     * @param taskId 任务ID
-     * @return 一个任务每张图片被标注的tag信息
-     */
-    @RequestMapping("/annotation/tags")
-    public Result getTags(long taskId){
-
-//       return ResultUtils.success(dataAnalysisService.getAnnotationTag(taskId));
-        return null;
-    }
 }

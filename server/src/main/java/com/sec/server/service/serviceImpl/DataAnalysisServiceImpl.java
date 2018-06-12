@@ -1,5 +1,7 @@
 package com.sec.server.service.serviceImpl;
 
+import com.sec.server.domain.Message;
+import com.sec.server.repository.TaskDao;
 import com.sec.server.repository.TaskOrderDao;
 import com.sec.server.repository.UserDao;
 import com.sec.server.repository.WaitingDao;
@@ -8,6 +10,8 @@ import com.sec.server.domain.TaskOrder;
 import com.sec.server.domain.User;
 import com.sec.server.enums.TaskOrderState;
 import com.sec.server.service.DataAnalysisService;
+import com.sec.server.service.MessageService;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
@@ -17,8 +21,18 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
     private TaskOrderDao taskOrderDao;
+
+    @Autowired
     private WaitingDao waitingDao;
+
+    @Autowired
+    private TaskDao taskDao;
+
+    @Autowired
+    private MessageService messageService;
 
     /**
      * 计算任务的最小推荐金额
@@ -91,16 +105,28 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
     @Override
     public void replaceWorker(long taskId,List<Long> replacedWorkerList) {
 
+        //获得任务名字
+        String taskName = taskDao.getTaskName(taskId);
+
         //获得所有工人订单
         List<TaskOrder> list = taskOrderDao.getAllTaskOrderOfATask(taskId);
 
-        //通知工人已经被替换 todo
+        //工人被替换信息
+        Message messageToChangeWorked = new Message();
+        Message messageToNewWorker = new Message();
 
-        //修改数据库中任务订单的状态
+        //从所有订单中找到被替换工人的订单
         for (TaskOrder aList : list) {
-            if (replacedWorkerList.contains(aList.getAcceptUserId()))
+            if (replacedWorkerList.contains(aList.getAcceptUserId())) {
+                //修改数据库中被替换工人的订单的状态
                 aList.setSubmited(TaskOrderState.fail);
                 taskOrderDao.updateTaskOrder(aList);
+                //通知工人已经被替换
+                messageToChangeWorked.setUserId(aList.getAcceptUserId());
+                messageToChangeWorked.setMessageInfo("您因为完成评分太低等原因被替换出任务，感谢您曾经为此任务做出的贡献。"+"任务名称："+taskName);
+                messageToChangeWorked.setTitle("任务通知");
+                messageService.addMessage(messageToChangeWorked);
+            }
         }
 
         //从等待列表中选择等待工人补足
@@ -116,11 +142,17 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
             taskOrder.setSubmited(TaskOrderState.unSubmitted);
             taskOrder.setTaskId(taskId);
 
+            //通知工人已被选为新工人
+            messageToNewWorker.setUserId(taskOrder.getAcceptUserId());
+            messageToNewWorker.setMessageInfo("您被从等待中正式录用，感谢您的耐心等待，祝您完成任务顺利。任务名称："+taskName);
+            messageToNewWorker.setTitle("任务通知");
+            messageService.addMessage(messageToNewWorker);
+
             //新建对应新工人的任务订单
             taskOrderDao.insertTaskOrder(taskOrder);
         }
 
-        //通知工人已被选为新工人 todo
+
     }
 
 }
