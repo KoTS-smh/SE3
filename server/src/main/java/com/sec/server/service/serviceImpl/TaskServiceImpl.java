@@ -1,14 +1,12 @@
 package com.sec.server.service.serviceImpl;
 
+import com.sec.server.domain.*;
 import com.sec.server.repository.*;
-import com.sec.server.domain.HonerMessage;
-import com.sec.server.domain.Task;
-import com.sec.server.domain.TaskOrder;
-import com.sec.server.domain.User;
 import com.sec.server.enums.*;
 import com.sec.server.exception.ResultException;
 import com.sec.server.model.Picture_CardModel;
 import com.sec.server.model.TaskModel;
+import com.sec.server.service.MessageService;
 import com.sec.server.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +37,8 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private WaitingDao waitingDao;
 
+    @Autowired
+    private MessageService messageService;
 
     @Override
     public void createTask(Task task) {
@@ -147,8 +147,8 @@ public class TaskServiceImpl implements TaskService {
         //统计之前标注任务的类型
         for(Task item : taskList) {
             List<TaskTag> taskTags = item.getTaskTags();
-            for(int i = 0;i < taskTags.size(); ++i) {
-                tagCounts[taskTags.get(i).ordinal()]++;
+            for (TaskTag taskTag : taskTags) {
+                tagCounts[taskTag.ordinal()]++;
             }
         }
 
@@ -227,11 +227,18 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public void endAppointment(long taskId) {
+
         //获取任务信息
         Task task = taskDao.getTask(taskId);
 
+        //获取任务名称
+        String taskName = task.getTaskname();
+
         //获得所有预约的任务订单信息
         List<TaskOrder> taskOrderList = taskOrderDao.getAllTaskOrderOfATask(taskId);
+
+        //工人预约成功通知
+        Message messageToAppointSuccess = new Message();
 
         //判断人数是否超过预设
         int number = task.getMaxParticipator();
@@ -266,32 +273,42 @@ public class TaskServiceImpl implements TaskService {
             }
 
             //声明等待列表
-            String waitingList = "";
+            StringBuilder waitingList = new StringBuilder();
+
+            //工人进入等待列表通知
+            Message messageToWaitingList = new Message();
 
             //处理积分较低的工人的任务订单
             for(int i = honerMessageList.size()-number;i>=0;i--){
                 //删除工人订单
                 taskOrderDao.deleteAppointTaskOrder(taskId,honerMessageList.get(i).getUserId());
 
-                //通知工人已经被加入等待列表 todo
+                //通知工人已经被加入等待列表
+                messageToWaitingList.setUserId(honerMessageList.get(i).getUserId());
+                messageToWaitingList.setMessageInfo("您已经被加入等待列表，请耐心等待替换或者预约新的任务。任务名称："+taskName);
+                messageToWaitingList.setTitle("任务通知");
+                messageService.addMessage(messageToWaitingList);
 
                 //将工人加入等待列表
-                waitingList = waitingList + " " + honerMessageList.get(i).getUserId();
+                waitingList.append(" ").append(honerMessageList.get(i).getUserId());
 
             }
 
             //写入数据库
-            waitingDao.insertWaitingMessage(taskId,waitingList);
+            waitingDao.insertWaitingMessage(taskId, waitingList.toString());
 
         }
-
-        //通知没被删除的人消息提示 todo
 
         //更改任务订单状态
         taskOrderList = taskOrderDao.getAllTaskOrderOfATask(taskId);
 
         for (TaskOrder aTaskOrderList : taskOrderList) {
             taskOrderDao.changeTaskOrderState(aTaskOrderList.getTaskOrderId(), TaskOrderState.unSubmitted);
+            //通知工人预约成功消息
+            messageToAppointSuccess.setUserId(aTaskOrderList.getAcceptUserId());
+            messageToAppointSuccess.setMessageInfo("您已经成功预约任务，祝您完成任务顺利。任务名称："+taskName);
+            messageToAppointSuccess.setTitle("任务通知");
+            messageService.addMessage(messageToAppointSuccess);
         }
     }
 
