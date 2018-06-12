@@ -40,7 +40,7 @@ public class HonorServiceImpl implements HonorService {
         //获取工人所有完成的标框任务订单
         List<TaskOrder> list = taskOrderDao.getAllFinishedTaskOrderOfAType(userId,AnnotationType.option1);
         //获取工人当前荣誉等级
-        HonorMessage honorMessage = honorDao.getTagLevel(userId);
+        HonorMessage honorMessage = honorDao.getHonorMessage(userId);
         int frameTagLevel = honorMessage.getFrameTagLevel();
         //计算当前评分
         double point = calculatePoint(list);
@@ -71,7 +71,7 @@ public class HonorServiceImpl implements HonorService {
         //获取工人所有完成的标框任务订单
         List<TaskOrder> list = taskOrderDao.getAllFinishedTaskOrderOfAType(userId,AnnotationType.option2);
         //获取工人当前荣誉等级
-        HonorMessage honorMessage = honorDao.getTagLevel(userId);
+        HonorMessage honorMessage = honorDao.getHonorMessage(userId);
         int classifyTagLevel = honorMessage.getClassifyTagLevel();
         //计算当前评分
         double point = calculatePoint(list);
@@ -102,7 +102,7 @@ public class HonorServiceImpl implements HonorService {
         //获取工人所有完成的标框任务订单
         List<TaskOrder> list = taskOrderDao.getAllFinishedTaskOrderOfAType(userId,AnnotationType.option4);
         //获取工人当前荣誉等级
-        HonorMessage honorMessage = honorDao.getTagLevel(userId);
+        HonorMessage honorMessage = honorDao.getHonorMessage(userId);
         int wholeTagLevel = honorMessage.getWholeTagLevel();
         //计算当前评分
         double point = calculatePoint(list);
@@ -133,7 +133,7 @@ public class HonorServiceImpl implements HonorService {
         //获取工人所有完成的标框任务订单
         List<TaskOrder> list = taskOrderDao.getAllFinishedTaskOrderOfAType(userId,AnnotationType.option3);
         //获取工人当前荣誉等级
-        HonorMessage honorMessage = honorDao.getTagLevel(userId);
+        HonorMessage honorMessage = honorDao.getHonorMessage(userId);
         int regionTagLevel = honorMessage.getRegionTagLevel();
         //计算当前评分
         double point = calculatePoint(list);
@@ -163,7 +163,7 @@ public class HonorServiceImpl implements HonorService {
     public void honorTotal(long userId) {
 
         //获取工人当前荣誉等级
-        HonorMessage honorMessage = honorDao.getTagLevel(userId);
+        HonorMessage honorMessage = honorDao.getHonorMessage(userId);
         int totalLevel = honorMessage.getTotalLevel();
 
         //综合四个荣誉等级给予评定
@@ -191,7 +191,7 @@ public class HonorServiceImpl implements HonorService {
 
     @Override
     public double calculateTypePoint(long userId, AnnotationType annotationType) {
-        HonorMessage honorMessage = honorDao.getTagLevel(userId);
+        HonorMessage honorMessage = honorDao.getHonorMessage(userId);
 
         switch (annotationType){
             case option1:

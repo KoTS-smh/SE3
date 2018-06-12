@@ -6,18 +6,18 @@ import com.sec.server.enums.*;
 import com.sec.server.exception.ResultException;
 import com.sec.server.model.Picture_CardModel;
 import com.sec.server.model.TaskModel;
+import com.sec.server.service.DataAnalysisService;
 import com.sec.server.service.MessageService;
 import com.sec.server.service.TaskService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service(value = "taskService")
 public class TaskServiceImpl implements TaskService {
@@ -41,6 +41,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private MessageService messageService;
+
+    private DataAnalysisService dataAnalysisService;
 
     /**
      * 创建任务
@@ -259,7 +261,7 @@ public class TaskServiceImpl implements TaskService {
             ArrayList<HonorMessage> honorMessageList = new ArrayList<>();
 
             for (TaskOrder aTaskOrderList : taskOrderList) {
-                honorMessageList.add(honorDao.getTagLevel(aTaskOrderList.getAcceptUserId()));
+                honorMessageList.add(honorDao.getHonorMessage(aTaskOrderList.getAcceptUserId()));
             }
 
             //获取任务的类型
@@ -271,13 +273,13 @@ public class TaskServiceImpl implements TaskService {
                     honorMessageList.sort(Comparator.comparing(HonorMessage::getFrameTagPoint));
                     break;
                 case option2:
-                    honorMessageList.sort(Comparator.comparing(HonorMessage::getClassifyTagLevel));
+                    honorMessageList.sort(Comparator.comparing(HonorMessage::getClassifyTagPoint));
                     break;
                 case option3:
-                    honorMessageList.sort(Comparator.comparing(HonorMessage::getRegionTagLevel));
+                    honorMessageList.sort(Comparator.comparing(HonorMessage::getRegionTagPoint));
                     break;
                 case option4:
-                    honorMessageList.sort(Comparator.comparing(HonorMessage::getWholeTagLevel));
+                    honorMessageList.sort(Comparator.comparing(HonorMessage::getWholeTagPoint));
                     break;
             }
 
@@ -324,25 +326,107 @@ public class TaskServiceImpl implements TaskService {
     /**
      * 任务结算方法 todo
      * @param taskId 任务Id
-     * @return 是否可以结算任务
+     * @describe
+     *              1、每天十二点判断是否有任务到达DDL，有则会调用此方法
+     *              2、发布者可以进入任务完成情况界面选择订单全部提交的任务结束
      *
      * 工人预约任务-> 预约成功开始工作 -> 任务提交等待审批 -> 任务订单审批通过 -> 任务结算 -> 获取佣金
      * 任务到期之后停止订单的修改和提交操作
      * 1、所有人都提交了，检查点到最后一个阶段（即到达任务结束时间），需要结算任务
      *          问题：
      *              a、因为在日常的检查点会有专门的方法去检查每个任务评分是否达到要求，那在最后一个检查点如果没达到要求是直接变成fail?
-     * 检查点是要求提交一部分的结果么？不是提交全部吧？
-     * 当所有的任务订单都是完成状态或者失败状态时会调用结算方法
      * 结算方法主要是为了付钱和更改任务状态
      */
     @Override
-    public boolean finishTask(long taskId) {
-        return true;
+    public void finishTask(long taskId) {
+        //获取任务信息
+        Task task = taskDao.getTask(taskId);
+
+        //更改任务状态
+        taskDao.finishTask(taskId);
+
+        //计算通过的人数
+        int passNumber = 0;
+
+        //通知发布者任务结束
+        Message message = new Message();
+        message.setUserId(task.getPostUserId());
+        message.setMessageInfo("您的任务已经成功结束。任务名称："+task.getTaskname());
+        message.setTitle("任务通知");
+        messageService.addMessage(message);
+
+        //获取所有的工人任务
+        TaskOrder taskOrder;
+        List<TaskOrder> list = taskOrderDao.getAllTaskOrderOfATask(taskId);
+
+        for (TaskOrder aList : list) {
+            taskOrder = aList;
+
+            //质量审核 todo 如果不达标submited会变成fail，否则就会是submitted
+
+            //操作通过的任务订单
+            switch (taskOrder.getSubmited()) {
+                case submitted:
+                    //把任务状态修改为success
+                    taskOrder.setSubmited(TaskOrderState.finish);
+                    taskOrderDao.updateTaskOrder(taskOrder);
+                    //通知工人通过
+                    Message messageToWorker = new Message();
+                    messageToWorker.setMessageInfo("您的任务订单成功完成。任务名称："+task.getTaskname());
+                    messageToWorker.setTitle("任务通知");
+                    messageService.addMessage(messageToWorker);
+                    //结算佣金
+                    dataAnalysisService.modifyCurrency(task.getReward(),taskOrder.getAcceptUserId());
+                    //计算得分
+                    userDao.increaseUserPoint(taskOrder.getAcceptUserId(),task.getTotalPoints());
+                    passNumber++;
+                    break;
+                case fail:
+                    //通知任务失败
+                    Message messageToFailWorker = new Message();
+                    messageToFailWorker.setUserId(aList.getAcceptUserId());
+                    messageToFailWorker.setMessageInfo("您没有通过检查点的审批，感谢您曾经为此任务做出的贡献。"+"任务名称："+task.getTaskname());
+                    messageToFailWorker.setTitle("任务通知");
+                    messageService.addMessage(messageToFailWorker);
+                    //计算得分 todo
+                    break;
+                default:
+                    break;
+            }
+
+            //修改发布者余额
+            dataAnalysisService.modifyCurrency(-task.getReward()*passNumber,task.getPostUserId());
+
+        }
+
     }
 
+    /**
+     * 系统定时检查任务DDL方法
+     * @describe 每天零点调用一次
+     */
     @Override
+    @Scheduled(cron = "0 0 0 * * ?")
     public void endTask() {
+        //获取所有未完成的任务
+        List<Task> list = taskDao.getEveryUnFinishedTask();
 
+        //获取当前时间
+        Date ddl = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String nowtime = format.format(ddl);
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTime(ddl);
+        Calendar calendar2 = Calendar.getInstance();
+
+        //判断任务是否到达DDL
+        for (Task aList : list) {
+            calendar2.setTime(aList.getEndDate());
+            if (calendar1.getTime().equals(calendar2.getTime())) {
+                //到达DDL则结算任务
+                finishTask(aList.getTaskId());
+            }
+        }
     }
 
     @Override

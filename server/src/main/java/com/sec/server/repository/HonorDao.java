@@ -13,7 +13,7 @@ public interface HonorDao {
      * @return 工人的等级信息 message
      */
     @Select("select * from MRGSDB.honor where userId = #{userId}")
-    HonorMessage getTagLevel(long userId);
+    HonorMessage getHonorMessage(long userId);
 
     /**
      * 修改一个工人荣誉等级情况
@@ -27,7 +27,7 @@ public interface HonorDao {
      * 新建一个工人的荣誉
      * @param userId 工人Id
      */
-    @Insert("insertUserHonor into MRGSDB.honor(userId,frameTagLevel,frameTagPoint," +
+    @Insert("insert into MRGSDB.honor(userId,frameTagLevel,frameTagPoint," +
             "classifyTagLevel,classifyTagPoint,wholeTagLevel,wholeTagPoint," +
             "regionTagLevel,regionTagPoint,totalLevel) " +
             "values (#{userId},0,0,0,0,0,0,0,0,0)")
