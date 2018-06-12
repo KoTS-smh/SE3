@@ -47,6 +47,6 @@ public interface UserDao {
     @Select("select balance from MRGSDB.users where userId = #{userId}")
     double getBalance(long userId);
 
-    @Update("update MRGSDB.user set balance = balance - #{cost} where userId = #{userId}")
+    @Update("update MRGSDB.users set balance = balance - #{cost} where userId = #{userId}")
     void consume(double cost, long userId);
 }
