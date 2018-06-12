@@ -45,5 +45,8 @@ public interface UserDao {
     void recharge(int num, long userId);
 
     @Select("select balance from MRGSDB.users where userId = #{userId}")
-    int getBalance(long userId);
+    double getBalance(long userId);
+
+    @Update("update MRGSDB.user set balance = balance - #{cost} where userId = #{userId}")
+    void consume(double cost, long userId);
 }

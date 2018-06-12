@@ -110,6 +110,33 @@
             </div>
         </el-dialog>
 
+        <el-dialog title="充值" :visible.sync="rechargeTableVisible">
+            <el-container>
+                <el-header style="margin-left:50px" class="myheader">
+                    <span style="margin-right:200px"><icon style="margin-right:20px" name="credit-card"></icon> 充值 </span>
+                </el-header>
+                <el-main style="margin-left:40px">
+                    <span style="margin-bottom:20px"><p>充值数量</p></span>
+                    <div style="margin-top:20px">
+                        <el-button plain @click="setNum1">6.0¥</el-button>
+                        <el-button plain @click="setNum2">18.0¥</el-button>
+                        <el-button plain @click="setNum3">68.0¥</el-button>
+                    </div>
+
+                    <div style="margin-top:20px">
+                        <el-button plain @click="setNum4">233.0¥</el-button>
+                        <el-button plain @click="setNum5">648.0¥</el-button>
+                        <el-button plain @click="setNum6">998.0¥</el-button>
+                    </div>
+
+
+                    <div style="margin-top:50px;margin-left:330px">
+                        <el-button type="primary" @click="recharge">充值</el-button>
+                    </div>
+                </el-main>
+            </el-container>
+        </el-dialog>
+
     </div>
 </template>
 
@@ -117,10 +144,13 @@
 <script>
 import upload from '../../common/upload.vue'
 import axios from 'axios'
+import Icon from 'vue-awesome/components/Icon'
+import 'vue-awesome/icons'
 export default {
     name: 'app',
     components: {
-        upload
+        upload,
+        Icon
     },
   data() {
       return {
@@ -168,7 +198,8 @@ export default {
         hashes: [],
         keys: [],
         uploadMsg: [],
-        annotationType: ''
+        annotationType: '',
+        rechargeTableVisible: true
       }
     },
     methods: {
@@ -199,7 +230,14 @@ export default {
             const self = this;
             this.form.annotationType = this.annotationType;
             axios.post('http://localhost:8080/task/create', this.form).then(function (response) {
-                self.success();
+                console.log(response);
+                if(response.data.code == 12222) {
+                    self.shortOfBalance();
+                    // self.gotoRecharge();
+                    self.rechargeTableVisible = true;
+                }else{
+                    self.success();
+                }
             }).catch((err)=> {
                 this.$message.error("创建失败！")
             });
@@ -215,13 +253,52 @@ export default {
         success() {
             this.$message('任务创建成功！');
         },
+        shortOfBalance() {
+            this.$message('余额不足，请充值！')
+        },
+        gotoRecharge() {
+            this.$router.push('recharge')
+        },
         placeToken() {
             axios.post("http://localhost:8080/user/getToken").then(response =>{
-                console.log(response);
                 this.token = response.data.data;
             }).catch(err => {
                 console.log(err)
             })
+        },
+
+        recharge() {
+            axios.post('http://localhost:8080/user/recharge', {'userId':localStorage.getItem('userId'), 'rechargeNum': this.rechargeNum})
+            .then(response => {
+                console.log(response);
+                if(response.data.code == 0) {
+                    this.$message('充值成功!')
+                    this.sleep(500).then(() => {
+                        this.rechargeTableVisible = false;
+                    })
+                }
+            })
+        },
+        setNum1() {
+            this.rechargeNum = 6;
+        },
+        setNum2() {
+            this.rechargeNum = 18;
+        },
+        setNum3() {
+            this.rechargeNum = 68;
+        },
+        setNum4() {
+            this.rechargeNum = 233;
+        },
+        setNum5() {
+            this.rechargeNum = 648;
+        },
+        setNum6() {
+            this.rechargeNum = 998;
+        },
+        sleep (time) {
+            return new Promise((resolve) => setTimeout(resolve, time));
         }
     },
     watch: {

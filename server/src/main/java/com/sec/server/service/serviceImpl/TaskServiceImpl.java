@@ -52,7 +52,21 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void createTask(Task task) {
         List<String> urlLists = task.getImgUrls();
+        int maxParticipator = task.getMaxParticipator();
+        double cost = 0;
+        if(urlLists.size() * maxParticipator * 0.02 < 10){
+            cost = 10;
+        }else {
+            cost = urlLists.size() * maxParticipator * 0.02;
+        }
 
+
+        long userId = task.getPostUserId();
+        double currentBalance = userDao.getBalance(userId);
+        if(currentBalance < cost) {
+            throw new ResultException("余额不足", 12222);
+        }
+        userDao.consume(cost, userId);
         taskDao.addTask(task);
         imgUrlDao.insertUrlList(urlLists, task.getTaskId());
 
