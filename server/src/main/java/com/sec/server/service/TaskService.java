@@ -3,6 +3,7 @@ package com.sec.server.service;
 import com.sec.server.domain.Task;
 import com.sec.server.model.Picture_CardModel;
 import com.sec.server.model.TaskModel;
+import org.json.JSONArray;
 
 import java.util.List;
 
@@ -68,4 +69,6 @@ public interface TaskService {
     List<Picture_CardModel> searchTask(String message, String taskType, String tag);
 
     void endAppointment(long taskId);
+
+    JSONArray getMenuItems();
 }

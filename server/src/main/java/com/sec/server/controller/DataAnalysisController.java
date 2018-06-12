@@ -1,15 +1,20 @@
 package com.sec.server.controller;
 
 import com.sec.server.model.UserModel;
+import com.sec.server.service.TaskService;
 import com.sec.server.utils.Result;
+import com.sec.server.utils.ResultUtils;
+import org.json.JSONArray;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
+
 @RestController
 public class DataAnalysisController {
-//    @Resource(name = "dataAnalysisService")
-//    private DataAnalysisService dataAnalysisService;
+    @Resource(name = "taskService")
+    private TaskService taskService;
 
     /**
      * 众包发起者获取任务的完成情况
@@ -24,6 +29,7 @@ public class DataAnalysisController {
 //        list = dataAnalysisService.getTaskMessage(taskId);
 //        System.out.println(list.size());
 //        return ResultUtils.success(list);
+
         return null;
     }
 
@@ -55,4 +61,10 @@ public class DataAnalysisController {
         return null;
     }
 
+    @RequestMapping("/taskNum")
+    public Result getTaskNum() {
+
+        JSONArray array = taskService.getMenuItems();
+        return ResultUtils.success(array.toString());
+    }
 }

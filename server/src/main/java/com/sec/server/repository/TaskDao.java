@@ -52,7 +52,7 @@ public interface TaskDao {
      * 任务结算
      * @param taskId 任务Id
      */
-    @Update("update mrgsdb.task set isFinished = true")
+    @Update("update mrgsdb.task set isFinished = 1")
     void finishTask(@Param("taskId") long taskId);
 
     /**
@@ -63,7 +63,7 @@ public interface TaskDao {
     @Select("select * from MRGSDB.task where postUserId = #{postUserId}")
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,
-                    many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
+                    many=@Many(select = "com.sec.server.repository.ImgUrlDao.getUrls")
             ),
             @Result(property = "taskId", column = "taskId")
     })
@@ -77,7 +77,7 @@ public interface TaskDao {
     @Select("select * from MRGSDB.task where isFinished = 1 and postUserId = #{postUserId}")
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,
-                    many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
+                    many=@Many(select = "com.sec.server.repository.ImgUrlDao.getUrls")
             ),
             @Result(property = "taskId", column = "taskId")
     })
@@ -91,7 +91,7 @@ public interface TaskDao {
     @Select("select * from MRGSDB.task where isFinished = 0 and postUserId = #{postUserId}")
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,
-                    many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
+                    many=@Many(select = "com.sec.server.repository.ImgUrlDao.getUrls")
             ),
             @Result(property = "taskId", column = "taskId")
     })
@@ -104,7 +104,7 @@ public interface TaskDao {
     @Select("select * from MRGSDB.task")
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,
-                    many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
+                    many=@Many(select = "com.sec.server.repository.ImgUrlDao.getUrls")
             ),
             @Result(property = "taskId", column = "taskId")
     })
@@ -118,7 +118,7 @@ public interface TaskDao {
     @Select("select * from MRGSDB.task where taskId = #{taskId}")
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,
-                    many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
+                    many=@Many(select = "com.sec.server.repository.ImgUrlDao.getUrls")
             ),
             @Result(property = "taskId", column = "taskId")
     })
@@ -131,7 +131,7 @@ public interface TaskDao {
     @Select("select * from MRGSDB.task where isFinished = 0")
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,
-                    many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
+                    many=@Many(select = "com.sec.server.repository.ImgUrlDao.getUrls")
             ),
             @Result(property = "taskId", column = "taskId")
     })
@@ -148,7 +148,7 @@ public interface TaskDao {
     @Select("select * from MRGSDB.task where taskName like CONCAT('%',#{taskName},'%')")
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,
-                    many=@Many(select = "com.sec.server.dao.ImgUrlDao.getUrls")
+                    many=@Many(select = "com.sec.server.repository.ImgUrlDao.getUrls")
             ),
             @Result(property = "taskId", column = "taskId")
     })
@@ -156,4 +156,35 @@ public interface TaskDao {
 
     @Insert("insert into mrgsdb.task(quality) values(#{quality}) where taskId = #{taskId}")
     void setTaskQuality(@Param("taskId") long taskId,@Param("quality") double quality);//todo 带测试
+
+
+    /**
+     * @return 标框标注任务数量
+     */
+    @Select("select count(*) from MRGSDB.task where annotationType = 0")
+    int getNumOfRecTask();
+
+    /**
+     * @return 分类标注任务数量
+     */
+    @Select("select count(*) from MRGSDB.task where annotationType = 1")
+    int getNumOfClassifyTask();
+
+    /**
+     * @return 区域标注任务数量
+     */
+    @Select("select count(*) from MRGSDB.task where annotationType = 2")
+    int getNumOfRegionTask();
+
+    /**
+     * @return 整体标注任务数量
+     */
+    @Select("select count(*) from MRGSDB.task where annotationType = 3")
+    int getNumOfWholeTask();
+
+    /**
+     * @return 所有任务数量
+     */
+    @Select("select count(*) from MRGSDB.task")
+    int getNumOfAllTask();
 }

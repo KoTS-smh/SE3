@@ -13,6 +13,7 @@
 
 <script>
 import BMenuItem from 'components/homepage/BMenuItem'
+import axios from 'axios'
 export default {
 	data() {
 		return {
@@ -25,8 +26,7 @@ export default {
 				},
 				{
 					title: '标框标注',
-					num: 468,
-					
+					num: 468,	
 				},
 				{
 					title: '分类标注',
@@ -60,6 +60,20 @@ export default {
 	},
 	components: {
 		BMenuItem
+	},
+	methods: {
+		placeData(){
+			axios.get('http://localhost:8080/taskNum')
+			.then(response => {
+				console.log(response);
+				var array = JSON.parse(response.data.data);
+				this.classify = array;
+			})
+		}
+	},
+
+	mounted() {
+		this.placeData();
 	}
 }
 </script>
