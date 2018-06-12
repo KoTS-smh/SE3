@@ -32,7 +32,7 @@ public class TaskServiceImpl implements TaskService {
     private UserDao userDao;
 
     @Autowired
-    private HonerDao honerDao;
+    private HonorDao honorDao;
 
     @Autowired
     private WaitingDao waitingDao;
@@ -40,6 +40,13 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private MessageService messageService;
 
+    /**
+     * 创建任务
+     * @param task 任务信息
+     * @describe
+     *          1、创建任务后任务处于预约状态
+     *          2、创建任务后需要调用修改金额方法修改发布者的金额
+     */
     @Override
     public void createTask(Task task) {
         List<String> urlLists = task.getImgUrls();
@@ -247,10 +254,10 @@ public class TaskServiceImpl implements TaskService {
         if(taskOrderList.size()>number){
 
             //获得所有人的荣誉信息
-            ArrayList<HonerMessage> honerMessageList = new ArrayList<>();
+            ArrayList<HonorMessage> honorMessageList = new ArrayList<>();
 
             for (TaskOrder aTaskOrderList : taskOrderList) {
-                honerMessageList.add(honerDao.getTagLevel(aTaskOrderList.getAcceptUserId()));
+                honorMessageList.add(honorDao.getTagLevel(aTaskOrderList.getAcceptUserId()));
             }
 
             //获取任务的类型
@@ -259,16 +266,16 @@ public class TaskServiceImpl implements TaskService {
             //从低到高排序
             switch (annotationType){
                 case option1:
-                    honerMessageList.sort(Comparator.comparing(HonerMessage::getFrameTagPoint));
+                    honorMessageList.sort(Comparator.comparing(HonorMessage::getFrameTagPoint));
                     break;
                 case option2:
-                    honerMessageList.sort(Comparator.comparing(HonerMessage::getClassifyTagLevel));
+                    honorMessageList.sort(Comparator.comparing(HonorMessage::getClassifyTagLevel));
                     break;
                 case option3:
-                    honerMessageList.sort(Comparator.comparing(HonerMessage::getRegionTagLevel));
+                    honorMessageList.sort(Comparator.comparing(HonorMessage::getRegionTagLevel));
                     break;
                 case option4:
-                    honerMessageList.sort(Comparator.comparing(HonerMessage::getWholeTagLevel));
+                    honorMessageList.sort(Comparator.comparing(HonorMessage::getWholeTagLevel));
                     break;
             }
 
@@ -279,18 +286,18 @@ public class TaskServiceImpl implements TaskService {
             Message messageToWaitingList = new Message();
 
             //处理积分较低的工人的任务订单
-            for(int i = honerMessageList.size()-number;i>=0;i--){
+            for(int i = honorMessageList.size()-number; i>=0; i--){
                 //删除工人订单
-                taskOrderDao.deleteAppointTaskOrder(taskId,honerMessageList.get(i).getUserId());
+                taskOrderDao.deleteAppointTaskOrder(taskId, honorMessageList.get(i).getUserId());
 
                 //通知工人已经被加入等待列表
-                messageToWaitingList.setUserId(honerMessageList.get(i).getUserId());
+                messageToWaitingList.setUserId(honorMessageList.get(i).getUserId());
                 messageToWaitingList.setMessageInfo("您已经被加入等待列表，请耐心等待替换或者预约新的任务。任务名称："+taskName);
                 messageToWaitingList.setTitle("任务通知");
                 messageService.addMessage(messageToWaitingList);
 
                 //将工人加入等待列表
-                waitingList.append(" ").append(honerMessageList.get(i).getUserId());
+                waitingList.append(" ").append(honorMessageList.get(i).getUserId());
 
             }
 
@@ -312,7 +319,37 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
+    /**
+     * 任务结算方法 todo
+     * @param taskId 任务Id
+     * @return 是否可以结算任务
+     *
+     * 工人预约任务-> 预约成功开始工作 -> 任务提交等待审批 -> 任务订单审批通过 -> 任务结算 -> 获取佣金
+     * 任务到期之后停止订单的修改和提交操作
+     * 1、所有人都提交了，检查点到最后一个阶段（即到达任务结束时间），需要结算任务
+     *          问题：
+     *              a、因为在日常的检查点会有专门的方法去检查每个任务评分是否达到要求，那在最后一个检查点如果没达到要求是直接变成fail?
+     * 检查点是要求提交一部分的结果么？不是提交全部吧？
+     * 当所有的任务订单都是完成状态或者失败状态时会调用结算方法
+     * 结算方法主要是为了付钱和更改任务状态
+     */
+    @Override
+    public boolean finishTask(long taskId) {
+        return true;
+    }
 
+    @Override
+    public void endTask() {
+
+    }
+
+
+    /**
+     * 任务激励方法
+     * @param task 需要被激励的任务信息
+     * @return 修改后的任务信息 task
+     * @describe 当任务长时间接取人数不到要求值的时候会调用此方法
+     */
     private Task checkTask(Task task) {
         Date beginDate = task.getBeginDate();
         Date endDate = task.getEndDate();

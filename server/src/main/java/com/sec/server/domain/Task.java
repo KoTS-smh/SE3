@@ -13,19 +13,33 @@ import java.util.Date;
 import java.util.List;
 
 public class Task {
+    //任务Id
     private long taskId;
+    //发布者Id
     private long postUserId;
+    //任务名称
     private String taskname;
+    //任务信息
     private String taskInfo;
+    //任务标注类型
     private AnnotationType annotationType;
-    private String classifiedInfo;//改成str
+    //分类标注信息（只有分类标注才有，其他的null）
+    private String classifiedInfo;
+    //开始时间
     private Date beginDate;
+    //结束时间
     private Date endDate;
+    //完成任务获得的积分
     private int totalPoints;
+    //任务需要的最低工人等级
     private int taskLevel;
+    //最大同时标注工人数
     private int maxParticipator;
+    //是否完成
     private boolean isFinished;
+    //被访问次数
     private int viewedTimes;
+    //报酬（等级为1时的基础，如果更高会多给报酬，按照等级由网站支付）
     private double reward;
     private List<String> imgUrls;
     private String upRate;

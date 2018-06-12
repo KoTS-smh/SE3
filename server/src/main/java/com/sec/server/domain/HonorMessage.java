@@ -1,16 +1,25 @@
 package com.sec.server.domain;
 
-public class HonerMessage {
-
+public class HonorMessage {
+    //用户ID
     private long userId;
+    //标框标注等级
     private int frameTagLevel;
+    //分类标注等级
     private int classifyTagLevel;
+    //整体标注等级
     private int wholeTagLevel;
+    //区域标注等级
     private int regionTagLevel;
+    //总评等级
     private int totalLevel;
+    //标框标注分数
     private double frameTagPoint;
+    //分类标注分数
     private double classifyTagPoint;
+    //整体标注分数
     private double wholeTagPoint;
+    //区域标注分数
     private double regionTagPoint;
 
     public long getUserId() {

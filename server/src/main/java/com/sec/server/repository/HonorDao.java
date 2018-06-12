@@ -1,27 +1,27 @@
 package com.sec.server.repository;
 
-import com.sec.server.domain.HonerMessage;
+import com.sec.server.domain.HonorMessage;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 @Mapper
 @Repository
-public interface HonerDao {
+public interface HonorDao {
     /**
      * 获取一个工人荣誉等级情况
      * @param userId 工人Id
      * @return 工人的等级信息 message
      */
     @Select("select * from MRGSDB.honer where userId = #{userId}")
-    HonerMessage getTagLevel(long userId);
+    HonorMessage getTagLevel(long userId);
 
     /**
      * 修改一个工人荣誉等级情况
-     * @param honerMessage 工人荣誉等级信息
+     * @param honorMessage 工人荣誉等级信息
      */
     @Update("update MRGSDB.honer set frameTagLevel = #{frameTagLevel},classifyTagLevel = #{classifyTagLevel}," +
             "wholeTagLevel = #{wholeTagLevel},regionTagLevel = #{regionTagLevel},totalLevel = #{totalLevel} WHERE userId = #{userId}")
-    void setTagLevel(HonerMessage honerMessage);
+    void setTagLevel(HonorMessage honorMessage);
 
     /**
      * 新建一个工人的荣誉

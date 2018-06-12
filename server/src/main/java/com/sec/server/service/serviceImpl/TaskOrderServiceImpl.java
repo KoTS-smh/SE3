@@ -95,10 +95,8 @@ public class TaskOrderServiceImpl implements TaskOrderService {
     }
 
     @Override
-    public void endAppointment(long taskId) {
-        List<TaskOrder> list = taskOrderDao.getAllTaskOrderOfATask(taskId);
-        for (TaskOrder aList : list) {
-            taskOrderDao.changeTaskOrderState(aList.getTaskOrderId(),TaskOrderState.unSubmitted);
-        }
+    public boolean submittedTaskOrder() {
+        return false;
     }
+
 }

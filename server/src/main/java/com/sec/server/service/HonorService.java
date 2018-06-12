@@ -10,22 +10,22 @@ import java.util.List;
  * 计算荣誉头衔
  *
  */
-public interface HonerService {
+public interface HonorService {
 
     //标框标注
-    void honerOfFrameTag(long userId);
+    void honorOfFrameTag(long userId);
 
     //分类标注
-    void honerOfClassifyTag(long userId);
+    void honorOfClassifyTag(long userId);
 
     //整体标注
-    void honerOfWholeTag(long userId);
+    void honorOfWholeTag(long userId);
 
     //区域标注
-    void honerRegionTag(long userId);
+    void honorRegionTag(long userId);
 
     //总荣誉
-    void honerTotal(long userId);
+    void honorTotal(long userId);
 
     //计算积分
     double calculateTypePoint(long userId,AnnotationType annotationType);

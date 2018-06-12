@@ -126,6 +126,7 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
                 messageToChangeWorked.setMessageInfo("您因为完成评分太低等原因被替换出任务，感谢您曾经为此任务做出的贡献。"+"任务名称："+taskName);
                 messageToChangeWorked.setTitle("任务通知");
                 messageService.addMessage(messageToChangeWorked);
+                //扣减信用积分 todo
             }
         }
 

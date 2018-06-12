@@ -14,6 +14,7 @@ public class User {
     private String username;
     private String password;
     private UserLevel userLevel;
+    //信用积分
     private int point;
     private String telPhone;
     private Sex sex;

@@ -19,6 +19,5 @@ public interface TaskOrderService {
 
     List<TaskOrder> getAllSubmited(long userId);
 
-    void endAppointment(long taskId);
-
+    boolean submittedTaskOrder();
 }

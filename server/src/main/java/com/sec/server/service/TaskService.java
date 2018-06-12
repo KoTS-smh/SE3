@@ -61,11 +61,27 @@ public interface TaskService {
      */
     TaskModel getTask(long taskId);
 
+    /**
+     * 任务激励方法
+     */
     void checkTaskEveryDay();
 
     List<Task> getRecommendTask(long userId);
 
     List<Picture_CardModel> searchTask(String message, String taskType, String tag);
 
+    /**
+     * 结束预约方法
+     * @param taskId 任务Id
+     */
     void endAppointment(long taskId);
+
+    /**
+     * 任务结算方法
+     * @param taskId 任务Id
+     */
+    boolean finishTask(long taskId);
+
+    // todo  每到十二点就运行一次这个方法判断有没有任务到了DDL
+    void endTask();
 }

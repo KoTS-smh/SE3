@@ -1,23 +1,27 @@
 package com.sec.server.service.serviceImpl;
 
-import com.sec.server.domain.HonerMessage;
+import com.sec.server.domain.HonorMessage;
 import com.sec.server.domain.TaskOrder;
 import com.sec.server.enums.AnnotationType;
-import com.sec.server.repository.HonerDao;
+import com.sec.server.repository.HonorDao;
 import com.sec.server.repository.TaskOrderDao;
 import com.sec.server.repository.UserDao;
-import com.sec.server.service.HonerService;
+import com.sec.server.service.HonorService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HonerServiceImpl implements HonerService {
+public class HonorServiceImpl implements HonorService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
     private TaskOrderDao taskOrderDao;
-    private HonerDao honerDao;
+
+    @Autowired
+    private HonorDao honorDao;
 
     /**
      * 计算用户在标框标注上的荣誉
@@ -32,15 +36,15 @@ public class HonerServiceImpl implements HonerService {
      *
      */
     @Override
-    public void honerOfFrameTag(long userId) {
+    public void honorOfFrameTag(long userId) {
         //获取工人所有完成的标框任务订单
         List<TaskOrder> list = taskOrderDao.getAllFinishedTaskOrderOfAType(userId,AnnotationType.option1);
         //获取工人当前荣誉等级
-        HonerMessage honerMessage = honerDao.getTagLevel(userId);
-        int frameTagLevel = honerMessage.getFrameTagLevel();
+        HonorMessage honorMessage = honorDao.getTagLevel(userId);
+        int frameTagLevel = honorMessage.getFrameTagLevel();
         //计算当前评分
         double point = calculatePoint(list);
-        honerMessage.setFrameTagPoint(point);
+        honorMessage.setFrameTagPoint(point);
         //判断要怎么处理等级
         //      0   降级
         //      1   不变
@@ -49,29 +53,29 @@ public class HonerServiceImpl implements HonerService {
         switch (handle){
             case 0:
                 if(frameTagLevel>1)
-                    honerMessage.setFrameTagLevel(frameTagLevel-1);
+                    honorMessage.setFrameTagLevel(frameTagLevel-1);
                 break;
             case 1:
                 break;
             case 2:
                 if(frameTagLevel<5)
-                    honerMessage.setFrameTagLevel(frameTagLevel+1);
+                    honorMessage.setFrameTagLevel(frameTagLevel+1);
                 break;
         }
         //修改工人数据库的荣誉等级
-        honerDao.setTagLevel(honerMessage);
+        honorDao.setTagLevel(honorMessage);
     }
 
     @Override
-    public void honerOfClassifyTag(long userId) {
+    public void honorOfClassifyTag(long userId) {
         //获取工人所有完成的标框任务订单
         List<TaskOrder> list = taskOrderDao.getAllFinishedTaskOrderOfAType(userId,AnnotationType.option2);
         //获取工人当前荣誉等级
-        HonerMessage honerMessage = honerDao.getTagLevel(userId);
-        int classifyTagLevel = honerMessage.getClassifyTagLevel();
+        HonorMessage honorMessage = honorDao.getTagLevel(userId);
+        int classifyTagLevel = honorMessage.getClassifyTagLevel();
         //计算当前评分
         double point = calculatePoint(list);
-        honerMessage.setClassifyTagPoint(point);
+        honorMessage.setClassifyTagPoint(point);
         //判断要怎么处理等级
         //      0   降级
         //      1   不变
@@ -80,29 +84,29 @@ public class HonerServiceImpl implements HonerService {
         switch (handle){
             case 0:
                 if(classifyTagLevel>1)
-                    honerMessage.setClassifyTagLevel(classifyTagLevel-1);
+                    honorMessage.setClassifyTagLevel(classifyTagLevel-1);
                 break;
             case 1:
                 break;
             case 2:
                 if(classifyTagLevel<5)
-                    honerMessage.setClassifyTagLevel(classifyTagLevel+1);
+                    honorMessage.setClassifyTagLevel(classifyTagLevel+1);
                 break;
         }
         //修改工人数据库的荣誉等级
-        honerDao.setTagLevel(honerMessage);
+        honorDao.setTagLevel(honorMessage);
     }
 
     @Override
-    public void honerOfWholeTag(long userId) {
+    public void honorOfWholeTag(long userId) {
         //获取工人所有完成的标框任务订单
         List<TaskOrder> list = taskOrderDao.getAllFinishedTaskOrderOfAType(userId,AnnotationType.option4);
         //获取工人当前荣誉等级
-        HonerMessage honerMessage = honerDao.getTagLevel(userId);
-        int wholeTagLevel = honerMessage.getWholeTagLevel();
+        HonorMessage honorMessage = honorDao.getTagLevel(userId);
+        int wholeTagLevel = honorMessage.getWholeTagLevel();
         //计算当前评分
         double point = calculatePoint(list);
-        honerMessage.setWholeTagPoint(point);
+        honorMessage.setWholeTagPoint(point);
         //判断要怎么处理等级
         //      0   降级
         //      1   不变
@@ -113,27 +117,27 @@ public class HonerServiceImpl implements HonerService {
                 break;
             case 0:
                 if(wholeTagLevel>1)
-                    honerMessage.setWholeTagLevel(wholeTagLevel-1);
+                    honorMessage.setWholeTagLevel(wholeTagLevel-1);
                 break;
             case 2:
                 if(wholeTagLevel<5)
-                    honerMessage.setWholeTagLevel(wholeTagLevel+1);
+                    honorMessage.setWholeTagLevel(wholeTagLevel+1);
                 break;
         }
         //修改工人数据库的荣誉等级
-        honerDao.setTagLevel(honerMessage);
+        honorDao.setTagLevel(honorMessage);
     }
 
     @Override
-    public void honerRegionTag(long userId) {
+    public void honorRegionTag(long userId) {
         //获取工人所有完成的标框任务订单
         List<TaskOrder> list = taskOrderDao.getAllFinishedTaskOrderOfAType(userId,AnnotationType.option3);
         //获取工人当前荣誉等级
-        HonerMessage honerMessage = honerDao.getTagLevel(userId);
-        int regionTagLevel = honerMessage.getRegionTagLevel();
+        HonorMessage honorMessage = honorDao.getTagLevel(userId);
+        int regionTagLevel = honorMessage.getRegionTagLevel();
         //计算当前评分
         double point = calculatePoint(list);
-        honerMessage.setRegionTagPoint(point);
+        honorMessage.setRegionTagPoint(point);
         //判断要怎么处理等级
         //      0   降级
         //      1   不变
@@ -142,32 +146,32 @@ public class HonerServiceImpl implements HonerService {
         switch (handle){
             case 0:
                 if(regionTagLevel>1)
-                    honerMessage.setRegionTagLevel(regionTagLevel-1);
+                    honorMessage.setRegionTagLevel(regionTagLevel-1);
                 break;
             case 1:
                 break;
             case 2:
                 if(regionTagLevel<5)
-                    honerMessage.setRegionTagLevel(regionTagLevel+1);
+                    honorMessage.setRegionTagLevel(regionTagLevel+1);
                 break;
         }
         //修改工人数据库的荣誉等级
-        honerDao.setTagLevel(honerMessage);
+        honorDao.setTagLevel(honorMessage);
     }
 
     @Override
-    public void honerTotal(long userId) {
+    public void honorTotal(long userId) {
 
         //获取工人当前荣誉等级
-        HonerMessage honerMessage = honerDao.getTagLevel(userId);
-        int totalLevel = honerMessage.getTotalLevel();
+        HonorMessage honorMessage = honorDao.getTagLevel(userId);
+        int totalLevel = honorMessage.getTotalLevel();
 
         //综合四个荣誉等级给予评定
         ArrayList<Integer> list = new ArrayList<>();
-        list.add(honerMessage.getClassifyTagLevel());
-        list.add(honerMessage.getFrameTagLevel());
-        list.add(honerMessage.getRegionTagLevel());
-        list.add(honerMessage.getWholeTagLevel());
+        list.add(honorMessage.getClassifyTagLevel());
+        list.add(honorMessage.getFrameTagLevel());
+        list.add(honorMessage.getRegionTagLevel());
+        list.add(honorMessage.getWholeTagLevel());
 
         //计数器，如果超过两个等级超过当前总体荣誉等级，则更改总体荣誉等级
         int count = 0;
@@ -178,26 +182,26 @@ public class HonerServiceImpl implements HonerService {
 
         if (count>=2) {
             totalLevel++;
-            honerMessage.setTotalLevel(totalLevel);
+            honorMessage.setTotalLevel(totalLevel);
         }
 
         //修改工人数据库的荣誉等级
-        honerDao.setTagLevel(honerMessage);
+        honorDao.setTagLevel(honorMessage);
     }
 
     @Override
     public double calculateTypePoint(long userId, AnnotationType annotationType) {
-        HonerMessage honerMessage = honerDao.getTagLevel(userId);
+        HonorMessage honorMessage = honorDao.getTagLevel(userId);
 
         switch (annotationType){
             case option1:
-                return honerMessage.getFrameTagPoint();
+                return honorMessage.getFrameTagPoint();
             case option2:
-                return honerMessage.getClassifyTagPoint();
+                return honorMessage.getClassifyTagPoint();
             case option3:
-                return honerMessage.getRegionTagPoint();
+                return honorMessage.getRegionTagPoint();
             case option4:
-                return honerMessage.getWholeTagPoint();
+                return honorMessage.getWholeTagPoint();
         }
 
         return 0;
