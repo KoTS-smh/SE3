@@ -115,7 +115,7 @@
                 }
             },
             gotoMessageCenter(command) {
-                this.$router.push('publishedTasks');
+                this.$router.push('messageCenter');
             }
         },
         mounted() {

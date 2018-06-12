@@ -8,6 +8,8 @@ import com.sec.server.model.Picture_CardModel;
 import com.sec.server.model.TaskModel;
 import com.sec.server.service.MessageService;
 import com.sec.server.service.TaskService;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -340,6 +342,63 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void endTask() {
+
+    }
+
+    @Override
+    public JSONArray getMenuItems() {
+        JSONObject homepage = new JSONObject();
+        homepage.put("title", "首页");
+        homepage.put("num", 0);
+        homepage.put("home", true);
+
+        int recTagNum = taskDao.getNumOfRecTask();
+        JSONObject recTag = new JSONObject();
+        recTag.put("title", "标框标注");
+        recTag.put("num", recTagNum);
+
+        int classifiedTagNum = taskDao.getNumOfClassifyTask();
+        JSONObject classifyTag = new JSONObject();
+        classifyTag.put("title", "分类标注");
+        classifyTag.put("num", classifiedTagNum);
+
+        int regionTagNum = taskDao.getNumOfRegionTask();
+        JSONObject regionTag = new JSONObject();
+        regionTag.put("title", "区域标注");
+        regionTag.put("num", regionTagNum);
+
+        int wholeTagNum = taskDao.getNumOfWholeTask();
+        JSONObject wholeTag = new JSONObject();
+        wholeTag.put("title", "整体标注");
+        regionTag.put("num", wholeTagNum);
+
+        int allTaskNum = taskDao.getNumOfAllTask();
+        JSONObject allTask =  new JSONObject();
+        allTask.put("title", "全部任务");
+        allTask.put("num", allTaskNum);
+
+        JSONObject instruction = new JSONObject();
+        instruction.put("title", "使用教程");
+        instruction.put("num", 0);
+        instruction.put("sequare", true);
+
+        JSONObject personSpace = new JSONObject();
+        personSpace.put("title", "个人空间");
+        personSpace.put("num", 0);
+        personSpace.put("live", true);
+        personSpace.put("link", "http://localhost:8888/#/personalSpace");
+
+        JSONArray array = new JSONArray();
+        array.put(homepage);
+        array.put(recTag);
+        array.put(classifyTag);
+        array.put(regionTag);
+        array.put(wholeTag);
+        array.put(allTask);
+        array.put(instruction);
+        array.put(personSpace);
+
+        return array;
 
     }
 

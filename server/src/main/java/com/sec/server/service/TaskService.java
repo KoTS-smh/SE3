@@ -3,6 +3,7 @@ package com.sec.server.service;
 import com.sec.server.domain.Task;
 import com.sec.server.model.Picture_CardModel;
 import com.sec.server.model.TaskModel;
+import org.json.JSONArray;
 
 import java.util.List;
 
@@ -84,4 +85,6 @@ public interface TaskService {
 
     // todo  每到十二点就运行一次这个方法判断有没有任务到了DDL
     void endTask();
+
+    JSONArray getMenuItems();
 }
