@@ -40,4 +40,10 @@ public interface UserDao {
 
     @Delete("delete from MRGSDB.users where userId=#{userId}")
     void deleteUser(long userId);
+
+    @Update("update MRGSDB.users set balance = balance + #{num} where userId = #{userId}")
+    void recharge(int num, long userId);
+
+    @Select("select balance from MRGSDB.users where userId = #{userId}")
+    int getBalance(long userId);
 }

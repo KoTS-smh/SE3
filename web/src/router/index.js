@@ -80,6 +80,10 @@ export default new Router({
                 {
                     path: '/messageCenter',
                     component: resolve => require(['../components/page/space/MessageCenter.vue'], resolve)
+                },
+                {
+                    path: '/recharge',
+                    component: resolve => require(['../components/page/space/RechargePage.vue'], resolve)
                 }
             ]
         },

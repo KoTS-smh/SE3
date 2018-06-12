@@ -94,4 +94,14 @@ public class UserServiceImpl implements UserService {
         }
         loginUsers.remove(userId);
     }
+
+    @Override
+    public void recharge(int num, long userId) {
+        userDao.recharge(num, userId);
+    }
+
+    @Override
+    public double getBalance(long userId) {
+        return userDao.getBalance(userId);
+    }
 }
