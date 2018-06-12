@@ -15,4 +15,8 @@ public interface UserService {
      void deleteUser(long userId);
 
      void logout(long userId);
+
+     void recharge(int num, long userId);
+
+     double getBalance(long userId);
 }

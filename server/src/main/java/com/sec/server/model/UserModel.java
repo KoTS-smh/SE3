@@ -17,6 +17,7 @@ public class UserModel {
     private String description;
     private String Email;
     private UserLevel userLevel;
+    private int rechargeNum;
 
     @NotBlank(message = "用户名不能为空")
     public String getUsername() {
@@ -97,4 +98,12 @@ public class UserModel {
     public long getUserId(){return userId;}
 
     public void setUserId(long userId){this.userId = userId;}
+
+    public int getRechargeNum() {
+        return rechargeNum;
+    }
+
+    public void setRechargeNum(int rechargeNum) {
+        this.rechargeNum = rechargeNum;
+    }
 }

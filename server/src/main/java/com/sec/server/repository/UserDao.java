@@ -58,6 +58,15 @@ public interface UserDao {
     @Delete("delete from MRGSDB.users where userId=#{userId}")
     void deleteUser(long userId);
 
+    @Update("update MRGSDB.users set balance = balance + #{num} where userId = #{userId}")
+    void recharge(int num, long userId);
+
+    @Select("select balance from MRGSDB.users where userId = #{userId}")
+    double getBalance(long userId);
+
+    @Update("update MRGSDB.user set balance = balance - #{cost} where userId = #{userId}")
+    void consume(double cost, long userId);
+
     /**
      * 修改用户的信用积分
      * @param userId 用户Id

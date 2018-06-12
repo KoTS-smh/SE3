@@ -145,4 +145,20 @@ public class UserController {
         return ResultUtils.success();
     }
 
+    @RequestMapping("/user/recharge")
+    public Result recharge(@RequestBody UserModel userModel) {
+        long userId = userModel.getUserId();
+        int rechargeNum = userModel.getRechargeNum();
+        userService.recharge(rechargeNum, userId);
+        return ResultUtils.success();
+    }
+
+    @RequestMapping("/user/getBalance")
+    public Result getBalance(@RequestBody UserModel userModel) {
+        long userId = userModel.getUserId();
+        double balance = userService.getBalance(userId);
+
+        return ResultUtils.success(balance);
+    }
+
 }
