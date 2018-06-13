@@ -14,10 +14,11 @@ public interface UserDao {
      * 新建一个用户
      * @param user 用户
      */
-    @Insert("insert into MRGSDB.users(userId,email,description,education,password," +
-            "point,sex,telPhone,userLevel,username,profession) values (#{userId},#{email}," +
+    @Insert("insert into MRGSDB.users(email,description,education,password," +
+            "point,sex,telPhone,userLevel,username,profession,balance) values (#{email}," +
             "#{description},#{education},#{password},#{point},#{sex},#{telPhone}," +
-            "#{userLevel},#{username},#{profession})")
+            "#{userLevel},#{username},#{profession},#{balance})")
+    @Options(useGeneratedKeys = true, keyProperty = "userId", keyColumn = "userId")
     void insertUser(User user);
 
     /**
