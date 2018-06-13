@@ -21,7 +21,7 @@ public interface WaitingDao {
      * @param waitingList 工人等待列表
      */
     @Insert("insertWaitingMessage into MRGSDB.waiting(taskId,waitingList) values (#{taskId},#{waitingList})")
-    void insertWaitingMessage(long taskId,String waitingList);
+    void insertWaitingMessage(@Param("taskId") long taskId,@Param("waitingList") String waitingList);
 
     /**
      * 更改任务等待列表
@@ -29,7 +29,7 @@ public interface WaitingDao {
      * @param waitingList 工人等待列表
      */
     @Update("update MRGSDB.waiting set waitingList = #{waitingList} where taskId = #{taskId}")
-    void updateWaitingMessage(long taskId,String waitingList);
+    void updateWaitingMessage(@Param("taskId") long taskId,@Param("waitingList") String waitingList);
 
     /**
      * 删除任务等待列表

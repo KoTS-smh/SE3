@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 
-@Service("annotationService")
+@Service(   "annotationService")
 public class AnnotationServiceImpl implements AnnotationService {
     @Autowired
     private AnnotationDao annotationDao;

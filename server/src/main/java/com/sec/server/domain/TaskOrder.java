@@ -24,8 +24,7 @@ public class TaskOrder {
     //
     private int lastPic;
     //完成的标注张数
-    private int finishedPics;//zuihaogaimingzi
-    //
+    private int finishedPics;
     private int rate;
     //开始时间
     private Date beginDate;

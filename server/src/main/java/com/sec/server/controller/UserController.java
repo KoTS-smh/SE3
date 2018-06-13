@@ -157,7 +157,6 @@ public class UserController {
     public Result getBalance(@RequestBody UserModel userModel) {
         long userId = userModel.getUserId();
         double balance = userService.getBalance(userId);
-
         return ResultUtils.success(balance);
     }
 
