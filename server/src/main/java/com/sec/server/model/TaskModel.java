@@ -2,6 +2,7 @@ package com.sec.server.model;
 
 import com.sec.server.domain.Task;
 import com.sec.server.enums.AnnotationType;
+import com.sec.server.enums.TaskState;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +18,7 @@ public class TaskModel {
     private int maxParticipator;
     private int taskLevel;
     private List<String> imgUrlList;
-    private boolean isFinished;
+    private TaskState state;
     private List<String> classifiedInfo;
     private AnnotationType annotationType;
     private List<Long> acceptUserIds;
@@ -37,7 +38,7 @@ public class TaskModel {
         this.maxParticipator = task.getMaxParticipator();
         this.taskLevel = task.getTaskLevel();
         this.imgUrlList = task.getImgUrls();
-        this.isFinished = task.isFinished();
+        this.state = task.getState();
 
         if(task.getClassifiedInfo() != null) {
             this.classifiedInfo = Arrays.asList(task.getClassifiedInfo().split(","));
@@ -136,14 +137,6 @@ public class TaskModel {
         this.imgUrlList = imgUrlList;
     }
 
-    public boolean isFinished() {
-        return isFinished;
-    }
-
-    public void setFinished(boolean finished) {
-        isFinished = finished;
-    }
-
     public List<String> getClassifiedInfo() {
         return classifiedInfo;
     }
@@ -174,5 +167,13 @@ public class TaskModel {
 
     public void setUpRate(String upRate) {
         this.upRate = upRate;
+    }
+
+    public TaskState getState() {
+        return state;
+    }
+
+    public void setState(TaskState state) {
+        this.state = state;
     }
 }

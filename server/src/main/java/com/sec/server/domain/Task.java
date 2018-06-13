@@ -1,6 +1,7 @@
 package com.sec.server.domain;
 
 import com.sec.server.enums.AnnotationType;
+import com.sec.server.enums.TaskState;
 import com.sec.server.enums.TaskTag;
 import com.sec.server.exception.ResultException;
 import com.sec.server.model.TaskModel;
@@ -36,7 +37,7 @@ public class Task {
     //最大同时标注工人数
     private int maxParticipator;
     //是否完成
-    private boolean isFinished;
+    private TaskState state;
     //被访问次数
     private int viewedTimes;
     //报酬（等级为1时的基础，如果更高会多给报酬，按照等级由网站支付）
@@ -75,7 +76,7 @@ public class Task {
         this.totalPoints = taskModel.getTotalPoints();
         this.taskLevel = taskModel.getTaskLevel();
         this.maxParticipator = taskModel.getMaxParticipator();
-        this.isFinished = taskModel.isFinished();
+        this.state = taskModel.getState();
         this.viewedTimes = 0;
         this.reward = 0;
         this.imgUrls = taskModel.getImgUrlList();
@@ -156,14 +157,6 @@ public class Task {
         this.maxParticipator = maxParticipator;
     }
 
-    public boolean isFinished() {
-        return isFinished;
-    }
-
-    public void setFinished(boolean finished) {
-        isFinished = finished;
-    }
-
     public int getViewedTimes() {
         return viewedTimes;
     }
@@ -238,5 +231,13 @@ public class Task {
 
     public void insertTag(TaskTag tag) {
         this.taskTags.add(tag);
+    }
+
+    public TaskState getState() {
+        return state;
+    }
+
+    public void setState(TaskState state) {
+        this.state = state;
     }
 }

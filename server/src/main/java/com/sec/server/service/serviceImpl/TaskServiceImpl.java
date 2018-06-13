@@ -514,7 +514,7 @@ public class TaskServiceImpl implements TaskService {
 
         //任务已经结束
         if(today.getTime() >= endDate.getTime()) {
-            task.setFinished(true);
+            task.setState(TaskState.finish);
             return task;
         }
 

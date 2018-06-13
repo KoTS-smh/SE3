@@ -14,8 +14,8 @@ public interface TaskDao {
      * 发布新的任务
      * @param task 任务
      */
-    @Insert("insert into MRGSDB.task(postUserId, taskname, taskInfo, annotationType, classifiedInfo, beginDate, endDate, totalPoints, taskLevel, maxParticipator, isFinished, viewedTimes,reward) " +
-            "VALUES (#{postUserId},#{taskname},#{taskInfo}, #{annotationType}, #{classifiedInfo}, #{beginDate}, #{endDate}, #{totalPoints}, #{taskLevel}, #{maxParticipator}, #{isFinished}, #{viewedTimes},#{reward})")
+    @Insert("insert into MRGSDB.task(postUserId, taskname, taskInfo, annotationType, classifiedInfo, beginDate, endDate, totalPoints, taskLevel, maxParticipator, state, viewedTimes,reward) " +
+            "VALUES (#{postUserId},#{taskname},#{taskInfo}, #{annotationType}, #{classifiedInfo}, #{beginDate}, #{endDate}, #{totalPoints}, #{taskLevel}, #{maxParticipator}, #{state}, #{viewedTimes},#{reward})")
     @Options(useGeneratedKeys = true, keyProperty = "taskId", keyColumn = "taskId")
     void addTask(Task task);
 
@@ -52,7 +52,7 @@ public interface TaskDao {
      * 任务结算
      * @param taskId 任务Id
      */
-    @Update("update mrgsdb.task set isFinished = 1")
+    @Update("update mrgsdb.task set state = 2")
     void finishTask(@Param("taskId") long taskId);
 
     /**
@@ -74,7 +74,7 @@ public interface TaskDao {
      * @param postUserId 用户Id
      * @return 任务列表 list
      */
-    @Select("select * from MRGSDB.task where isFinished = 1 and postUserId = #{postUserId}")
+    @Select("select * from MRGSDB.task where state = 2 and postUserId = #{postUserId}")
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,
                     many=@Many(select = "com.sec.server.repository.ImgUrlDao.getUrls")
@@ -88,7 +88,7 @@ public interface TaskDao {
      * @param postUserId 用户Id
      * @return 任务列表 list
      */
-    @Select("select * from MRGSDB.task where isFinished = 0 and postUserId = #{postUserId}")
+    @Select("select * from MRGSDB.task where state = 1 and postUserId = #{postUserId}")
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,
                     many=@Many(select = "com.sec.server.repository.ImgUrlDao.getUrls")
@@ -187,7 +187,4 @@ public interface TaskDao {
      */
     @Select("select count(*) from MRGSDB.task")
     int getNumOfAllTask();
-
-    @Select("select taskId form mrgsdb.task where ")
-    List<Long> getOngoingTaskId();
 }

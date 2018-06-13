@@ -72,7 +72,7 @@ public interface TaskService {
     List<Picture_CardModel> searchTask(String message, String taskType, String tag);
 
     /**
-     * 结束预约方法
+     * 任务正式开始方法
      * @param taskId 任务Id
      */
     void endAppointment(long taskId);
@@ -83,8 +83,13 @@ public interface TaskService {
      */
     void finishTask(long taskId);
 
-    // todo  每到十二点就运行一次这个方法判断有没有任务到了DDL
+    /**
+     *  每到十二点就运行一次这个方法判断有没有任务到了DDL
+     */
     void endTask();
 
+
+
     JSONArray getMenuItems();
+
 }
