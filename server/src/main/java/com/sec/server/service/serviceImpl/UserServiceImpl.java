@@ -1,6 +1,7 @@
 package com.sec.server.service.serviceImpl;
 
 import com.sec.server.domain.HonorMessage;
+import com.sec.server.domain.Message;
 import com.sec.server.repository.UserDao;
 import com.sec.server.domain.User;
 import com.sec.server.enums.ResultCode;
@@ -26,6 +27,12 @@ public class UserServiceImpl implements UserService {
     private HonorService honorService;
 
 
+    /**
+     * 登录
+     * @param username 用户名
+     * @param password 密码
+     * @return 用户 user
+     */
     @Override
     public User login(String username, String password) {
         User user = userDao.getUser(username);
@@ -47,6 +54,10 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * 注册新用户
+     * @param userModel 用户信息
+     */
     @Override
     public void register(UserModel userModel) {
         User user = new User(userModel);
@@ -59,11 +70,21 @@ public class UserServiceImpl implements UserService {
             List<User> list = userDao.getAllUsers();
             //新建荣誉信息
             honorService.createHonorMessage(user.getUserId());
+            //提示完善个人信息
+            Message message = new Message();
+            message.setTitle("提示通知");
+            message.setMessageInfo("请您早日完善个人信息");
+            new MessageServiceImpl().addMessage(message);
         }catch (Exception e){
             throw new ResultException(ResultCode.UNKNOWN_ERROR);
         }
     }
 
+    /**
+     * 通过Id获取用户信息
+     * @param userId 用户Id
+     * @return 用户信息 user
+     */
     @Override
     public User getUserById(long userId) {
         User user = userDao.getUserById(userId);
@@ -73,11 +94,15 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    /**
+     * 更新用户信息
+     * @param user 用户信息
+     * @return  ？
+     */
     @Override
     public User updateUser(User user) {
         userDao.updateUser(user);
-        User outUser = userDao.getUserById(user.getUserId());
-        return outUser;
+        return userDao.getUserById(user.getUserId());
     }
 
     @Override
@@ -89,6 +114,10 @@ public class UserServiceImpl implements UserService {
         userDao.deleteUser(userId);
     }
 
+    /**
+     * 用户登出
+     * @param userId 用户Id
+     */
     @Override
     public void logout(long userId) {
         if(! loginUsers.contains(userId)) {

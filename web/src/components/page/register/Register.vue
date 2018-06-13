@@ -20,12 +20,12 @@
                         </el-form-item>
                     <!--手机填写区域-->
                         <el-form-item prop="phone">
-                            <el-input v-model="ruleForm.tel_number" placeholder="phone"></el-input>
+                            <el-input v-model="ruleForm.telPhone" placeholder="phone"></el-input>
                         </el-form-item>
                 </el-form>
                 <!--注册按钮-->
                 <div class="register-btn">
-                    <el-button icon="icon-person_add" type="primary" @click="register()" style="width: 100%">  注册</el-button>
+                    <el-button icon="icon-person_add" :model="r-button" type="primary" @click="register()" style="width: 100%">  注册</el-button>
                 </div>
                 <!--取消按钮-->
                 <div class="cancel-btn">
@@ -45,11 +45,6 @@ import axios from 'axios'
                 if(!value){
                     return callback(new Error('用户名不能为空'))
                 }
-                // setTimeout(()=>{
-                //     if(value.length<5){
-                //         callback(new Error('用户名不能少于五位数'))
-                //     }
-                // })
             };
             var checkPassword = (rule,value,callback)=>{
                 if(value===''){
@@ -82,7 +77,7 @@ import axios from 'axios'
                     username: '',
                     password: '',
                     passwordConfirm:'',
-                    tel_number:''
+                    telPhone:''
                 },
                 rules: {
                     username: [
@@ -94,7 +89,7 @@ import axios from 'axios'
                     passwordConfirm:[
                         { validator:checkPasswordConfirm,trigger:'blur'}
                     ],
-                    tel_number:[
+                    telPhone:[
                         { validator:checkPhone,trigger:'blur'}
                     ]
                 }
@@ -104,18 +99,31 @@ import axios from 'axios'
             register() {
                 const self = this;
                 //judge before register
+                if(self.ruleForm.username == ''){
+                    this.$message('用户名不能为空')
+                }
+                else if(self.ruleForm.password == ''){
+                    this.$message('密码不能为空')
+                }
+                else if(self.ruleForm.password != self.ruleForm.passwordConfirm){
+                    this.$message('两次密码输入需要相等')
+                }
+                else if(self.ruleForm.telPhone == ''){
+                    this.$message('手机号不能为空')
+                }
+                else{
+                    axios.post('http://localhost:8080/user/register', this.ruleForm).then(function(response){
+                        console.log(response);
+                        self.success();
+                        self.sleep(1000).then(() => {
+                            self.$router.push('/login')
+                        });
 
-                axios.post('http://localhost:8080/user/register', this.ruleForm).then(function(response){
-                    console.log(response);
-                    self.success();
-                    self.sleep(1000).then(() => {
-                        self.$router.push('/login')
-                    });
-
-                }).catch(function(err){
-                    console.log(err);
-                    self.failed();
-                })
+                    }).catch(function(err){
+                        console.log(err);
+                        self.failed();
+                    })
+                }
 
             },
 

@@ -215,6 +215,7 @@ public class HonorServiceImpl implements HonorService {
     @Override
     public void createHonorMessage(long userId) {
         honorDao.insertUserHonor(userId);
+        System.out.print(userId+"success");
     }
 
     /**
