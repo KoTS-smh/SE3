@@ -14,10 +14,11 @@ public interface UserDao {
      * 新建一个用户
      * @param user 用户
      */
-    @Insert("insert into MRGSDB.users(userId,email,description,education,password," +
-            "point,sex,telPhone,userLevel,username,profession) values (#{userId},#{email}," +
+    @Insert("insert into MRGSDB.users(email,description,education,password," +
+            "point,sex,telPhone,userLevel,username,profession,balance) values (#{email}," +
             "#{description},#{education},#{password},#{point},#{sex},#{telPhone}," +
-            "#{userLevel},#{username},#{profession})")
+            "#{userLevel},#{username},#{profession},#{balance})")
+    @Options(useGeneratedKeys = true, keyProperty = "userId", keyColumn = "userId")
     void insertUser(User user);
 
     /**
@@ -59,13 +60,13 @@ public interface UserDao {
     void deleteUser(long userId);
 
     @Update("update MRGSDB.users set balance = balance + #{num} where userId = #{userId}")
-    void recharge(int num, long userId);
+    void recharge(@Param("num") int num,@Param("userId") long userId);
 
     @Select("select balance from MRGSDB.users where userId = #{userId}")
     double getBalance(long userId);
 
     @Update("update MRGSDB.users set balance = balance - #{cost} where userId = #{userId}")
-    void consume(double cost, long userId);
+    void consume(@Param("cost") double cost,@Param("userId") long userId);
 
     /**
      * 修改用户的信用积分
@@ -73,5 +74,5 @@ public interface UserDao {
      * @param point 修改的积分
      */
     @Update("update MRGSDB.users set point=point + #{point} where userId = #{userId}")
-    void increaseUserPoint(long userId,int point);
+    void increaseUserPoint(@Param("userId") long userId,@Param("point") int point);
 }

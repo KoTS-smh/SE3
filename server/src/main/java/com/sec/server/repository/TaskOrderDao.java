@@ -46,7 +46,7 @@ public interface TaskOrderDao {
     @Select("select * from MRGSDB.taskOrder " +
             "where acceptUserId = #{acceptUserId} and submited = 3 " +
             "and taskId not in (select taskId from MRGSDB.task where annotationType != type )")
-    List<TaskOrder> getAllFinishedTaskOrderOfAType(long acceptUserId, AnnotationType type);
+    List<TaskOrder> getAllFinishedTaskOrderOfAType(@Param("acceptUserId") long acceptUserId,@Param("type") AnnotationType type);
 
     /**
      * 获取一个工人所有提交的任务订单
@@ -76,7 +76,7 @@ public interface TaskOrderDao {
      *
      */
     @Delete("delete from MRGSDB.taskOrder where taskId = {#taskId} and userId = {#userId}")
-    void deleteAppointTaskOrder(long taskId,long userId);
+    void deleteAppointTaskOrder(@Param("taskId") long taskId,@Param("userId") long userId);
 
     /**
      * 获取接取一个任务的所有工人Id
@@ -120,5 +120,5 @@ public interface TaskOrderDao {
      *                  被替换   ...         -> fail
      */
     @Update("update MRGSDB.taskOrder set submited = #{submited} where taskOrderId = #{taskOrderId}")
-    void changeTaskOrderState(long taskOrderId ,TaskOrderState submited);
+    void changeTaskOrderState(@Param("taskOrderId") long taskOrderId ,@Param("submited") TaskOrderState submited);
 }

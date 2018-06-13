@@ -96,23 +96,20 @@
 <script>
     import axios from 'axios'
     let taskOrder;
-    let task;
-    let thisPage;
-    let sentence = '';
+    let taskOrderId;
+    let taskId;
+    let acceptUserId;
+    let imgUrlList;
     let annotated;
-    let annotationInfo;
-    let annotationMap;
-    let annotations=[];
-    let thisAnnotation;
+    let annotationModel;
     let img =new Image();
     let isNew = false;
-    let words=[];
-    let tag;
-    let thisTag;
-    function Annotation(sentence, words, coordinates) {
+    function Annotation(taskOrderId,pictureNum,sentence, words, coordinates) {
         this.sentence=sentence;
         this.words=words;
         this.coordinates=coordinates;
+        this.pictureNum = pictureNum;
+        this.taskOrderId = taskOrderId;
     }
     export default {
       mounted(){
@@ -125,66 +122,35 @@
           }else if(this.$route.query.taskOrderId == null){
               this.$router.push("/homepage")
           }
+          taskOrderId = this.$route.query.taskOrderId;
           axios.get('http://localhost:8080/taskOrder/orderInfo',{
               params:{
-                  taskOrderId:this.$route.query.taskOrderId,
-                  userId:localStorage.getItem("userId")
+                  taskOrderId:taskOrderId
               }
           }).then((response) => {
               taskOrder=response.data.data;
-              thisPage = taskOrder.lastPic;
+              this.currentPage = taskOrder.lastPic;
+              this.totalNum = taskOrder.finishedPics;
               annotated = taskOrder.finishedPics;
-              this.currentPage = thisPage;
+              taskId = taskOrder.taskId;
+              acceptUserId = taskOrder.acceptUserId;
               axios.post('http://localhost:8080/task/taskInfo',{
-                      taskId:taskOrder.taskId
+                      taskId:taskId
               }).then((response) => {
-                  task = response.data.data;
-                  this.totalNum = task.imgUrlList.length;
-                  this.process = annotated / this.totalNum*100;
+                  imgUrlList = response.data.data.imgUrlList;
+                  this.process = annotated / imgUrlList.length*100;
                   img.addEventListener('load',() =>{
                      this.imgX =img.width;
                      this.imgY = img.height;
                   });
-                  img.src = task.imgUrlList[thisPage - 1];
+                  img.src = imgUrlList[thisPage - 1];
                   this.imgUrls = "url('"+img.src+"')";
               });
-              axios.get('http://localhost:8080/annotation/tags',{
-                  params:{
-                      taskId:taskOrder.taskId
-                  }
-              }).then((response)=>{
-                  tag  = response.data.data;
-                  thisTag = tag[thisPage];
-                  let temp = [];
-                  for(let k in thisTag){
-                      if(thisTag.hasOwnProperty(k)){
-                          temp.push(k+' '+thisTag[k]);
-                      }
-                  }
-                  this.Tags = temp;
-              }).catch(()=>{
-                  this.$message({
-                      showClose:true,
-                      message:'tag加载异常!',
-                      type:'error'
-                  })
-              });
-              axios.get('http://localhost:8080/annotation/getAll',{
-                  params:{
-                      annotationId:taskOrder.annotationId
-                  }
-              }).then((response) => {
-                  annotationInfo = response.data.data;
-                  annotationMap = annotationInfo.annotationMap;
-                  annotations = annotationMap[thisPage];
-                  thisAnnotation = annotations[0];
-                  if(thisAnnotation ==null){
-                      isNew = true;
-                  }else {
-                      this.textarea = thisAnnotation.sentence;
-                  }
-                  this.fullscreenLoading = false;
-              })
+              //获得标注信息的tag
+              this.getAnnoTag(taskId,thisPage);
+              //获得标注信息
+              this.getAnnotation(taskOrderId,thisPage);
+              this.fullscreenLoading = false;
           }).catch( ()=> {
               this.$message({
                   showClose:true,
@@ -195,7 +161,7 @@
       },
       data() {
         return {
-            Tags:[],
+          Tags:[],
           activeIndex: '1',
           currentPage: 1,
           textarea:'',
@@ -205,7 +171,7 @@
           imgUrls: '',
           fullscreenLoading:true,
           process:0,
-            myName:null,
+          myName:null,
         };
       },
       methods: {
@@ -220,44 +186,18 @@
             img.addEventListener('load',() =>{
                 this.imgX =img.width;
                 this.imgY = img.height;
-                this.fullscreenLoading = false;
             });
-            img.src = task.imgUrlList[val - 1];
+            img.src = imgUrlList[val - 1];
             this.imgUrls = "url('"+img.src+"')";
             thisPage = val;
-            annotations = annotationMap[thisPage];
-            thisAnnotation = annotations[0];
-            if(thisAnnotation ==null){
-                this.textarea = '';
-                isNew = true;
-            }else {
-                this.textarea = thisAnnotation.sentence;
-            }
-            thisTag = tag[thisPage];
-            let temp = [];
-            for(let k in thisTag){
-                if(thisTag.hasOwnProperty(k)){
-                    temp.push(k+' '+thisTag[k]);
-                }
-            }
-            this.Tags = temp;
+            this.getAnnotation(taskOrderId,thisPage);
+            this.getAnnoTag(taskId,thisPage);
             this.fullscreenLoading = false;
         },
           save(){
-              sentence = this.textarea;
-              let temp =sentence.trim().split(/\s+|\.|,|\(|\)|;|:|"|\?|!/);
-              for(let i=0;i<temp.length;i++){
-                  if(temp[i] !==""){
-                      words.push(temp[i])
-                  }
-              }
-              thisAnnotation =new Annotation(sentence,words,[]);
-              words = [];
-              annotations[0] = thisAnnotation;
-              annotationMap[thisPage] = annotations;
-              annotationInfo.annotationMap=annotationMap;
+              let annotation =new Annotation(taskOrderId,this.currentPage,this.textarea,"","");
               axios.patch('http://localhost:8080/annotation/update',{
-                  annotationInfo:JSON.stringify(annotationInfo)
+                  annotation
               }).then((response)=>{
                   if(response.data.code!==0){
                       this.$message.error(response.data.msg)
@@ -289,18 +229,13 @@
                   cancelButtonText: '取消',
                   type: 'warning'
               }).then(() => {
-                  sentence = '';
-                  this.textarea = '';
-                  thisAnnotation = {};
-                  annotations = [];
-                  annotationMap[thisPage] = annotations;
-                  annotationInfo.annotationMap=annotationMap;
                   axios.patch('http://localhost:8080/annotation/update',{
                       annotationInfo:JSON.stringify(annotationInfo)
                   }).then((response)=>{
                       if(response.data.code!==0){
                           this.$message.error(response.data.msg)
                       }else {
+                          this.textarea = '';
                           if(!isNew){
                               isNew = true;
                               annotated--;
@@ -377,8 +312,8 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    taskOrder.submited = true;
-                    taskOrder.lastPic = thisPage;
+                    taskOrder.submited = 'submitted';
+                    taskOrder.lastPic = this.currentPage;
                     taskOrder.finishedPics = annotated;
                     axios.post('http://localhost:8080/taskOrder/update', {
                         taskOrder: JSON.stringify(taskOrder)
@@ -417,8 +352,7 @@
               }).then(() => {
                   axios.get('http://localhost:8080/taskOrder/delete',{
                       params:{
-                          taskOrderId:taskOrder.taskOrderId,
-                          userId:localStorage.getItem("userId")
+                          taskOrderId:taskOrderId,
                       }
                   }).then((response)=>{
                       if(response.data.code!==0){
@@ -447,11 +381,10 @@
               });
           },
           autoSave(){
-              taskOrder.lastPic = thisPage;
+              taskOrder.lastPic = this.currentPage;
               taskOrder.finishedPics = annotated;
               axios.patch('http://localhost:8080/taskOrder/update',{
                   taskOrder:JSON.stringify(taskOrder),
-                  userId:localStorage.getItem("userId")
               })
           },
           handleCommand(command) {
@@ -465,6 +398,44 @@
                   localStorage.removeItem("userId");
                   this.$router.push("/homepage")
               }
+          },
+          getAnnoTag(taskId,pictureNum){
+              axios.get('http://localhost:8080/annotation/tags',{
+                  params:{
+                      taskId:taskId,
+                      pictureNum:pictureNum
+                  }
+              }).then((response)=>{
+                  let tag  = response.data.data;
+                  let temp = [];
+                  for(let k in tag){
+                      if(tag.hasOwnProperty(k)){
+                          temp.push(k+' '+tag[k]);
+                      }
+                  }
+                  this.Tags = temp;
+              }).catch(()=>{
+                  this.$message({
+                      showClose:true,
+                      message:'tag加载异常!',
+                      type:'error'
+                  })
+              });
+          },
+          getAnnotation(taskOrderId,pictureNum){
+              axios.get('http://localhost:8080/annotation/get',{
+                  params:{
+                      annotationId:taskOrderId,
+                      pictureNum:pictureNum
+                  }
+              }).then((response) => {
+                  annotationModel = response.data.data;
+                  if(response.data.code !== 0){
+                      isNew = true;
+                  }else {
+                      this.textarea = annotationModel.sentence;
+                  }
+              })
           }
       },
         name: "allAnnotation"

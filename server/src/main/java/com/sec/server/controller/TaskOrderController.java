@@ -1,5 +1,7 @@
 package com.sec.server.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.sec.server.domain.TaskOrder;
 import com.sec.server.model.SimpleTaskOrderModel;
 import com.sec.server.model.SimpleUserModel;
@@ -26,9 +28,7 @@ public class TaskOrderController {
      * @return 任务订单详细信息
      */
     @RequestMapping("/taskOrder/orderInfo")
-    public Result getTaskOrder(long taskOrderId,long userId){
-//        TaskOrder taskOrder = taskOrderService.getTaskOrderById(taskOrderId,userId);
-//        return ResultUtils.success(taskOrder);
+    public Result getTaskOrder(long taskOrderId){
         TaskOrder taskOrder = taskOrderService.getTaskOrderById(taskOrderId);
         return ResultUtils.success(taskOrder);
     }
@@ -63,24 +63,18 @@ public class TaskOrderController {
      * @return 返回操作成功信息
      */
     @RequestMapping("/taskOrder/update")
-    public Result updateTaskOrder(@RequestBody String taskOrder){
-//        JSONObject jsonObject = JSON.parseObject(taskOrder);
-//        taskOrderService.updateTaskOrder(JSON.toJSONString(jsonObject.getJSONObject("taskOrder")));
-//        return ResultUtils.success();
-
-        return null;
+    public Result updateTaskOrder(@RequestBody TaskOrder taskOrder){
+        taskOrderService.updateTaskOrder(taskOrder);
+        return ResultUtils.success();
     }
 
     /**
      * 删除一个任务订单信息
      * @param taskOrderId 任务订单ID
-     * @param userId 工人ID
      * @return 返回操作成功信息
      */
     @RequestMapping("/taskOrder/delete")
-    public Result deleteTaskOrder(long taskOrderId,long userId){
-//        taskOrderService.deleteTaskOrder(taskOrderId,userId);
-//        return ResultUtils.success();
+    public Result deleteTaskOrder(long taskOrderId){
         taskOrderService.deleteTaskOrder(taskOrderId);
         return ResultUtils.success();
     }
@@ -92,9 +86,6 @@ public class TaskOrderController {
      */
     @RequestMapping("/taskOrder/getAllSubmited")
     public Result getAllSubmitted(@RequestBody SimpleUserModel simpleUserModel){
-//        long userId = userModel.getAcceptUserId();
-//        List<TaskOrder> list = ReadFile.getAllSubmited(userId);
-//        return ResultUtils.success(list);
         List<TaskOrder> list = taskOrderService.getAllSubmited(simpleUserModel.getAcceptUserId());
         return ResultUtils.success(list);
     }

@@ -90,6 +90,18 @@ public class EvaluateServiceImpl implements EvaluateService {
         }
     }
 
+    public void evaluateAnnotation(){
+        List<Long> taskIds = taskDao.getOngoingTaskId();
+        for(long taskId:taskIds){
+            evaluateOneTaskAnnotation(taskId);
+        }
+    }
+
+    private void evaluateOneTaskAnnotation(long taskId){
+        List<Long> userIds = taskOrderDao.getAcceptUserIds(taskId);//todo get ordered userId
+        
+    }
+
     @Override
     public double evaluateAnnotationWithStandard(long taskOrderId,double points,long standardId) {
         return 0;//余弦相似度算法
@@ -286,7 +298,7 @@ public class EvaluateServiceImpl implements EvaluateService {
         Mat mat;
         try {
             //使用java2D读取图像
-            String filePath = "C:\\Users\\18333\\Pictures\\picture\\Hiten\\__original_drawn_by_hiten_goane_ryu__791fffc5f951331bc7253d1fc827175a.png";
+            String filePath = "C:\\Users\\18333\\Desktop\\timg.jpg";
             mat = Imgcodecs.imread(filePath);
             Mat grayMat = new Mat();
             Imgproc.cvtColor(mat,grayMat,Imgproc.COLOR_RGB2GRAY);

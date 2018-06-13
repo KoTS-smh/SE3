@@ -187,4 +187,7 @@ public interface TaskDao {
      */
     @Select("select count(*) from MRGSDB.task")
     int getNumOfAllTask();
+
+    @Select("select taskId form mrgsdb.task where ")
+    List<Long> getOngoingTaskId();
 }

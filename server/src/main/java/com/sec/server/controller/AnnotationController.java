@@ -43,13 +43,10 @@ public class AnnotationController {
 
     /**
      * 更改一个图片的标注信息
-     * @param annotationInfo 图片标注信息
+     * @param annotation 图片标注信息
      */
     @RequestMapping("/annotation/update")
-    public Result saveAnnotation(@RequestBody String annotationInfo){
-        //JSONObject jsonObject = JSON.parseObject(annotationInfo);
-        Annotation annotation = JSONObject.parseObject(annotationInfo,Annotation.class);
-        //JSONArray tmp = jsonObject.getJSONArray("coordinates");
+    public Result saveAnnotation(@RequestBody Annotation annotation){
         annotationService.updateAnnotation(annotation);
         return ResultUtils.success();
     }

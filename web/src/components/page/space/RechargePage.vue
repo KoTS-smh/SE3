@@ -1,23 +1,25 @@
 <template>
     <el-container>
-    <el-aside width="300px">
-        <span style="top:50px">
-            账户余额: {{balance}} ¥
-        </span>
-    </el-aside>
-    <el-container>
-        <el-header style="margin-left:50px" class="myheader">
+        <el-header style="margin-left:200px;margin-right:200px" class="myheader">
             <span style="margin-right:500px"><icon style="margin-right:330px" name="credit-card"></icon> 充值 </span>
         </el-header>
-        <el-main style="margin-left:40px">
-            <span style="margin-bottom:20px"><p>充值数量</p></span>
+        <el-main style="margin-left:200px;margin-right:200px">
+            <div style="margin-bottom:20px">
+                <span style="top:50px">
+                    账户余额: {{balance}} ¥
+                </span>
+            </div>
+            <span style="margin-bottom:20px;margin-top:20px"><p>充值数量</p></span>
             <div style="margin-top:20px">
-                <el-button plain @click="setNum1">6.0¥</el-button>
-                <el-button plain @click="setNum2">18.0¥</el-button>
-                <el-button plain @click="setNum3">68.0¥</el-button>
-                <el-button plain @click="setNum4">233.0¥</el-button>
-                <el-button plain @click="setNum5">648.0¥</el-button>
-                <el-button plain @click="setNum6">998.0¥</el-button>
+                <el-button class="mybutton" plain @click="setNum1">6.0¥</el-button>
+                <el-button class="mybutton" plain @click="setNum2">18.0¥</el-button>
+                <el-button class="mybutton" plain @click="setNum3">68.0¥</el-button>
+                <el-button class="mybutton" plain @click="setNum4">233.0¥</el-button>
+            </div>
+
+            <div style="margin-top:20px">
+                <el-button class="mybutton" plain @click="setNum5">648.0¥</el-button>
+                <el-button class="mybutton" plain @click="setNum6">998.0¥</el-button>
             </div>
 
 
@@ -25,7 +27,6 @@
                 <el-button type="primary" @click="recharge">充值</el-button>
             </div>
         </el-main>
-    </el-container>
     </el-container>
 </template>
 
@@ -110,6 +111,11 @@ export default {
         width:40px;
         height:40px;
         border-radius: 50%;
+    }
+
+    .mybutton{
+        width: 150px;
+        height: 80px;
     }
     
 

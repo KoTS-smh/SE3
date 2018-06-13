@@ -29,7 +29,6 @@ public class DataAnalysisController {
 //        list = dataAnalysisService.getTaskMessage(taskId);
 //        System.out.println(list.size());
 //        return ResultUtils.success(list);
-
         return null;
     }
 

@@ -79,16 +79,13 @@
 <script>
     import axios from 'axios'
     let taskOrder;
-    let task;
     let classifiedInfo;
-    let classifiedLen=0;
-    let thisPage;
+    let classifiedLen;
+    let taskOrderId;
+    let taskId;
+    let acceptUserId;
+    let imgUrlList;
     let annotated;
-    let annotationInfo;
-    let sentence;
-    let annotationMap;
-    let annotations=[];
-    let thisAnnotation;
     let img =new Image();
     let isNew = false;
     let draw;
@@ -97,13 +94,14 @@
         this.x=x;
         this.y=y;
     }
-    function Annotation(sentence, words, coordinates) {
+    function Annotation(taskOrderId,pictureNum,sentence, words, coordinates) {
         this.sentence=sentence;
         this.words=words;
         this.coordinates=coordinates;
+        this.pictureNum = pictureNum;
+        this.taskOrderId = taskOrderId;
     }
     let coordinates = [];
-    let words = [];
     export default {
         mounted(){
             this.myName = localStorage.getItem("username");
@@ -115,66 +113,45 @@
             }else if(this.$route.query.taskOrderId == null){
                 this.$router.push("/homepage")
             }
+            taskOrderId = this.$route.query.taskOrderId;
             draw = new Draw();
             draw.init();
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
                 params:{
-                    taskOrderId:this.$route.query.taskOrderId,
-                    userId:localStorage.getItem("userId")
+                    taskOrderId:taskOrderId
                 }
             }).then((response) => {
                 taskOrder=response.data.data;
-                thisPage = taskOrder.lastPic;
+                this.currentPage = taskOrder.lastPic;
                 annotated = taskOrder.finishedPics;
-                this.currentPage = thisPage;
+                taskId = taskOrder.taskId;
+                acceptUserId = taskOrder.acceptUserId;
                 axios.post('http://localhost:8080/task/taskInfo',{
-                        taskId:taskOrder.taskId
+                    taskId:taskId
                 }).then((response) => {
-                    task = response.data.data;
-                    classifiedInfo = task.classifiedInfo;
+                    classifiedInfo = response.data.data.classifiedInfo;
                     let str = '';
-                    //classifiedLen = classifiedInfo.length;
-                    classifiedLen = 0;
-                    for(let i=0;i<classifiedInfo.length;i++){
-                        if(classifiedInfo[i]!== ""){
-                            classifiedLen++;
-                        }
-                    }
+                    classifiedLen = classifiedInfo.length;
                     for(let i = 0;i <classifiedLen;i++){
                         str = str+'<span style="margin-top: 12px;margin-left: 20px">'+
                             classifiedInfo[i]+':</span><input style="margin-left: 10px;margin-top: 12px;width: 240px;height: 24px" id="text'+i+'"><br>'
                     }
                     document.getElementById('annotationField').innerHTML = str;
-                    this.totalNum = task.imgUrlList.length;
+                    imgUrlList = response.data.data.imgUrlList;
+                    this.totalNum = imgUrlList.length;
                     this.process = annotated / this.totalNum*100;
                     img.addEventListener('load',() =>{
                         this.imgX =img.width;
                         this.imgY = img.height;
                     });
-                    img.src = task.imgUrlList[thisPage - 1];
+                    img.src = imgUrlList[thisPage - 1];
                     this.imgUrls = "url('"+img.src+"')";
                 });
-                axios.get('http://localhost:8080/annotation/getAll',{
-                    params:{
-                        annotationId:taskOrder.annotationId
-                    },
-                }).then((response) => {
-                    annotationInfo = response.data.data;
-                    annotationMap = annotationInfo.annotationMap;
-                    annotations = annotationMap[thisPage];
-                    thisAnnotation = annotations[0];
-                    if(thisAnnotation ==null){
-                        isNew = true;
-                    }else {
-                        words = thisAnnotation.words;
-                        for(let i =0;i<classifiedLen;i++){
-                            document.getElementById('text'+i).value = words[i];
-                        }
-                        coordinates = thisAnnotation.coordinates;
-                        this.showAnnotation();
-                    }
-                    this.fullscreenLoading = false;
-                })
+                //获得标注信息的tag
+                this.getAnnoTag(taskId,thisPage);
+                //获得标注信息
+                this.getAnnotation(taskOrderId,thisPage);
+                this.fullscreenLoading = false;
             }).catch( ()=> {
                 this.$message({
                     showClose:true,
@@ -206,45 +183,26 @@
             },
             handleCurrentChange(val) {
                 this.fullscreenLoading = true;
-                draw.refresh();
                 img.addEventListener('load',() =>{
                     this.imgX =img.width;
                     this.imgY = img.height;
                 });
-                img.src = task.imgUrlList[val - 1];
+                img.src = imgUrlList[val - 1];
                 this.imgUrls = "url('"+img.src+"')";
                 thisPage = val;
-                annotations = annotationMap[thisPage];
-                thisAnnotation = annotations[0];
-                if(thisAnnotation ==null||thisAnnotation === undefined){
-                    for(let i =0;i<classifiedLen;i++){
-                        document.getElementById('text'+i).value = '';
-                    }
-                    coordinates=new Coordinate();
-                    isNew = true;
-                }else {
-                    words = thisAnnotation.words;
-                    for(let i =0;i<classifiedLen;i++){
-                        document.getElementById('text'+i).value = words[i];
-                    }
-                    coordinates = thisAnnotation.coordinates;
-                    this.showAnnotation();
-                }
-                console.log(annotationInfo);
+                this.getAnnotation(taskOrderId,thisPage);
+                this.getAnnoTag(taskId,thisPage);
                 this.fullscreenLoading = false;
             },
             save(){
-                words =[];
-                for(let i =0;i<classifiedLen;i++){
-                    words.push(document.getElementById('text'+i).value);
+                let words;
+                for(let i =0;i<classifiedLen-1;i++){
+                    words = words+document.getElementById('text'+i).value+',';
                 }
-                thisAnnotation =new Annotation(sentence,words,coordinates);
-                annotations[0] = thisAnnotation;
-                annotationMap[thisPage] = annotations;
-                annotationInfo.annotationMap=annotationMap;
-                console.log(annotationInfo);
+                words+=document.getElementById('text'+(classifiedLen-1));
+                let annotation =new Annotation(taskOrderId,this.currentPage,"",words,JSON.stringify(coordinates));
                 axios.post('http://localhost:8080/annotation/update',{
-                    annotationInfo:JSON.stringify(annotationInfo)
+                    annotation//todo test
                 }).then((response)=>{
                     if(response.data.code!==0){
                         this.$message.error(response.data.msg)
@@ -278,10 +236,6 @@
                 }).then(() => {
                     this.reAnnotation();
                     coordinates = [];
-                    thisAnnotation = {};
-                    annotations = [];
-                    annotationMap[thisPage] = annotations;
-                    annotationInfo.annotationMap=annotationMap;
                     axios.post('http://localhost:8080/annotation/update',{
                         annotationInfo:JSON.stringify(annotationInfo)
                     }).then((response)=>{
@@ -323,7 +277,7 @@
                 draw.refresh();
             },
             leave(){
-                taskOrder.lastPic = thisPage;
+                taskOrder.lastPic = this.currentPage;
                 taskOrder.finishedPics = annotated;
                 axios.post('http://localhost:8080/taskOrder/update',{
                     taskOrder:JSON.stringify(taskOrder)
@@ -463,6 +417,27 @@
                     localStorage.removeItem("userId");
                     this.$router.push("/homepage")
                 }
+            },
+            getAnnotation(taskOrderId,pictureNum){
+                axios.get('http://localhost:8080/annotation/get',{
+                    params:{
+                        annotationId:taskOrderId,
+                        pictureNum:pictureNum
+                    }
+                }).then((response) => {
+                    annotationModel = response.data.data;
+                    if(response.data.code !== 0){
+                        isNew = true;
+                    }else {
+                        this.textarea = annotationModel.sentence;
+                        coordinates = annotationModel.coordinates;
+                        words = annotationModel.words;
+                        for(let i =0;i<classifiedLen;i++){
+                            document.getElementById('text'+i).value = words[i];
+                        }
+                        this.showAnnotation();
+                    }
+                })
             }
         },
         name: "classifiedAnnotation"
@@ -535,15 +510,15 @@
     };
 
     Draw.prototype.drawFirst = ()=>{
-            if(thisAnnotation.coordinates.length !== 0){
+            if(coordinates.length !== 0){
             canDraw = false;
             this.pen.beginPath();
             this.pen.strokeStyle = 'black';
             this.pen.lineWidth = 1;
-            let x = thisAnnotation.coordinates[1].x;
-            let y = thisAnnotation.coordinates[1].y;
-            let originX =thisAnnotation.coordinates[0].x;
-            let originY =thisAnnotation.coordinates[0].y;
+            let x = coordinates[1].x;
+            let y = coordinates[1].y;
+            let originX =coordinates[0].x;
+            let originY =coordinates[0].y;
             let newOriginX = originX;
             let newOriginY = originY;
             if(x < originX){
