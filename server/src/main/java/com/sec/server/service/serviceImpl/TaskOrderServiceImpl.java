@@ -94,9 +94,13 @@ public class TaskOrderServiceImpl implements TaskOrderService {
         return taskOrderDao.getAllSubmited(userId);
     }
 
+    /**
+     * 工人提交任务订单
+     * @param taskOrderId 任务订单Id
+     */
     @Override
-    public boolean submittedTaskOrder() {
-        return false;
+    public void submittedTaskOrder(long taskOrderId) {
+        taskOrderDao.changeTaskOrderState(taskOrderId,TaskOrderState.submitted);
     }
 
 }
