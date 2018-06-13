@@ -67,6 +67,15 @@
                                 index: 'dataCheck',
                                 title: '数据统计',
 
+                            },
+                            {
+                                icon: 'el-icon-news',
+                                index: 'messageCenter',
+                                title: '消息中心'
+                            },
+                            {
+                                index: 'recharge',
+                                title: '充值'
                             }
                         ]
                     },
