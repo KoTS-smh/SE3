@@ -188,7 +188,7 @@ export default {
           maxParticipator: '',
           taskLevel: 0,
           imgUrlList: [],
-          isFinished: false,
+          state: 0,
           classifiedInfo:['','','','']
         },
         action: 'http://upload.qiniu.com/', // 替换自己的上传链接
