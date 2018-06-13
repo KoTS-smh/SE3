@@ -128,7 +128,7 @@ public interface TaskDao {
      * 获得所有未完成的任务
      * @return 任务列表 list
      */
-    @Select("select * from MRGSDB.task where isFinished = 0")
+    @Select("select * from MRGSDB.task where state <> 2")
     @Results({
             @Result(property = "imgUrls",column = "taskId", javaType = List.class,
                     many=@Many(select = "com.sec.server.repository.ImgUrlDao.getUrls")

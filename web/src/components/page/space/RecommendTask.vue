@@ -23,33 +23,6 @@
         data() {
             return {
                 card_list:[
-                    {
-                        name: 'card1',
-                        url: 'http://p6r9un2qj.bkt.clouddn.com/2018-4-29/65189356.jpg',
-                        description: 'this is a test card',
-                        id: 1,
-                        tagList:[
-                            "HUMAN"
-                        ]
-                    },
-                    {
-                        name: 'card2',
-                        url: 'http://p6r9un2qj.bkt.clouddn.com/2018-4-29/65189356.jpg',
-                        description: 'this is a test card',
-                        id: 2,
-                        tagList:[
-                            "HUMAN"
-                        ]
-                    },
-                    {
-                        name: 'card3',
-                        url: 'http://p6r9un2qj.bkt.clouddn.com/2018-4-29/65189356.jpg',
-                        description: 'this is a test card',
-                        id: 3,
-                        tagList:[
-                            "HUMAN"
-                        ]
-                    }
                 ]
             }
         },
@@ -59,7 +32,7 @@
                 axios.post('http://localhost:8080/task/recommend', {"userId": userId, "password": ''})
                 .then(response => {
                     console.log(response.data.data);
-                    var cardList = response.data.data;
+                    var cardList = response.data.data
                     for(var i = 0;i < cardList.length;i++) {
                         var tags = cardList[i].tagList
                         for(var j = 0;j < tags.length;j++) {

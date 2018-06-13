@@ -16,7 +16,7 @@ public interface TaskOrderDao {
      * @param taskOrder 任务订单
      * @describe 任务订单创建之时就是预约状态
      */
-    @Insert("insertUser into MRGSDB.taskOrder(taskId,acceptUserId,submited,lastPic," +
+    @Insert("insert into MRGSDB.taskOrder(taskId,acceptUserId,submited,lastPic," +
             "finishedPics,rate,beginDate,endDate) values (#{taskId},#{acceptUserId},#{submited},0,0,0," +
             "#{beginDate},#{endDate})")
     @Options(useGeneratedKeys = true, keyProperty = "taskOrderId", keyColumn = "taskOrderId")
