@@ -20,7 +20,7 @@ public interface WaitingDao {
      * @param taskId 任务Id
      * @param waitingList 工人等待列表
      */
-    @Insert("insertWaitingMessage into MRGSDB.waiting(taskId,waitingList) values (#{taskId},#{waitingList})")
+    @Insert("insert into MRGSDB.waiting(taskId,waitingList) values (#{taskId},#{waitingList})")
     void insertWaitingMessage(@Param("taskId") long taskId,@Param("waitingList") String waitingList);
 
     /**

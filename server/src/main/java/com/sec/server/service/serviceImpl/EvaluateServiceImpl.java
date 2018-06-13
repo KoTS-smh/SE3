@@ -91,10 +91,10 @@ public class EvaluateServiceImpl implements EvaluateService {
     }
 
     public void evaluateAnnotation(){
-        List<Long> taskIds = taskDao.getOngoingTaskId();
-        for(long taskId:taskIds){
-            evaluateOneTaskAnnotation(taskId);
-        }
+//        List<Long> taskIds = taskDao.getOngoingTaskId();
+//        for(long taskId:taskIds){
+//            evaluateOneTaskAnnotation(taskId);
+//        }
     }
 
     private void evaluateOneTaskAnnotation(long taskId){

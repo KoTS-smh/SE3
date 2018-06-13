@@ -154,6 +154,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> getRecommendTask(long userId) {
+        List<Task> recommmendTasks = new ArrayList<>();
+
         User user = userDao.getUserById(userId);
         List<TaskOrder> taskOrderList = taskOrderDao.getAllTaskOrder(userId);
         //用户之前完成过的任务
@@ -182,15 +184,21 @@ public class TaskServiceImpl implements TaskService {
         List<Long> acceptedTasks = taskOrderDao.getAcceptedTasks(userId);
         List<Task> tasksNotAccept = taskDao.getAllTask();
 
-        //所有用户没有接过的任务
-        for(Task tmp : tasksNotAccept) {
-            tmp = placeTaskTag(tmp);
-            if(acceptedTasks.contains(tmp.getTaskId()))
-                tasksNotAccept.remove(tmp);
+        if(tasksNotAccept.size() == 0){
+            return recommmendTasks;
         }
 
-        List<Task> recommmendTasks = new ArrayList<>();
+        //所有用户没有接过的任务
+        List<Task> taskToDelete = new ArrayList<>();
+        for(Task tmp : tasksNotAccept) {
+            tmp = placeTaskTag(tmp);
+            if(acceptedTasks.contains(tmp.getTaskId())){
+                taskToDelete.add(tmp);
+            }
+        }
 
+        tasksNotAccept.removeAll(taskToDelete);
+        
         //根据职业推荐
         recommmendTasks = recommendByProfession(recommmendTasks, user);
 
@@ -665,6 +673,9 @@ public class TaskServiceImpl implements TaskService {
     private List<Task> recommendByProfession(List<Task> tasks, User user) {
         List<TaskTag> taskTagList = new ArrayList<>();
         List<Task> retlist = new ArrayList<>();
+        if(user.getProfession() == null) {
+            return retlist;
+        }
         if(user.getProfession().equals(UserProfession.ENGINEER)) {
             taskTagList.add(TaskTag.INDUSTRY);
             taskTagList.add(TaskTag.BUILDING);
