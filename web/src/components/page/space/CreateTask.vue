@@ -199,7 +199,7 @@ export default {
         keys: [],
         uploadMsg: [],
         annotationType: '',
-        rechargeTableVisible: true
+        rechargeTableVisible: false
       }
     },
     methods: {
