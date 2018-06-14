@@ -62,6 +62,42 @@
                                 </div>
                             </el-form-item>
 
+                            <el-form-item style="height:100px" label="可选标签">
+                                <div id="available-tags">
+                                    <el-button 
+                                        :key="tag"
+                                        v-for="tag in availableTags"
+                                        size="mini"
+                                        @click="handleAddTag(tag)"
+                                        >
+                                    {{tag}}
+                                    </el-button>
+                                </div>
+                            </el-form-item>
+
+                            <el-form-item style="height:100px" label="任务标签">
+                                <div id="for-tag">
+                                    <el-tag 
+                                        :key="tag"
+                                        v-for="tag in dynamicTags"
+                                        closable
+                                        :disable-transitions="false"
+                                        @close="handleClose(tag)">
+                                        {{tag}}
+                                    </el-tag>
+
+                                    <el-input
+                                        class="input-new-tag"
+                                        v-if="inputVisible"
+                                        v-model="inputValue"
+                                        ref="saveTagInput"
+                                        size="small"
+                                        @keyup.enter.native="handleInputConfirm"
+                                        @blur="handleInputConfirm">
+                                    </el-input>
+                                </div>
+                            </el-form-item>
+
                             <el-form-item label="任务描述">
                                 <el-input type="textarea" v-model="form.taskInfo" style="width: 260px" :rows="2" resize="none"></el-input>
                             </el-form-item>
@@ -199,7 +235,22 @@ export default {
         keys: [],
         uploadMsg: [],
         annotationType: '',
-        rechargeTableVisible: false
+        rechargeTableVisible: false,
+        dynamicTags:[],
+        inputVisible: false,
+        inputValue: '',
+        availableTags:[
+            '动物',
+            '人物',
+            '自然',
+            '日常用品',
+            '建筑',
+            '科技',
+            '食物',
+            '交通',
+            '家具',
+            '工业'
+        ]
       }
     },
     methods: {
@@ -229,6 +280,7 @@ export default {
         onSubmit() {
             const self = this;
             this.form.annotationType = this.annotationType;
+            this.form.dynamicTags = this.dynamicTags;
             axios.post('http://localhost:8080/task/create', this.form).then(function (response) {
                 console.log(response);
                 if(response.data.code == 12222) {
@@ -299,6 +351,14 @@ export default {
         },
         sleep (time) {
             return new Promise((resolve) => setTimeout(resolve, time));
+        },  
+        handleClose(tag) {
+            this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+            this.availableTags.push(tag);
+        },
+        handleAddTag(tag) {
+            this.availableTags.splice(this.availableTags.indexOf(tag), 1);
+            this.dynamicTags.push(tag)
         }
     },
     watch: {
@@ -356,5 +416,21 @@ function download(content, fileName, contentType) {
         padding: 5px 5px;
         border: 1px solid #ccc;
         border-radius: 3px;
+    }
+
+    .el-tag + .el-tag {
+    margin-left: 10px;
+    }
+    .button-new-tag {
+        margin-left: 10px;
+        height: 32px;
+        line-height: 30px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    .input-new-tag {
+        width: 90px;
+        margin-left: 10px;
+        vertical-align: bottom;
     }
 </style>

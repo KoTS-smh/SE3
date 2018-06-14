@@ -80,8 +80,8 @@ public class Task {
         this.viewedTimes = 0;
         this.reward = 0;
         this.imgUrls = taskModel.getImgUrlList();
-        this.taskTagString = "";
-        this. taskTags = new ArrayList<>();
+        this.taskTags = convertTaskTag(taskModel.getDynamicTags());
+        this.taskTagString = convertTagsToString(taskTags);
 
     }
 
@@ -239,5 +239,45 @@ public class Task {
 
     public void setState(TaskState state) {
         this.state = state;
+    }
+
+    private List<TaskTag> convertTaskTag(List<String> tagListOfStr) {
+        List<TaskTag> tagList = new ArrayList<>();
+        for(String tmp : tagListOfStr) {
+            if(tmp.equals("动物"))
+                tagList.add(TaskTag.ANIMAL);
+            else if(tmp.equals("人物"))
+                tagList.add(TaskTag.HUMAN);
+            else if(tmp.equals("自然"))
+                tagList.add(TaskTag.NATURE);
+            else if(tmp.equals("日常用品"))
+                tagList.add(TaskTag.DAILYSTUFF);
+            else if(tmp.equals("建筑"))
+                tagList.add(TaskTag.BUILDING);
+            else if(tmp.equals("科技"))
+                tagList.add(TaskTag.TECHNOLOGY);
+            else if(tmp.equals("食物"))
+                tagList.add(TaskTag.FOOD);
+            else if(tmp.equals("交通"))
+                tagList.add(TaskTag.TRAFFIC);
+            else if(tmp.equals("家具"))
+                tagList.add(TaskTag.FURNITURE);
+            else if(tmp.equals("工业"))
+                tagList.add(TaskTag.INDUSTRY);
+
+        }
+
+        return tagList;
+    }
+
+    private String convertTagsToString(List<TaskTag> tagList) {
+        StringBuffer sb = new StringBuffer();
+        for(TaskTag tmp : tagList) {
+            sb.append(tmp.name());
+            if( !(tagList.indexOf(tmp) == tagList.size() - 1))
+                sb.append(",");
+        }
+
+        return sb.toString();
     }
 }

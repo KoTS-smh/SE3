@@ -24,6 +24,7 @@ public class TaskModel {
     private List<Long> acceptUserIds;
     private double reward;
     private String upRate;
+    private List<String> dynamicTags;
 
     public TaskModel() {}
 
@@ -175,5 +176,13 @@ public class TaskModel {
 
     public void setState(TaskState state) {
         this.state = state;
+    }
+
+    public List<String> getDynamicTags() {
+        return dynamicTags;
+    }
+
+    public void setDynamicTags(List<String> dynamicTags) {
+        this.dynamicTags = dynamicTags;
     }
 }

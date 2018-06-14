@@ -14,8 +14,8 @@ public interface TaskDao {
      * 发布新的任务
      * @param task 任务
      */
-    @Insert("insert into MRGSDB.task(postUserId, taskname, taskInfo, annotationType, classifiedInfo, beginDate, endDate, totalPoints, taskLevel, maxParticipator, state, viewedTimes,reward) " +
-            "VALUES (#{postUserId},#{taskname},#{taskInfo}, #{annotationType}, #{classifiedInfo}, #{beginDate}, #{endDate}, #{totalPoints}, #{taskLevel}, #{maxParticipator}, #{state}, #{viewedTimes},#{reward})")
+    @Insert("insert into MRGSDB.task(postUserId, taskname, taskInfo, annotationType, classifiedInfo, beginDate, endDate, totalPoints, taskLevel, maxParticipator, state, viewedTimes,reward,taskTagString) " +
+            "VALUES (#{postUserId},#{taskname},#{taskInfo}, #{annotationType}, #{classifiedInfo}, #{beginDate}, #{endDate}, #{totalPoints}, #{taskLevel}, #{maxParticipator}, #{state}, #{viewedTimes},#{reward},#{taskTagString})")
     @Options(useGeneratedKeys = true, keyProperty = "taskId", keyColumn = "taskId")
     void addTask(Task task);
 
