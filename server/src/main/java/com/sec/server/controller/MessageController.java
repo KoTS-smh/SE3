@@ -17,7 +17,7 @@ public class MessageController {
     @RequestMapping("/testAdd")
     public Result testAdd() {
         Message message = new Message(6, "测试内容", "测试标题" );
-
+        message.setRead(false);
         messageService.addMessage(message);
         System.out.println(message.getMessageId());
 
