@@ -23,14 +23,8 @@ public class HomePageController {
         List<Task> taskList = taskService.getEveryUnFinishedTask();
         List<Picture_CardModel> modelList = new ArrayList<>();
         for(Task tmp : taskList){
-            Picture_CardModel model = new Picture_CardModel();
-            model.setId(tmp.getTaskId());
-            model.setName(tmp.getTaskname());
-            model.setDescription(tmp.getTaskInfo());
-            model.setUrl(tmp.getImgUrls().get(0));
-            model.setViewedTimes(tmp.getViewedTimes());
-            model.setReward(tmp.getReward());
-            model.setUpRate(tmp.getUpRate());
+            Picture_CardModel model = new Picture_CardModel(tmp);
+
             modelList.add(model);
         }
 

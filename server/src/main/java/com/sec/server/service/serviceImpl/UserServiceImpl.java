@@ -10,11 +10,13 @@ import com.sec.server.enums.UserLevel;
 import com.sec.server.exception.ResultException;
 import com.sec.server.model.UserModel;
 import com.sec.server.service.HonorService;
+import com.sec.server.service.MessageService;
 import com.sec.server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +32,6 @@ public class UserServiceImpl implements UserService {
     private MessageDao messageDao;
 
     private HonorService honorService;
-
 
     /**
      * 登录

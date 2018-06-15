@@ -1,6 +1,8 @@
 package com.sec.server.model;
 
 import com.sec.server.domain.Task;
+import com.sec.server.enums.TaskState;
+import com.sec.server.service.TaskService;
 
 /**
  * 与前端主页中的picture_card 结构对应
@@ -19,6 +21,7 @@ public class Picture_CardModel {
     private int viewedTimes;
     private double reward;
     private String upRate;
+    private TaskState taskState;
 
 
     public Picture_CardModel(){}
@@ -42,6 +45,7 @@ public class Picture_CardModel {
         this.viewedTimes = task.getViewedTimes();
         this.reward = task.getReward();
         this.upRate = task.getUpRate();
+        this.taskState = task.getState();
     }
 
     public String getName() {
@@ -98,5 +102,13 @@ public class Picture_CardModel {
 
     public void setUpRate(String upRate) {
         this.upRate = upRate;
+    }
+
+    public TaskState getTaskState() {
+        return taskState;
+    }
+
+    public void setTaskState(TaskState taskState) {
+        this.taskState = taskState;
     }
 }
