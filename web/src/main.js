@@ -8,6 +8,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 import VueResource from 'vue-resource'
 import VueLazyload from 'vue-lazyload'
 import Vuex from 'vuex'
+import VCharts from 'v-charts'
 
 import fontawesome from '@fortawesome/fontawesome'
 import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
@@ -19,6 +20,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.use(Vuex)
 Vue.use(VueLazyload)
+Vue.use(VCharts)
 import "babel-polyfill";
 
 import store from './store'

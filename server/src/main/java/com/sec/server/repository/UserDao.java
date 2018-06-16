@@ -3,6 +3,7 @@ package com.sec.server.repository;
 import com.sec.server.domain.User;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -48,7 +49,7 @@ public interface UserDao {
      * 修改用户信息
      * @param user 用户信息
      */
-    @Update("update MRGSDB.users set sex=#{sex},education=#{education},telPhone=#{telPhone}," +
+    @Update("update MRGSDB.users set sex=#{sex},telPhone=#{telPhone}," +
             "email=#{email},description=#{description},profession=#{profession} WHERE userId=#{userId}")
     void updateUser(User user);
 
@@ -77,5 +78,25 @@ public interface UserDao {
     void increaseUserPoint(@Param("userId") long userId,@Param("point") int point);
 
     @Select("select point from MRGSDB.users where userId = #{userId}")
-    int getPoint(long userId);
+    Integer getPoint(long userId);
+
+    /**
+     * 获得所有用户的积分列表
+     * @return 积分列表
+     */
+    @Select("select point from MRGSDB.users")
+    List<Integer> getAllPoints();
+
+    /**
+     * 任务完成后增加积分
+     * @param userId 用户编号
+     */
+    @Update("update MRGSDB.users set point = point + 3 where userId = #{userId}")
+    void pointAddThree(long userId);
+
+    @Update("update MRGSDB.users set point = point + 1 where userId = #{userId}")
+    void pointInc(long userId);
+
+    @Update("update MRGSDB.users set point = point - #{dropNum} where userId = #{userId}")
+    void pointDrop(@Param("dropNum") int dropNum, @Param("userId") long userId);
 }

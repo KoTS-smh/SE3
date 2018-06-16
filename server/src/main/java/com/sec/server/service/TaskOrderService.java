@@ -1,6 +1,7 @@
 package com.sec.server.service;
 
 import com.sec.server.domain.TaskOrder;
+import com.sec.server.enums.AnnotationType;
 import com.sec.server.model.TaskOrderModel;
 
 import java.util.List;
@@ -51,4 +52,6 @@ public interface TaskOrderService {
      * @param taskOrderId 任务订单Id
      */
     void submittedTaskOrder(long taskOrderId);
+
+    int getNumOfDiffenentType(long userId, AnnotationType annotationType);
 }

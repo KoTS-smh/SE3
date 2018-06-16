@@ -149,7 +149,32 @@ public class UserServiceImpl implements UserService {
         int ongoingNum = taskOrderDao.getAllOngoing(userId).size();
         int appointNum = taskOrderDao.getAllAppoint(userId).size();
         int finishedNum = taskOrderDao.getAllSubmited(userId).size();
+        int point = 0;
+        if(userDao.getPoint(userId) != null)
+            point = userDao.getPoint(userId);
+        PersonalTaskNumModel personalTaskNumModel = new PersonalTaskNumModel(appointNum, ongoingNum, finishedNum, point);
 
-        return null;
+        return personalTaskNumModel;
+    }
+
+    @Override
+    public void pointAddThree(long userId) {
+        userDao.pointAddThree(userId);
+    }
+
+    @Override
+    public void pointInc(long userId) {
+        userDao.pointInc(userId);
+    }
+
+    @Override
+    public void pointDrop(long userId) {
+        int currentPoint = userDao.getPoint(userId);
+        int dropNum = 0;
+        if(currentPoint >= 70)
+            dropNum = Integer.parseInt(new java.text.DecimalFormat("0").format(currentPoint * 0.1));
+        else
+            dropNum = 3;
+        userDao.pointDrop(dropNum, userId);
     }
 }

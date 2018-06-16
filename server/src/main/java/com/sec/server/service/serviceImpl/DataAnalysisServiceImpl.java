@@ -1,6 +1,7 @@
 package com.sec.server.service.serviceImpl;
 
 import com.sec.server.domain.Message;
+import com.sec.server.model.PersonalDataModel;
 import com.sec.server.repository.TaskDao;
 import com.sec.server.repository.TaskOrderDao;
 import com.sec.server.repository.UserDao;
@@ -11,12 +12,19 @@ import com.sec.server.domain.User;
 import com.sec.server.enums.TaskOrderState;
 import com.sec.server.service.DataAnalysisService;
 import com.sec.server.service.MessageService;
+import com.sec.server.service.UserService;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+@Service(value = "dataAnalysisService")
 public class DataAnalysisServiceImpl implements DataAnalysisService {
 
     @Autowired
@@ -31,8 +39,11 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
     @Autowired
     private TaskDao taskDao;
 
-    @Autowired
+    @Resource(name = "messageService")
     private MessageService messageService;
+
+    @Resource(name = "userService")
+    private UserService userService;
 
     /**
      * 计算任务的最小推荐金额
@@ -126,7 +137,8 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
                 messageToChangeWorked.setMessageInfo("您因为完成评分太低等原因被替换出任务，感谢您曾经为此任务做出的贡献。"+"任务名称："+taskName);
                 messageToChangeWorked.setTitle("任务通知");
                 messageService.addMessage(messageToChangeWorked);
-                //扣减信用积分 todo
+                //扣减信用积分
+                userService.pointDrop(aList.getAcceptUserId());
             }
         }
 
@@ -152,8 +164,33 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
             //新建对应新工人的任务订单
             taskOrderDao.insertTaskOrder(taskOrder);
         }
-
-
     }
 
+    @Override
+    public PersonalDataModel getPersonalDataModel(long userId) {
+        int point = userDao.getPoint(userId);
+        int ongoingTaskNum = taskOrderDao.getAllOngoing(userId).size();
+        String rank = null;
+        List<Integer> pointList = userDao.getAllPoints();
+        Collections.sort(pointList);
+
+        int count = 0;
+        for(int i = 0;i < pointList.size(); ++i) {
+            if(point > pointList.get(i))
+                count++;
+        }
+
+        if(count <= 100)
+            rank = "第" + count + "名";
+
+        else {
+            double percentage = count / pointList.size();
+            DecimalFormat df = new DecimalFormat("0.00");
+            rank = "前" + df.format(percentage * 100) + " %";
+        }
+
+        PersonalDataModel personalDataModel = new PersonalDataModel(point, ongoingTaskNum, rank);
+
+        return personalDataModel;
+    }
 }

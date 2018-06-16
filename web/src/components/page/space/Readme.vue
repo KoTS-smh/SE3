@@ -1,8 +1,9 @@
 <template>
     <div>
+        <el-row>
         <div class="crumbs">
             <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-setting"></i> 系统介绍</el-breadcrumb-item>
+                <el-breadcrumb-item><i class="el-icon-document"></i> 系统信息</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
         <div class="task-state" style="margin-left:50px">
@@ -14,15 +15,27 @@
                 </el-col>
             </el-row>
         </div>
+        </el-row>
+        
+        <el-row>
+            <div class="chart" style="width:440px;hight:280px;margin-left:10px;margin-top:50px">
+                <ve-radar :data="chartData"></ve-radar>
+            </div>
+        </el-row>
 
+        <el-row style="margin-left:950px">
+            <el-button @click="gotoHomePage">返回主页</el-button>
+        </el-row>
     </div>
 </template>
 
 <script>
-import status_card from '../../common/status_card.vue';
+import status_card from '../../common/status_card.vue'
+import axios from 'axios'
+import VCharts from 'v-charts'
     export default {
         components: {
-            'lee-status-card': status_card
+            'lee-status-card': status_card,
         },
         data(){
             return {
@@ -31,22 +44,55 @@ import status_card from '../../common/status_card.vue';
 
                 cardsData: [
                     {
-                        count: '996',
+                        count: 0,
                         name: '预约中'
                     },
                     {
-                        count: '170871',
+                        count: 0,
                         name: '进行中'
                     },
                     {
-                        count: '38470',
+                        count: 0,
                         name: '已完成'
                     },
                     {
-                        count: '12350',
+                        count: 0,
                         name: '信用积分'
                     }
-                ]
+                ],
+                chartData: {
+                    columns: ['ID', '分类标注', '整体标注', '区域标注', '标框标注'],
+                    metrics: ['分类标注', '整体标注', '区域标注', '标框标注'],
+                    rows:[
+                       {'ID': '基准值', '分类标注': 100, '整体标注': 100, '区域标注': 100, '标框标注': 100 }
+                    ]
+                }
+            }
+        },
+
+        methods: {
+            placeData() {
+                var userId = localStorage.getItem('userId')
+                console.log(userId)
+                axios.post('http://localhost:8080/getPersonalData', {"userId": userId, "password": ''})
+                .then(response => {
+                    console.log(response);
+                    var data = JSON.parse(response.data.data);
+                    var taskNumData = data[0];
+                    var radarPicData = data[1];
+                    this.cardsData[0].count = taskNumData.appointNum;
+                    this.cardsData[1].count = taskNumData.ongoingNum;
+                    this.cardsData[2].count = taskNumData.finishedNum;
+                    this.cardsData[3].count = taskNumData.point;
+
+                    var chartRow = {'ID': '你的标注评分','分类标注': radarPicData.classifyPoint, '整体标注': radarPicData.wholePoint, '区域标注': radarPicData.regionPoint, '标框标注': radarPicData.framePoint};
+                    // this.chartData.rows[0] = chartRow;    
+                    console.log(chartRow);
+                    this.chartData.rows.push(chartRow);
+                })
+            },
+            gotoHomePage() {
+                this.$router.push('homepage');
             }
         },
 
@@ -58,6 +104,10 @@ import status_card from '../../common/status_card.vue';
                 this.$message('请先登陆');
                 this.$router.push('login');
             }
+
+            this.placeData();
+
+
         },
         beforeMount() {
             

@@ -1,5 +1,6 @@
 package com.sec.server.service.serviceImpl;
 
+import com.sec.server.enums.AnnotationType;
 import com.sec.server.repository.TaskDao;
 import com.sec.server.repository.TaskOrderDao;
 import com.sec.server.domain.Task;
@@ -102,5 +103,13 @@ public class TaskOrderServiceImpl implements TaskOrderService {
     public void submittedTaskOrder(long taskOrderId) {
         taskOrderDao.changeTaskOrderState(taskOrderId,TaskOrderState.submitted);
     }
+
+    @Override
+    public int getNumOfDiffenentType(long userId, AnnotationType annotationType) {
+        int num = taskOrderDao.getAllFinishedTaskOrderOfAType(userId, annotationType).size();
+
+        return num;
+    }
+
 
 }

@@ -6,6 +6,15 @@ public class PersonalTaskNumModel {
     private int finishedNum;
     private int point;
 
+    public PersonalTaskNumModel(){}
+
+    public PersonalTaskNumModel(int appointNum, int ongoingNum, int finishedNum, int point) {
+        this.appointNum = appointNum;
+        this.ongoingNum = ongoingNum;
+        this.finishedNum = finishedNum;
+        this.point = point;
+    }
+
     public int getAppointNum() {
         return appointNum;
     }

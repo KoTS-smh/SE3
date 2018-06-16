@@ -1,6 +1,8 @@
 package com.sec.server.controller;
 
+import com.sec.server.model.PersonalDataModel;
 import com.sec.server.model.UserModel;
+import com.sec.server.service.DataAnalysisService;
 import com.sec.server.service.TaskService;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
@@ -15,6 +17,9 @@ import javax.annotation.Resource;
 public class DataAnalysisController {
     @Resource(name = "taskService")
     private TaskService taskService;
+
+    @Resource(name = "dataAnalysisService")
+    private DataAnalysisService dataAnalysisService;
 
     /**
      * 众包发起者获取任务的完成情况
@@ -54,10 +59,9 @@ public class DataAnalysisController {
      */
     @RequestMapping("/personalData")
     public Result getPersonalData(@RequestBody UserModel userModel) {
-//        long userId = userModel.getAcceptUserId();
-//        PersonalDataModel personalDataModel = dataAnalysisService.getPersonalData(userId);
-//        return ResultUtils.success(personalDataModel);
-        return null;
+        long userId = userModel.getUserId();
+        PersonalDataModel personalDataModel = dataAnalysisService.getPersonalDataModel(userId);
+        return ResultUtils.success(personalDataModel);
     }
 
     @RequestMapping("/taskNum")

@@ -22,4 +22,10 @@ public interface UserService {
      double getBalance(long userId);
 
      PersonalTaskNumModel getPersonalTaskNum(long userId);
+
+     void pointAddThree(long userId);
+
+     void pointInc(long userId);
+
+     void pointDrop(long userId);
 }

@@ -32,4 +32,12 @@ public interface HonorService {
 
     //创建荣誉信息
     void createHonorMessage(long userId);
+
+    double getFramePoint(long userId);
+
+    double getClassifyPoint(long userId);
+
+    double getWholePoint(long userId);
+
+    double getRegionPoint(long userId);
 }

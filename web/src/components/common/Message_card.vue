@@ -40,6 +40,7 @@ export default {
             axios.post('http://localhost:8080/user/setRead', {"messageId": this.mId})
             .then(response => {
                 console.log(response);
+                this.$emit('setReadMethod', this.mId);
             })
         },
         deleteMessage() {

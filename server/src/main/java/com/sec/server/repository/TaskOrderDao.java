@@ -46,7 +46,7 @@ public interface TaskOrderDao {
      */
     @Select("select * from MRGSDB.taskOrder " +
             "where acceptUserId = #{acceptUserId} and submited = 3 " +
-            "and taskId not in (select taskId from MRGSDB.task where annotationType != type )")
+            "and taskId not in (select taskId from MRGSDB.task where annotationType != #{type} )")
     List<TaskOrder> getAllFinishedTaskOrderOfAType(@Param("acceptUserId") long acceptUserId,@Param("type") AnnotationType type);
 
     /**

@@ -39,4 +39,36 @@ public interface HonorDao {
      */
     @Delete("delete MGRSDB.honor where userId = #{userId}")
     void deleteUserHonor(long userId);
+
+    /**
+     * 获取一个工人标框标注积分
+     * @param userId 用户ID
+     * @return 积分
+     */
+    @Select("select frameTagPoint from MRGSDB.honor where userId = #{userId}")
+    Double getFrameTagPoint(long userId);
+
+    /**
+     * 获取一个工人分类标注积分
+     * @param userId 用户ID
+     * @return 积分
+     */
+    @Select("select classifyTagPoint from MRGSDB.honor where userId = #{userId}")
+    Double getClassifyTagPoint(long userId);
+
+    /**
+     * 获取一个工人整体标注积分
+     * @param userId 用户ID
+     * @return 积分
+     */
+    @Select("select wholeTagPoint from MRGSDB.honor where userId = #{userId}")
+    Double getWholeTagPoint(long userId);
+
+    /**
+     * 获取一个工人区域标注积分
+     * @param userId 用户ID
+     * @return 积分
+     */
+    @Select("select regionTagPoint from MRGSDB.honor where userId = #{userId}")
+    Double getRegionTagPoint(long userId);
 }

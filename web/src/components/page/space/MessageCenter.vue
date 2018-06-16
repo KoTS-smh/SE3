@@ -5,7 +5,7 @@
         </el-col>
 
         <el-row :sm="12" :md="6" v-for="(card, index) in card_list" :key="card.id">
-            <message-card :message-info="card.messageInfo" :title="card.title" :messageId="card.messageId" v-on:sonMethod="deleteMessage"></message-card>
+            <message-card :message-info="card.messageInfo" :title="card.title" :messageId="card.messageId" v-on:sonMethod="deleteMessage" v-on:setReadMethod="setRead"></message-card>
         </el-row>
     </div>
 </template>
@@ -49,6 +49,14 @@ export default {
                     }
                 }
             })
+        },
+        setRead(messageId) {
+            var list = this.card_list;
+            for(let i = 0; i < list.length;i++) {
+                if(list[i].messageId == messageId){
+                    list.splice(i, 1)
+                }
+            }
         }
     },
 

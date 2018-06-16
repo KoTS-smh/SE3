@@ -8,10 +8,12 @@ import com.sec.server.repository.TaskOrderDao;
 import com.sec.server.repository.UserDao;
 import com.sec.server.service.HonorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service(value = "honorService")
 public class HonorServiceImpl implements HonorService {
 
     @Autowired
@@ -216,6 +218,26 @@ public class HonorServiceImpl implements HonorService {
     public void createHonorMessage(long userId) {
         honorDao.insertUserHonor(userId);
         System.out.print(userId+"success");
+    }
+
+    @Override
+    public double getFramePoint(long userId) {
+        return honorDao.getFrameTagPoint(userId);
+    }
+
+    @Override
+    public double getClassifyPoint(long userId) {
+        return honorDao.getClassifyTagPoint(userId);
+    }
+
+    @Override
+    public double getWholePoint(long userId) {
+        return honorDao.getWholeTagPoint(userId);
+    }
+
+    @Override
+    public double getRegionPoint(long userId) {
+        return honorDao.getRegionTagPoint(userId);
     }
 
     /**

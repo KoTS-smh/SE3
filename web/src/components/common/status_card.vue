@@ -20,7 +20,7 @@ export default {
   display: flex;
   background-color: white;
   border-radius: .4rem;
-  min-height: 10rem;
+  min-height: 2rem;
   overflow: hidden;
 
   .symbol {

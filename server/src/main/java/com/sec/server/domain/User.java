@@ -18,7 +18,6 @@ public class User {
     private int point;
     private String telPhone;
     private Sex sex;
-    private Education education;
     private String description;
     private String Email;
     //余额
@@ -35,9 +34,9 @@ public class User {
         this.password = userModel.getPassword();
         this.telPhone = userModel.getTelPhone();
         this.sex = userModel.getSex();
-        this.education = userModel.getEducation();
         this.description = userModel.getDescription();
         this.Email = userModel.getEmail();
+        this.profession = userModel.getProfession();
     }
 
     public long getUserId() {
@@ -87,14 +86,6 @@ public class User {
 
     public void setSex(Sex sex) {
         this.sex = sex;
-    }
-
-    public Education getEducation() {
-        return education;
-    }
-
-    public void setEducation(Education education) {
-        this.education = education;
     }
 
     public String getDescription() {

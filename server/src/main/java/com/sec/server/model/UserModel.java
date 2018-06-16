@@ -3,6 +3,7 @@ package com.sec.server.model;
 import com.sec.server.enums.Education;
 import com.sec.server.enums.Sex;
 import com.sec.server.enums.UserLevel;
+import com.sec.server.enums.UserProfession;
 
 import javax.validation.constraints.NotBlank;
 
@@ -18,6 +19,7 @@ public class UserModel {
     private String Email;
     private UserLevel userLevel;
     private int rechargeNum;
+    private UserProfession profession;
 
     @NotBlank(message = "用户名不能为空")
     public String getUsername() {
@@ -105,5 +107,13 @@ public class UserModel {
 
     public void setRechargeNum(int rechargeNum) {
         this.rechargeNum = rechargeNum;
+    }
+
+    public UserProfession getProfession() {
+        return profession;
+    }
+
+    public void setProfession(UserProfession profession) {
+        this.profession = profession;
     }
 }

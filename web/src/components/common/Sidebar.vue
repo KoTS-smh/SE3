@@ -25,9 +25,9 @@
             return {
                 items: [
                     {
-                        icon: 'el-icon-setting',
+                        icon: 'el-icon-document',
                         index: 'readme',
-                        title: '系统介绍'
+                        title: '系统信息'
                     },
                     {
                         icon: 'el-icon-menu',

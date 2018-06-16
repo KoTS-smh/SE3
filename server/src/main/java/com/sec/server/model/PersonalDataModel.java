@@ -5,6 +5,15 @@ public class PersonalDataModel {
     private int tasknumber;
     private String rank;
 
+    public PersonalDataModel() {
+    }
+
+    public PersonalDataModel(int point, int tasknumber, String rank) {
+        this.point = point;
+        this.tasknumber = tasknumber;
+        this.rank = rank;
+    }
+
     public int getPoint() {
         return point;
     }

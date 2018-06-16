@@ -24,14 +24,15 @@
                         </el-radio-group>
                     </el-form-item>
                     <!--学历选择区域-->
-                    <el-form-item label="学历">
-                        <el-select v-model="form.education" placeholder="请选择">
-                            <el-option key="juniorMiddle" label="初中" value="juniorMiddle"></el-option>
-                            <el-option key="seniorMiddle" label="高中" value="seniorMiddle"></el-option>
-                            <el-option key="juniorCollege" label="大学专科" value="juniorCollege"></el-option>
-                            <el-option key="undergraduate" label="大学本科" value="undergraduate"></el-option>
-                            <el-option key="master" label="硕士" value="master"></el-option>
-                            <el-option key="doctor" label="博士" value="doctor"></el-option>
+                    <el-form-item label="职业">
+                        <el-select v-model="form.profession" placeholder="请选择">
+                            <el-option key="STUDENT" label="学生" value="STUDENT"></el-option>
+                            <el-option key="TEACHER" label="教师" value="TEACHER"></el-option>
+                            <el-option key="DOCTOR" label="医生" value="DOCTOR"></el-option>
+                            <el-option key="ENGINEER" label="工程师" value="ENGINEER"></el-option>
+                            <el-option key="DESIGNER" label="设计师" value="DESIGNER"></el-option>
+                            <el-option key="CHEF" label="厨师" value="CHEF"></el-option>
+                            <el-option key="GEOGRAPHER" label="地理学家" value="GEOGRAPHER"></el-option>
                         </el-select>
                     </el-form-item>
                     <!--手机号修改区域-->
@@ -80,7 +81,7 @@
                 form: {
                     userId:'',
                     username: '',
-                    education: '',
+                    profession: '',
                     sex: '',
                     description: '',
                     telPhone:'',
