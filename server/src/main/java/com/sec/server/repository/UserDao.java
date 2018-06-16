@@ -75,4 +75,7 @@ public interface UserDao {
      */
     @Update("update MRGSDB.users set point=point + #{point} where userId = #{userId}")
     void increaseUserPoint(@Param("userId") long userId,@Param("point") int point);
+
+    @Select("select point from MRGSDB.users where userId = #{userId}")
+    int getPoint(long userId);
 }

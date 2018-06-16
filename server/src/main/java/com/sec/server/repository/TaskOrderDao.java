@@ -1,5 +1,6 @@
 package com.sec.server.repository;
 
+import com.sec.server.domain.Task;
 import com.sec.server.domain.TaskOrder;
 import com.sec.server.enums.AnnotationType;
 import com.sec.server.enums.TaskOrderState;
@@ -49,12 +50,28 @@ public interface TaskOrderDao {
     List<TaskOrder> getAllFinishedTaskOrderOfAType(@Param("acceptUserId") long acceptUserId,@Param("type") AnnotationType type);
 
     /**
-     * 获取一个工人所有提交的任务订单
+     * 获取一个工人所有提交的任务订单(已经完成)
      * @param acceptUserId 工人Id
      * @return 已提交的任务订单列表 list
      */
-    @Select("select * from MRGSDB.taskOrder where acceptUserId = #{acceptUserId} and submited = 0")
+    @Select("select * from MRGSDB.taskOrder where acceptUserId = #{acceptUserId} and submited = 2")
     List<TaskOrder> getAllSubmited(long acceptUserId);
+
+    /**
+     * 获取一个工人所有正在进行的任务订单
+     * @param acceptUserId 工人ID
+     * @return 正在进行的任务订单列表 list
+     */
+    @Select("select * from MRGSDB.taskOrder where acceptUserId = #{acceptUserId} and submited = 1")
+    List<TaskOrder> getAllOngoing(long acceptUserId);
+
+    /**
+     * 获取一个工人所有正在预约中的任务订单
+     * @param acceptUserId 工人ID
+     * @return 正在预约的任务订单列表 list
+     */
+    @Select("select * from MRGSDB.taskOrder where acceptUserId = #{acceptUserId} and submited = 0")
+    List<TaskOrder> getAllAppoint(long acceptUserId);
 
     /**
      * 更新任务订单

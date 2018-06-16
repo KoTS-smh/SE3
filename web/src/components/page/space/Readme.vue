@@ -5,21 +5,49 @@
                 <el-breadcrumb-item><i class="el-icon-setting"></i> 系统介绍</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div class="ms-doc">
-            <article>
-                <h1>MRGS COUNT manage-system</h1>
-                <p>众包标注系统的后台管理系统</p>
-                <p>----by MRGS小组</p>
-            </article>
+        <div class="task-state" style="margin-left:50px">
+            <el-row :gutter="10">
+                <el-col :sm="24" :md="6" v-for="card in cardsData" :key="card.id">
+                    <div class="grid-content bg-purple">
+                    <lee-status-card :count="card.count" :name="card.name"></lee-status-card>
+                    </div>
+                </el-col>
+            </el-row>
         </div>
 
     </div>
 </template>
 
 <script>
+import status_card from '../../common/status_card.vue';
     export default {
-        data: function(){
-            return {}
+        components: {
+            'lee-status-card': status_card
+        },
+        data(){
+            return {
+                appoint_num: 0,
+                ongoing_num: 0,
+
+                cardsData: [
+                    {
+                        count: '996',
+                        name: '预约中'
+                    },
+                    {
+                        count: '170871',
+                        name: '进行中'
+                    },
+                    {
+                        count: '38470',
+                        name: '已完成'
+                    },
+                    {
+                        count: '12350',
+                        name: '信用积分'
+                    }
+                ]
+            }
         },
 
         mounted() {
@@ -82,5 +110,16 @@
     }
     .ms-doc article .el-checkbox{
         margin-bottom: 5px;
+    }
+
+    .bg-purple-dark {
+        background: #99a9bf;
+    }
+    .bg-purple {
+        background: #d3dce6;
+    }
+    .grid-content {
+        border-radius: 4px;
+        min-height: 36px;
     }
 </style>

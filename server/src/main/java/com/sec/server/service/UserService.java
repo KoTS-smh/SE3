@@ -1,6 +1,7 @@
 package com.sec.server.service;
 
 import com.sec.server.domain.User;
+import com.sec.server.model.PersonalTaskNumModel;
 import com.sec.server.model.UserModel;
 
 public interface UserService {
@@ -19,4 +20,6 @@ public interface UserService {
      void recharge(int num, long userId);
 
      double getBalance(long userId);
+
+     PersonalTaskNumModel getPersonalTaskNum(long userId);
 }
