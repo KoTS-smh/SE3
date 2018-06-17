@@ -11,7 +11,7 @@
         <el-row>
         <el-col :span="6" class="taskInfos" style="border-right: gainsboro solid 1px">
             <div style="width: 90%;background-color: gainsboro;height: 40px;margin-top: 10px;margin-left: 5%;text-align:center">
-                <p style="color: #20a0ff;">基础信息</p>
+                <p style="color: #20a0ff; font-size: 1.8rem">基础信息</p>
             </div>
             <div class="grid-content bg-purple">
             <el-form :model="taskData" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
@@ -41,11 +41,11 @@
         </el-col>
             <el-col :span="8" style="border-right: gainsboro solid 1px">
                 <div style="width: 90%;background-color: gainsboro;height: 40px;margin-top: 10px;margin-left: 5%;text-align:center">
-                    <p style="color: #20a0ff">任务状态{{taskState}}</p>
+                    <p style="color: #20a0ff; font-size: 1.8rem">任务状态: {{taskData.state}}</p>
                 </div>
-                <p style="margin-top: 6%;margin-left: 10%">目标标注人数： {{targetNum}}</p>
-                <p style="margin-top: 6%;margin-left: 10%">预约中人数： {{appointNum}}</p>
-                <p style="margin-top: 6%;margin-left: 10%">标注中人数： {{annoNum}}</p>
+                <p style="margin-top: 6%;margin-left: 10%">目标标注人数： {{taskData.maxParticipator}}</p>
+                <p style="margin-top: 6%;margin-left: 10%">预约中人数： {{taskData.appointNum}}</p>
+                <p style="margin-top: 6%;margin-left: 10%">标注中人数： {{taskData.annoNum}}</p>
                 <p style="margin-top: 5%;margin-left: 10%;font-size: small;color: #73ccff">
                     注：当任务开始时，系统会挑选最合适的人参与任务。
                     <br><br>
@@ -104,11 +104,16 @@ export default {
                 taskId: '',
                 degree: 10,
                 reward: '',
-                upRate: ''
+                upRate: '',
+                state: '',
+                maxParticipator: 0,
+                appointNum: 0,
+                annoNum: 0
             },
             rules: {
             },
-            images: []
+            images: [],
+            targetNum: 20
         }
     },
     methods: {
@@ -127,6 +132,18 @@ export default {
                     this.taskData.taskId = indata.taskId;
                     this.taskData.taskname = indata.taskname;
                     this.taskData.taskLevel = indata.taskLevel;
+                    this.taskData.maxParticipator = indata.maxParticipator;
+                    this.taskData.annoNum = indata.annoNum;
+                    this.taskData.appointNum = indata.appointNum;
+
+                    if(indata.state === 'appoint') {
+                        this.taskData.state = '预约中'
+                    }else if(indata.state === 'ongoing'){
+                        this.taskData.state = '进行中'
+                    }else if(indata.state === 'finished') {
+                        this.taskData.state = '已结束'
+                    }
+
                     if (indata.annotationType === 'option1') {
                         this.taskData.tagType = '标框标注'
                     } else if (indata.annotationType === 'option2') {

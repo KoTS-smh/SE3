@@ -25,6 +25,8 @@ public class TaskModel {
     private double reward;
     private String upRate;
     private List<String> dynamicTags;
+    private int appointNum;
+    private int annoNum;
 
     public TaskModel() {}
 
@@ -184,5 +186,21 @@ public class TaskModel {
 
     public void setDynamicTags(List<String> dynamicTags) {
         this.dynamicTags = dynamicTags;
+    }
+
+    public int getAppointNum() {
+        return appointNum;
+    }
+
+    public void setAppointNum(int appointNum) {
+        this.appointNum = appointNum;
+    }
+
+    public int getAnnoNum() {
+        return annoNum;
+    }
+
+    public void setAnnoNum(int annoNum) {
+        this.annoNum = annoNum;
     }
 }

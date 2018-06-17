@@ -39,6 +39,9 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private MessageDao messageDao;
 
+    @Autowired
+    private AppointDao appointDao;
+
     @Resource(name = "dataAnalysisService")
     private DataAnalysisService dataAnalysisService;
 
@@ -136,12 +139,18 @@ public class TaskServiceImpl implements TaskService {
         try {
             task = taskDao.getTask(taskId);
             acceptUserList = taskOrderDao.getAcceptUserIds(taskId);
+            //todo 换个地方写
             taskDao.increaseViewedTimes(taskId);
         }catch (Exception e){
             throw new ResultException("任务不存在！", 1111);
         }
+
+        int appointNum = appointDao.getAppointUser(taskId).size();
+        int annoNum = taskOrderDao.getAcceptNum(taskId);
         TaskModel taskModel = new TaskModel(task);
         taskModel.setAcceptUserIds(acceptUserList);
+        taskModel.setAnnoNum(annoNum);
+        taskModel.setAppointNum(appointNum);
         return taskModel;
     }
 
