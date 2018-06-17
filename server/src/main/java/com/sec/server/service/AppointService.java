@@ -1,5 +1,7 @@
 package com.sec.server.service;
 
+import com.sec.server.enums.AnnotationType;
+
 import java.util.List;
 
 public interface AppointService {
@@ -37,4 +39,12 @@ public interface AppointService {
      * @return 任务列表 list
      */
     List<Long> getAppointTask(long userId);
+
+    /**
+     * 工人荣誉度排序（高到低）
+     * @param list 工人列表
+     * @param annotationType 荣誉类型
+     * @return 排序后工人列表 list
+     */
+    List<Long> sortListByHonorMessage(List<Long> list,AnnotationType annotationType);
 }

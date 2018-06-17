@@ -18,12 +18,13 @@
         </div>
 
         <el-table :data="tableData" style="width: 100%" ref="multipleTable" >
-            <el-table-column prop="taskId" label="任务Id" width="70"></el-table-column>
+            <!--<el-table-column prop="taskId" label="任务Id" width="70"></el-table-column>-->
             <el-table-column prop="taskname" label="任务名称" width="100"></el-table-column>
-            <el-table-column prop="postUserId" label="上传者ID" width="100"></el-table-column>
+            <!--<el-table-column prop="postUserId" label="上传者ID" width="100"></el-table-column>-->
             <el-table-column prop="taskLevel" label="任务等级" width="100"></el-table-column>
             <el-table-column prop="totalPoints" label="任务积分" width="100"></el-table-column>
             <el-table-column prop="maxParticipator" label="最大参与者数量" width="140"></el-table-column>
+            <el-table-column prop="reward" label="报酬" width="100"></el-table-column>
             <el-table-column prop="beginDate" label="开始时间" width="185"></el-table-column>
             <el-table-column prop="endDate" label="截止时间" width="185"></el-table-column>
 

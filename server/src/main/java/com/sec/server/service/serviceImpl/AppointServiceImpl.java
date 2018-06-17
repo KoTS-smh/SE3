@@ -134,7 +134,7 @@ public class AppointServiceImpl implements AppointService {
      * @param annotationType 荣誉类型
      * @return 排序后工人列表 list
      */
-    private List<Long> sortListByHonorMessage(List<Long> list,AnnotationType annotationType){
+    public List<Long> sortListByHonorMessage(List<Long> list,AnnotationType annotationType){
         List<HonorMessage> honorMessageList = new ArrayList<>();
 
         for (Long aList : list) {
