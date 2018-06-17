@@ -43,6 +43,7 @@ dependencies {
     compile files('opencv/opencv-341.jar')
     compile files('corenlp/stanford-corenlp-3.9.1-models.jar')
     compile files('corenlp/stanford-corenlp-3.9.1-models-english.jar')
+    compile files('libsvm/libsvm.jar')
     compile 'javax.xml.bind:jaxb-api:2.3.0'
     compile 'com.sun.xml.bind:jaxb-core:2.3.0'
     compile 'com.sun.xml.bind:jaxb-impl:2.3.0'

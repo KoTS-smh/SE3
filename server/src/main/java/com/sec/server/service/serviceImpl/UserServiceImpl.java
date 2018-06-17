@@ -25,7 +25,7 @@ import java.util.List;
 @Service(value = "userService")
 public class UserServiceImpl implements UserService {
 
-    private static List<Long> loginUsers = new ArrayList<Long>();
+    private static List<Long> loginUsers = new ArrayList<>();
 
     @Autowired
     private UserDao userDao;
@@ -34,8 +34,9 @@ public class UserServiceImpl implements UserService {
     private MessageDao messageDao;
 
     @Autowired
-    TaskOrderDao taskOrderDao;
+    private TaskOrderDao taskOrderDao;
 
+    @Resource(name = "honorService")
     private HonorService honorService;
 
     /**
@@ -73,12 +74,10 @@ public class UserServiceImpl implements UserService {
     public void register(UserModel userModel) {
         User user = new User(userModel);
         user.setUserLevel(UserLevel.LEVEL1);
-        user.setPoint(0);
+        user.setPoint(70);
         user.setBalance(0);
 
         userDao.insertUser(user);
-            //获得刚刚新建的用户
-            List<User> list = userDao.getAllUsers();
             //新建荣誉信息
             honorService.createHonorMessage(user.getUserId());
             //提示完善个人信息

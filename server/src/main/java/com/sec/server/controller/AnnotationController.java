@@ -51,6 +51,12 @@ public class AnnotationController {
         return ResultUtils.success();
     }
 
+    @RequestMapping("/annotation/delete")
+    public Result deleteAnnotation(long taskOrderId,int pictureNum){
+        annotationService.deleteAnnotation(taskOrderId,pictureNum);
+        return ResultUtils.success();
+    }
+
     /**
      * 获取一个任务中每张图片被标注的tag信息
      * @return 一个任务每张图片被标注的tag信息

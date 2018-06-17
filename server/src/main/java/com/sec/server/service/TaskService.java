@@ -1,7 +1,6 @@
 package com.sec.server.service;
 
 import com.sec.server.domain.Task;
-import com.sec.server.model.PersonalTaskNumModel;
 import com.sec.server.model.Picture_CardModel;
 import com.sec.server.model.TaskModel;
 import org.json.JSONArray;
@@ -83,7 +82,8 @@ public interface TaskService {
      */
     void endTask();
 
-    JSONArray getMenuItems();
 
+
+    JSONArray getMenuItems();
 
 }

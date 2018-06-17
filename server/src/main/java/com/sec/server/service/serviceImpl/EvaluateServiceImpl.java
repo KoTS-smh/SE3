@@ -8,6 +8,7 @@ import com.sec.server.repository.TaskDao;
 import com.sec.server.repository.TaskOrderDao;
 import com.sec.server.service.AnnotationService;
 import com.sec.server.service.EvaluateService;
+import com.sec.server.utils.BRISQUE;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -112,8 +113,18 @@ public class EvaluateServiceImpl implements EvaluateService {
         Task task = taskDao.getTask(taskId);
         List<String> urls = task.getImgUrls();
         List<Double> points = new ArrayList<>();
-        for(String url:urls){
-            points.add(getPictureQuality(url));
+        //为了效率，对于图片张数过多的任务，采取抽样的方法，最多100张
+        if(urls.size()<=100) {
+            for (String url : urls) {
+                points.add(getPictureQuality(url));
+            }
+        }else{
+            int random[] = getRandoms(0,urls.size()-1,100);
+            for(int i=0;i<100;i++){
+                if (random != null) {
+                    points.add(getPictureQuality(urls.get(random[i])));
+                }
+            }
         }
         //取分数的平均值，当图片张数少时，差的图片对分数的影响大，当图片数量大时，影响就小
         double result = 0;
@@ -166,20 +177,11 @@ public class EvaluateServiceImpl implements EvaluateService {
             //转灰度图
             Imgproc.cvtColor(mat,grayMat,Imgproc.COLOR_RGB2GRAY);
             //估算图片质量
-            double entropy,meanGradient,mean,stdDev,snr;
-            entropy = getEntropy(grayMat);
-            meanGradient = getMeanGradient(grayMat);
-            double[] d= getMeanStd(grayMat);
-            if (d != null) {
-                mean = d[0];
-                stdDev = d[1];
-                snr = d[2];
-            }
-            //todo
+            Double score =100 - new BRISQUE().brisquescore(grayMat);
+            return score;
         } catch (IOException e) {
             return -1;
         }
-        return 0;
     }
 
     //计算信息熵，用灰度图
@@ -298,27 +300,40 @@ public class EvaluateServiceImpl implements EvaluateService {
         Mat mat;
         try {
             //使用java2D读取图像
-            String filePath = "C:\\Users\\18333\\Desktop\\timg.jpg";
+            String filePath = "C:\\Users\\18333\\Desktop\\picTest\\1.bmp";
             mat = Imgcodecs.imread(filePath);
             Mat grayMat = new Mat();
             Imgproc.cvtColor(mat,grayMat,Imgproc.COLOR_RGB2GRAY);
-            double entropy,meanGradient,mean = 0,stdDev=0,snr = 0;
-            EvaluateServiceImpl eva = new EvaluateServiceImpl();
-            entropy = eva.getEntropy(grayMat);
-            meanGradient = eva.getMeanGradient(grayMat);
-            double[] d= eva.getMeanStd(grayMat);
-            if (d != null) {
-                mean = d[0];
-                stdDev = d[1];
-                snr = d[2];
-            }
-            System.out.print(entropy+"\r\n"+meanGradient+"\r\n"+mean+"\r\n"+stdDev+"\r\n"+snr);
+            System.out.println(new BRISQUE().brisquescore(grayMat));
         } catch (Exception e) {
             System.out.println("读取图像出现异常!");
             e.printStackTrace();
         }
-
     }
 
+    private int[] getRandoms(int min, int max, int count){
+        int[] randoms = new int[count];
+        List<Integer> listRandom = new ArrayList<Integer>();
 
+        if( count > ( max - min + 1 )){
+            return null;
+        }
+        // 将所有的可能出现的数字放进候选list
+        for(int i = min; i <= max; i++){
+            listRandom.add(i);
+        }
+        // 从候选list中取出放入数组，已经被选中的就从这个list中移除
+        for(int i = 0; i < count; i++){
+            int index = getRandom(0, listRandom.size()-1);
+            randoms[i] = listRandom.get(index);
+            listRandom.remove(index);
+        }
+
+        return randoms;
+    }
+
+    private int getRandom(int min, int max){
+        Random random = new Random();
+        return random.nextInt( max - min + 1 ) + min;
+    }
 }

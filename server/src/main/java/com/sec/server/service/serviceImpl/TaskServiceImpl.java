@@ -1,7 +1,6 @@
 package com.sec.server.service.serviceImpl;
 
 import com.sec.server.domain.*;
-import com.sec.server.model.PersonalTaskNumModel;
 import com.sec.server.repository.*;
 import com.sec.server.enums.*;
 import com.sec.server.exception.ResultException;
@@ -389,7 +388,7 @@ public class TaskServiceImpl implements TaskService {
         int wholeTagNum = taskDao.getNumOfWholeTask();
         JSONObject wholeTag = new JSONObject();
         wholeTag.put("title", "整体标注");
-        wholeTag.put("num", wholeTagNum);
+        regionTag.put("num", wholeTagNum);
 
         int allTaskNum = taskDao.getNumOfAllTask();
         JSONObject allTask =  new JSONObject();

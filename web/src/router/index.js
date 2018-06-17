@@ -22,34 +22,6 @@ export default new Router({
                     component: resolve => require(['../components/page/space/BaseTable.vue'], resolve)
                 },
                 {
-                    path: '/vuetable',
-                    component: resolve => require(['../components/page/space/VueTable.vue'], resolve)     // vue-datasource组件
-                },
-                {
-                    path: '/baseform',
-                    component: resolve => require(['../components/page/space/BaseForm.vue'], resolve)
-                },
-                {
-                    path: '/vueeditor',
-                    component: resolve => require(['../components/page/space/VueEditor.vue'], resolve)    // Vue-Quill-Editor组件
-                },
-                {
-                    path: '/markdown',
-                    component: resolve => require(['../components/page/space/Markdown.vue'], resolve)     // Vue-Quill-Editor组件
-                },
-                {
-                    path: '/upload',
-                    component: resolve => require(['../components/page/space/Upload.vue'], resolve)       // Vue-Core-Image-Upload组件
-                },
-                {
-                    path: '/basecharts',
-                    component: resolve => require(['../components/page/space/BaseCharts.vue'], resolve)   // vue-schart组件
-                },
-                {
-                    path: '/drag',
-                    component: resolve => require(['../components/page/space/DragList.vue'], resolve)    // 拖拽列表组件
-                },
-                {
                     path:'/adTable',
                     component:resolve => require(['../components/page/space/administratorTable.vue'],resolve)
                 },
@@ -110,22 +82,6 @@ export default new Router({
         {
             path:'/annotation/classified',
             component:resolve => require(['src/components/page/annotation/classifiedAnnotation.vue'],resolve)
-        },
-        {
-            path:'/annotation/rate/classified',
-            component:resolve => require(['src/components/page/rate/classifiedAnnotationRate.vue'],resolve)
-        },
-        {
-            path: '/annotation/rate/all',
-            component:resolve => require(['src/components/page/rate/allAnnotationRate.vue'],resolve)
-        },
-        {
-            path:'/annotation/rate/rect',
-            component:resolve => require(['src/components/page/rate/rectAnnotationRate.vue'],resolve)
-        },
-        {
-            path:'/annotation/rate/region',
-            component:resolve => require(['src/components/page/rate/regionAnnotationRate.vue'],resolve)
         },
         {
             path:'/guide',

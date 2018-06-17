@@ -214,8 +214,8 @@ export default {
                     mydata = response.data.data;
                     var i = 0;
                     for(i = 0;i < mydata.length;++i){
-                        mydata[i].endDate = new Date(mydata[i].endDate).Format("yyyy-MM-dd hh:mm:ss");
-                        mydata[i].beginDate =new Date(mydata[i].beginDate).Format("yyyy-MM-dd hh:mm:ss");
+                        mydata[i].endDate = new Date(mydata[i].endDate).Format("yyyy-MM-dd");
+                        mydata[i].beginDate =new Date(mydata[i].beginDate).Format("yyyy-MM-dd");
                     }
                     this.tableData = mydata;
                 }).catch(err => {
@@ -228,8 +228,8 @@ export default {
                     mydata = response.data.data;
                     var i = 0;
                     for(i = 0;i < mydata.length;++i){
-                        mydata[i].endDate = new Date(mydata[i].endDate).Format("yyyy-MM-dd hh:mm:ss");
-                        mydata[i].beginDate =new Date(mydata[i].beginDate).Format("yyyy-MM-dd hh:mm:ss");
+                        mydata[i].endDate = new Date(mydata[i].endDate).Format("yyyy-MM-dd");
+                        mydata[i].beginDate =new Date(mydata[i].beginDate).Format("yyyy-MM-dd");
                     }
                     this.tableData = mydata;
                 }).catch(err => {
@@ -245,8 +245,8 @@ export default {
                 var mydata = response.data.data;
                 var i = 0;
                 for(i = 0;i < mydata.length;++i){
-                    mydata[i].endDate = new Date(mydata[i].endDate).Format("yyyy-MM-dd hh:mm:ss");
-                    mydata[i].beginDate =new Date(mydata[i].beginDate).Format("yyyy-MM-dd hh:mm:ss")
+                    mydata[i].endDate = new Date(mydata[i].endDate).Format("yyyy-MM-dd");
+                    mydata[i].beginDate =new Date(mydata[i].beginDate).Format("yyyy-MM-dd")
                 }
                 this.tableData = mydata
             }).catch(err => {

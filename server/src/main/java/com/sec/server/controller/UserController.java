@@ -102,7 +102,6 @@ public class UserController {
         String accessKey = "j0dwMMGFcKPhncC7vb_PWXshbpiSMEWB69NiKhn4";
         String secretKey = "2vWVIw3WJfk314YN3e24ZnixdJMbyoZ14FXiqF--";
         String token = CreateToken.uploadToken(bucket, accessKey, secretKey);
-        System.out.println(token);
         return ResultUtils.success(token);
     }
 

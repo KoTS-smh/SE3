@@ -17,5 +17,7 @@ public interface AnnotationService {
 
     void deleteAll(long taskOrderId);
 
+    void deleteAnnotation(long taskOrderId, int pictureNum);
+
     HashMap<String,Integer> getTags(long taskId, int pictureNum);
 }

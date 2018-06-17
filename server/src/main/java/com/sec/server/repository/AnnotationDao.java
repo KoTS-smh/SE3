@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface AnnotationDao {
 
-    @Insert("insert into mrgsdb.annotation(taskOrderId, pictureNum, sentence, coordinates) VALUES " +
-            "(#{taskOrderId},#{pictureNum},#{sentence},#{coordinates})")
+    @Insert("insert into mrgsdb.annotation(taskOrderId, pictureNum, sentence, coordinates,words) VALUES " +
+            "(#{taskOrderId},#{pictureNum},#{sentence},#{coordinates},#{words})")
     void addAnnotation(Annotation annotation);
 
     @Delete("delete from mrgsdb.annotation where taskOrderId = #{taskOrderId} and pictureNum = #{pictureNum}")
@@ -20,7 +20,7 @@ public interface AnnotationDao {
     @Delete("delete from mrgsdb.annotation where taskOrderId = #{taskOrderId}")
     void deleteAllAnnotation(@Param("taskOrderId") long taskOrderId);
 
-    @Update("update mrgsdb.annotation set sentence = #{sentence},coordinates = #{coordinates} " +
+    @Update("update mrgsdb.annotation set sentence = #{sentence},coordinates = #{coordinates},words = #{words} " +
             "where taskOrderId = #{taskOrderId} and pictureNum = #{pictureNum}")
     void updateAnnotation(Annotation annotation);
 

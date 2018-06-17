@@ -1,5 +1,8 @@
 package com.sec.server.service.serviceImpl;
 
+import com.sec.server.enums.TaskState;
+import com.sec.server.exception.ResultException;
+import com.sec.server.repository.AppointDao;
 import com.sec.server.enums.AnnotationType;
 import com.sec.server.repository.TaskDao;
 import com.sec.server.repository.TaskOrderDao;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service(value = "taskOrderService")
@@ -21,6 +25,8 @@ public class TaskOrderServiceImpl implements TaskOrderService {
     private TaskOrderDao taskOrderDao;
     @Autowired
     private TaskDao taskDao;
+    @Autowired
+    private AppointDao appointDao;
 
     /**
      * 通过Id获取任务订单
@@ -61,9 +67,9 @@ public class TaskOrderServiceImpl implements TaskOrderService {
     @Override
     public void createTaskOrder(TaskOrder taskOrder) {
         Task task = taskDao.getTask(taskOrder.getTaskId());
-        taskOrder.setBeginDate(task.getBeginDate());
-        taskOrder.setEndDate(task.getEndDate());
-        taskOrder.setSubmited(TaskOrderState.appoint);
+        taskOrder.setBeginDate(new Date());
+        //taskOrder.setEndDate(task.getEndDate());
+        taskOrder.setSubmited(TaskOrderState.unSubmitted);
         taskOrderDao.insertTaskOrder(taskOrder);
     }
 
@@ -111,5 +117,25 @@ public class TaskOrderServiceImpl implements TaskOrderService {
         return num;
     }
 
+
+    @Override
+    public void appointTask(long taskId, long userId) {
+        Task task = taskDao.getTask(taskId);
+        if(task.getState()==TaskState.finish){
+            throw new ResultException("任务已经结束了！",13333);
+        }
+        if(taskOrderDao.getAcceptNum(taskId)<task.getMaxParticipator()&&task.getState()==TaskState.ongoing){
+            TaskOrder taskOrder = new TaskOrder();
+            taskOrder.setLastPic(1);
+            taskOrder.setTaskId(taskId);
+            taskOrder.setAcceptUserId(userId);
+            taskOrder.setBeginDate(new Date());
+            taskOrder.setFinishedPics(0);
+            taskOrder.setSubmited(TaskOrderState.unSubmitted);
+            taskOrderDao.insertTaskOrder(taskOrder);
+        }else{
+            appointDao.insertAppointMessage(taskId,userId);
+        }
+    }
 
 }

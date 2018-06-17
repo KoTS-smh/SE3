@@ -97,9 +97,9 @@ import VCharts from 'v-charts'
         },
 
         mounted() {
-            var username = localStorage.getItem('username')
+            var username = localStorage.getItem('username');
             if(username != null && username.length > 0) {
-                
+
             }else {
                 this.$message('请先登陆');
                 this.$router.push('login');
@@ -110,10 +110,10 @@ import VCharts from 'v-charts'
 
         },
         beforeMount() {
-            
+
         }
     }
-    
+
 </script>
 
 <style scoped>

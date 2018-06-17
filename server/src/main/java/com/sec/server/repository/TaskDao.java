@@ -179,7 +179,6 @@ public interface TaskDao {
     @Select("select count(*) from MRGSDB.task where annotationType = 0")
     int getNumOfRecTask();
 
-
     /**
      * @return 分类标注任务数量
      */

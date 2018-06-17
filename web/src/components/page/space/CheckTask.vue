@@ -9,18 +9,16 @@
         </el-menu>
         </el-header>
         <el-row>
-        <el-col :span="8" class="taskInfos" style="border-right: gainsboro solid 1px"><div class="grid-content bg-purple">
+        <el-col :span="6" class="taskInfos" style="border-right: gainsboro solid 1px">
+            <div style="width: 90%;background-color: gainsboro;height: 40px;margin-top: 10px;margin-left: 5%;text-align:center">
+                <p style="color: #20a0ff;">基础信息</p>
+            </div>
+            <div class="grid-content bg-purple">
             <el-form :model="taskData" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="任务编号" class="formItems">
-                    <el-input v-model="taskData.taskId" readonly></el-input>
-                </el-form-item>
                 <el-form-item label="任务名称" class="formItems">
                     <el-input v-model="taskData.taskname" readonly></el-input>
                 </el-form-item>
-                <el-form-item label="发起人编号" class="formItems">
-                    <el-input v-model="taskData.sponsorId" readonly></el-input>
-                </el-form-item>
-                <el-form-item label="发起时间" class="formItems">
+                <el-form-item label="开始时间" class="formItems">
                     <el-input v-model="taskData.beginDate" readonly></el-input>
                 </el-form-item>
                 <el-form-item label="截止时间" class="formItems">
@@ -29,13 +27,10 @@
                 <el-form-item label="标注类型" class="formItems">
                     <el-input v-model="taskData.tagType" readonly></el-input>
                 </el-form-item>
-                <el-form-item label="任务级别" class="formItems">
-                    <el-input v-model="taskData.taskLevel" readonly></el-input>
-                </el-form-item>
-                <el-form-item label="奖励积分" class="formItems">
+                <el-form-item label="完成积分" class="formItems">
                     <el-input v-model="taskData.totalPoint" readonly></el-input>
                 </el-form-item>
-                <el-form-item label="奖励金钱" class="formItems">
+                <el-form-item label="完成报酬" class="formItems">
                     <el-input v-model="taskData.reward + ' ¥'" readonly></el-input>
                 </el-form-item>
                 <el-form-item v-if="taskData.upRate != null" label="奖励增幅" class="formItems">
@@ -43,21 +38,35 @@
                 </el-form-item>
             </el-form>
         </div>
-            <div v-show="showAccept">
-            <el-row >
-                <el-button type="primary" class="choiceBtn" @click="acceptTask()">接受任务</el-button>
-                <el-button type="success" class="choiceBtn" @click="startAnno()">开始标注</el-button>
-                <el-button type="info" class="choiceBtn" @click="leave()">返&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;回</el-button>
-
-            </el-row>
-            </div>
-            <div v-show="showInfo">
-            <el-row>
-                <el-button type="primary" class="choiceBtn" @click="toTaskInfo()">查看任务进度</el-button>
-            </el-row>
-            </div>
         </el-col>
-        <el-col :span="16">
+            <el-col :span="8" style="border-right: gainsboro solid 1px">
+                <div style="width: 90%;background-color: gainsboro;height: 40px;margin-top: 10px;margin-left: 5%;text-align:center">
+                    <p style="color: #20a0ff">任务状态{{taskState}}</p>
+                </div>
+                <p style="margin-top: 6%;margin-left: 10%">目标标注人数： {{targetNum}}</p>
+                <p style="margin-top: 6%;margin-left: 10%">预约中人数： {{appointNum}}</p>
+                <p style="margin-top: 6%;margin-left: 10%">标注中人数： {{annoNum}}</p>
+                <p style="margin-top: 5%;margin-left: 10%;font-size: small;color: #73ccff">
+                    注：当任务开始时，系统会挑选最合适的人参与任务。
+                    <br><br>
+                    没被选中也没关系，任务进行中也有机会参与标注。
+                    <br><br>
+                    注意系统消息提示，不要错过了标注哦。
+                </p>
+                <div v-show="showAccept" style="margin-top: 8%">
+                    <el-row>
+                        <el-button type="primary" class="choiceBtn" @click="acceptTask()">接受任务</el-button>
+                        <el-button type="success" class="choiceBtn" @click="startAnno()">开始标注</el-button>
+                        <el-button type="info" class="choiceBtn" @click="leave()">返&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;回</el-button>
+                    </el-row>
+                </div>
+                <div v-show="showInfo" style="margin-top: 8%">
+                    <el-row>
+                        <el-button type="primary" class="choiceBtn" @click="toTaskInfo()">查看任务进度</el-button>
+                    </el-row>
+                </div>
+            </el-col>
+        <el-col :span="10">
             <lightbox :images="images">
             </lightbox>
         </el-col>
@@ -130,8 +139,8 @@ export default {
                         this.taskData.tagType = "未定义"
                     }
                     this.taskData.sponsorId = indata.postUserId;
-                    this.taskData.beginDate = (new Date(indata.beginDate)).Format("yyyy-MM-dd hh:mm:ss");
-                    this.taskData.endDate = (new Date(indata.endDate)).Format("yyyy-MM-dd hh:mm:ss");
+                    this.taskData.beginDate = (new Date(indata.beginDate)).Format("yyyy-MM-dd");
+                    this.taskData.endDate = (new Date(indata.endDate)).Format("yyyy-MM-dd");
                     this.taskData.totalPoint = indata.totalPoints;
                     this.taskData.reward = indata.reward;
                     this.taskData.upRate = indata.upRate;
@@ -167,68 +176,32 @@ export default {
                            this.$message.info("任务还未接受！")
                        }else {
                            if(this.taskData.tagType == '标框标注'){
-                               if(!submited) {
                                    this.$router.push({
                                        path: "/annotation/rect", query: {
                                            taskOrderId: taskOrderId
                                        }
                                    })
-                               }else {
-                                   this.$router.push({
-                                       path: "/annotation/rate/rect", query: {
-                                           taskOrderId: taskOrderId,
-                                           acceptUserId:localStorage.getItem("userId")
-                                       }
-                                   })
-                               }
                            }
                            else if(this.taskData.tagType == "分类标注"){
-                               if(!submited) {
                                    this.$router.push({
                                        path: "/annotation/classified", query: {
                                            taskOrderId: taskOrderId
                                        }
                                    })
-                               }else {
-                                   this.$router.push({
-                                       path: "/annotation/rate/classified", query: {
-                                           taskOrderId: taskOrderId,
-                                           acceptUserId:localStorage.getItem("userId")
-                                       }
-                                   })
-                               }
                            }
                            else if(this.taskData.tagType == "区域标注"){
-                               if(!submited) {
                                    this.$router.push({
                                        path: "/annotation/region", query: {
                                            taskOrderId: taskOrderId
                                        }
                                    })
-                               }else {
-                                   this.$router.push({
-                                       path: "/annotation/rate/region", query: {
-                                           taskOrderId: taskOrderId,
-                                           acceptUserId:localStorage.getItem("userId")
-                                       }
-                                   })
-                               }
                            }
                            else if(this.taskData.tagType == "整体标注"){
-                               if(!submited) {
                                    this.$router.push({
                                        path: "/annotation/all", query: {
                                            taskOrderId: taskOrderId
                                        }
                                    })
-                               }else {
-                                   this.$router.push({
-                                       path: "/annotation/rate/all", query: {
-                                           taskOrderId: taskOrderId,
-                                           acceptUserId:localStorage.getItem("userId")
-                                       }
-                                   })
-                               }
                            }
                        }
                    }else{

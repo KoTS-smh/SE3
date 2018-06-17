@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.regex.Pattern;
 
-
 @Service(   "annotationService")
 public class AnnotationServiceImpl implements AnnotationService {
     @Autowired
@@ -73,11 +72,24 @@ public class AnnotationServiceImpl implements AnnotationService {
     }
 
     @Override
+    public void deleteAnnotation(long taskOrderId, int pictureNum) {
+        try {
+            annotationDao.deleteOneAnnotation(taskOrderId,pictureNum);
+        }catch (Exception e){
+            throw new ResultException("已经删除了！",23323);
+        }
+
+    }
+
+    @Override
     public HashMap<String,Integer> getTags(long taskId, int pictureNum) {
         List<TaskOrder> taskOrders =taskOrderDao.getAllTaskOrderOfATask(taskId);
         List<String> sentences = new ArrayList<>();
         for(TaskOrder t:taskOrders){
-            sentences.add(annotationDao.getOne(t.getTaskOrderId(),pictureNum).getWords());
+            Annotation annotation = annotationDao.getOne(t.getTaskOrderId(),pictureNum);
+            if(annotation!=null){
+                sentences.add(annotation.getWords());
+            }
         }
         if(sentences.size()==0){
             return null;
@@ -140,9 +152,8 @@ public class AnnotationServiceImpl implements AnnotationService {
     //词性还原
     private List<String> stemmed(String inputStr) {
         Properties props = new Properties();
-        props.setProperty("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
+        props.setProperty("annotators", "tokenize, ssplit, pos, lemma");//, ner, parse, dcoref");
         StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-
         edu.stanford.nlp.pipeline.Annotation document = new edu.stanford.nlp.pipeline.Annotation(inputStr);
         pipeline.annotate(document);
         List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);

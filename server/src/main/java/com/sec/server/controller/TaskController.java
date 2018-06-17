@@ -1,14 +1,13 @@
 package com.sec.server.controller;
 
 import com.sec.server.domain.Task;
-import com.sec.server.model.Picture_CardModel;
 import com.sec.server.model.Recommend_CardModel;
 import com.sec.server.model.TaskModel;
 import com.sec.server.model.UserModel;
+import com.sec.server.service.DataAnalysisService;
 import com.sec.server.service.TaskService;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
-import org.json.JSONArray;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,10 +18,10 @@ import java.util.List;
 
 @RestController
 public class TaskController {
-//    @Resource(name = "taskService")
-//    private TaskService taskService;
     @Resource(name = "taskService")
     private TaskService taskService;
+    @Resource(name = "dataAnalysisService")
+    private DataAnalysisService dataAnalysisService;
 
     /**
      * 获得用户发起的所有任务
@@ -31,8 +30,6 @@ public class TaskController {
      */
     @RequestMapping("/task/getAllPost")
     public Result getAllPostTask(@RequestBody UserModel userModel){
-//        long userId = userModel.getAcceptUserId();
-//        List<Task> list = taskService.getAllPost(userId);
         long postUserId = userModel.getUserId();
         List<Task> list = taskService.getAllPostTask(postUserId);
         return ResultUtils.success(list);
@@ -120,6 +117,15 @@ public class TaskController {
             modelList.add(model);
         }
         return ResultUtils.success(modelList);
+    }
+
+    @RequestMapping("/task/getReward")
+    public Result getMinReward(@RequestBody TaskModel taskModel){
+        System.out.println(taskModel.getAnnotationType());
+        System.out.println(taskModel.getBeginDate());
+        System.out.println(taskModel.getReward());
+        double reward = dataAnalysisService.calculateMinimumMoneyOfTask(new Task(taskModel));
+        return ResultUtils.success(reward);
     }
 
 }

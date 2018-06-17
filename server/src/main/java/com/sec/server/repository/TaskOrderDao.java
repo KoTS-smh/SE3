@@ -1,6 +1,5 @@
 package com.sec.server.repository;
 
-import com.sec.server.domain.Task;
 import com.sec.server.domain.TaskOrder;
 import com.sec.server.enums.AnnotationType;
 import com.sec.server.enums.TaskOrderState;
@@ -29,7 +28,7 @@ public interface TaskOrderDao {
      * @return 任务订单 taskOrder
      */
     @Select("select * from MRGSDB.taskOrder where taskOrderId = #{taskOrderId}")
-    TaskOrder getTaskOrder(long taskOrderId);
+    TaskOrder getTaskOrder(@Param("taskOrderId") long taskOrderId);
 
     /**
      * 获取一个工人所有的任务订单
@@ -37,7 +36,7 @@ public interface TaskOrderDao {
      * @return 任务订单列表 list
      */
     @Select("select * from MRGSDB.taskOrder where acceptUserId = #{acceptUserId}")
-    List<TaskOrder> getAllTaskOrder(long acceptUserId);
+    List<TaskOrder> getAllTaskOrder(@Param("acceptUserId") long acceptUserId);
 
     /**
      * 获取一个工人一个标注类型中所有完成的任务订单
@@ -50,12 +49,12 @@ public interface TaskOrderDao {
     List<TaskOrder> getAllFinishedTaskOrderOfAType(@Param("acceptUserId") long acceptUserId,@Param("type") AnnotationType type);
 
     /**
-     * 获取一个工人所有提交的任务订单(已经完成)
+     * 获取一个工人所有提交的任务订单
      * @param acceptUserId 工人Id
      * @return 已提交的任务订单列表 list
      */
-    @Select("select * from MRGSDB.taskOrder where acceptUserId = #{acceptUserId} and submited = 2")
-    List<TaskOrder> getAllSubmited(long acceptUserId);
+    @Select("select * from MRGSDB.taskOrder where acceptUserId = #{acceptUserId} and submited = 0")
+    List<TaskOrder> getAllSubmited(@Param("acceptUserId") long acceptUserId);
 
     /**
      * 获取一个工人所有正在进行的任务订单
@@ -86,7 +85,7 @@ public interface TaskOrderDao {
      * @param taskOrderId 任务订单Id
      */
     @Delete("delete from MRGSDB.taskOrder where taskOrderId = #{taskOrderId}")
-    void deleteTaskOrder(long taskOrderId);
+    void deleteTaskOrder(@Param("taskOrderId") long taskOrderId);
 
     /**
      * 删除预约工人的订单
@@ -101,7 +100,7 @@ public interface TaskOrderDao {
      * @return 工人Id列表 list
      */
     @Select("select acceptUserId from MRGSDB.taskOrder where taskId = #{taskId}")
-    List<Long> getAcceptUserIds(long taskId);
+    List<Long> getAcceptUserIds(@Param("taskId") long taskId);
 
     /**
      * 获取接取一个任务的工人数目
@@ -109,15 +108,15 @@ public interface TaskOrderDao {
      * @return 工人数目 number
      */
     @Select("select count(*) from MRGSDB.taskOrder where taskId = #{taskId}")
-    int getAcceptNum(long taskId);
+    int getAcceptNum(@Param("taskId") long taskId);
 
     /**
      * 获取一个任务所有的任务订单
      * @param taskId 任务Id
      * @return 任务订单列表 list
      */
-    @Select("select * from MRGSDB.taskOrder where taskId = # {taskId} and state != 2 ")
-    List<TaskOrder> getAllTaskOrderOfATask(long taskId);
+    @Select("select * from MRGSDB.taskOrder where taskId = #{taskId} and submited <> 2 ")
+    List<TaskOrder> getAllTaskOrderOfATask(@Param("taskId") long taskId);
 
     /**
      * 获得工人接受的所有任务
@@ -125,7 +124,7 @@ public interface TaskOrderDao {
      * @return 任务列表 list
      */
     @Select("select taskId from MRGSDB.taskOrder where acceptUserId = #{acceptUserId}")
-    List<Long> getAcceptedTasks(long acceptUserId);
+    List<Long> getAcceptedTasks(@Param("acceptUserId") long acceptUserId);
 
     /**
      * 更改任务订单状态

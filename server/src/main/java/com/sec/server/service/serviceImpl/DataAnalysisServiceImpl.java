@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-@Service(value = "dataAnalysisService")
+@Service("dataAnalysisService")
 public class DataAnalysisServiceImpl implements DataAnalysisService {
 
     @Autowired
@@ -56,13 +56,16 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
     public double calculateMinimumMoneyOfTask(Task task){
 
         //工人数量  权重：0.101
-        double workerNumber = 0;
+        double workerNumber = task.getMaxParticipator();
         //时间      权重：0.048
         double time = 0;
         //标注类型  权重：0.208
         double type = 0;
         //图片数量  权重：0.643
-        double pictureNumber = 0;
+        double pictureNumber = task.getImgUrls().size();
+
+        long difference = (task.getEndDate().getTime()-task.getBeginDate().getTime())/86400000;
+        time = Math.abs(difference);
 
         switch (task.getAnnotationType()){
             case option1:

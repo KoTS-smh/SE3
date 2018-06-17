@@ -24,7 +24,6 @@ public class TaskOrderController {
     /**
      * 获取一个任务订单
      * @param taskOrderId 任务订单ID
-     * @param userId 工人ID
      * @return 任务订单详细信息
      */
     @RequestMapping("/taskOrder/orderInfo")
@@ -90,5 +89,10 @@ public class TaskOrderController {
         return ResultUtils.success(list);
     }
 
+    @RequestMapping("/taskOrder/appoint")
+    public Result appointTask(long taskId,long userId){
+        taskOrderService.appointTask(taskId,userId);
+        return ResultUtils.success();
+    }
 
 }

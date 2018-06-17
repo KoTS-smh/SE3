@@ -18,7 +18,6 @@ public class CreateToken {
         }catch (Exception e){
             e.printStackTrace();
         }
-        System.out.println(token);
         return token;
     }
 

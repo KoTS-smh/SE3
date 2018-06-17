@@ -66,8 +66,8 @@ public class Task {
             this.classifiedInfo = StringList2String.join(",", taskModel.getClassifiedInfo());
         }
         try {
-            this.beginDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(taskModel.getBeginDate());
-            this.endDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(taskModel.getEndDate());
+            this.beginDate = new SimpleDateFormat("yyyy-MM-dd").parse(taskModel.getBeginDate());
+            this.endDate = new SimpleDateFormat("yyyy-MM-dd").parse(taskModel.getEndDate());
         } catch (ParseException e) {
             e.printStackTrace();
             throw new ResultException("时间格式错误", 12120);
