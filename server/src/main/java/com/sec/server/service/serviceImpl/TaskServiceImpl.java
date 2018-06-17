@@ -305,6 +305,19 @@ public class TaskServiceImpl implements TaskService {
         message.setRead(false);
         messageDao.insertMessage(message);
 
+        //获得任务等待列表
+        List<Long> waitingList = appointDao.getAppointUser(taskId);
+        //通知工人们任务已经结束，删除数据库中等待信息
+        for(Long aUser:waitingList){
+            appointDao.deleteAppointMessage(taskId,aUser);
+            Message message1 = new Message();
+            message1.setUserId(aUser);
+            message1.setMessageInfo("您等待的任务已经成功结束，感谢您的等待。任务名称："+task.getTaskname());
+            message1.setTitle("任务通知");
+            message1.setRead(false);
+            messageDao.insertMessage(message1);
+        }
+
         //获取所有的工人任务
         TaskOrder taskOrder;
         List<TaskOrder> list = taskOrderDao.getAllTaskOrderOfATask(taskId);
