@@ -3,6 +3,7 @@ package com.sec.server.repository;
 import com.sec.server.domain.Task;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -202,4 +203,18 @@ public interface TaskDao {
      */
     @Select("select count(*) from MRGSDB.task")
     int getNumOfAllTask();
+
+    /**
+     * 获取所有预约中未开始的任务
+     * @return 预约中未开始的任务列表 list
+     */
+    @Select("select * from MRGSDB.task where state = 4")
+    List<Task> getAllAppointTask();
+
+    /**
+     * 获取所有进行中未结算的任务
+     * @return 进行中未结算的任务列表 list
+     */
+    @Select("select * from MRGSDB.task where state = 2")
+    List<Task> getAllOngoingTask();
 }

@@ -25,7 +25,7 @@
                 </el-form>
                 <!--注册按钮-->
                 <div class="register-btn">
-                    <el-button icon="icon-person_add" :model="r-button" type="primary" @click="register()" style="width: 100%">  注册</el-button>
+                    <el-button icon="icon-person_add" type="primary" @click="register()" style="width: 100%">  注册</el-button>
                 </div>
                 <!--取消按钮-->
                 <div class="cancel-btn">
@@ -114,11 +114,16 @@ import axios from 'axios'
                 else{
                     axios.post('http://localhost:8080/user/register', this.ruleForm).then(function(response){
                         console.log(response);
-                        self.success();
-                        self.sleep(1000).then(() => {
-                            self.$router.push('/login')
-                        });
-
+                        if(response.data.code==11001) {
+                            self.failed();
+                            self.$message('用户名已经被注册')
+                        }
+                        else {
+                            self.success();
+                            self.sleep(1000).then(() => {
+                                self.$router.push('/login')
+                            });
+                        }
                     }).catch(function(err){
                         console.log(err);
                         self.failed();

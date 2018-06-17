@@ -21,10 +21,11 @@ import javax.annotation.Resource;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collections;
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
-@Service("dataAnalysisService")
+@Service(value="dataAnalysisService")
 public class DataAnalysisServiceImpl implements DataAnalysisService {
 
     @Autowired

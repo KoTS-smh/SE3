@@ -3,6 +3,7 @@ package com.sec.server.service.serviceImpl;
 import com.sec.server.domain.HonorMessage;
 import com.sec.server.domain.Message;
 import com.sec.server.model.PersonalTaskNumModel;
+import com.sec.server.repository.HonorDao;
 import com.sec.server.repository.MessageDao;
 import com.sec.server.repository.TaskOrderDao;
 import com.sec.server.repository.UserDao;
@@ -32,6 +33,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private MessageDao messageDao;
+
+    @Autowired
+    private HonorDao honorDao;
 
     @Autowired
     private TaskOrderDao taskOrderDao;
@@ -69,9 +73,21 @@ public class UserServiceImpl implements UserService {
     /**
      * 注册新用户
      * @param userModel 用户信息
+     * @return false:   用户名已经被注册过
+     *          true:    注册成功
      */
     @Override
-    public void register(UserModel userModel) {
+    public boolean register(UserModel userModel) {
+        User judge = userDao.getUser(userModel.getUsername());
+        if(judge!=null)
+            return false;
+        else {
+            User user = new User(userModel);
+            user.setUserLevel(UserLevel.LEVEL1);
+            user.setPoint(0);
+            user.setBalance(0);
+            userDao.insertUser(user);
+        }
         User user = new User(userModel);
         user.setUserLevel(UserLevel.LEVEL1);
         user.setPoint(70);
@@ -79,11 +95,12 @@ public class UserServiceImpl implements UserService {
 
         userDao.insertUser(user);
             //新建荣誉信息
-            honorService.createHonorMessage(user.getUserId());
+            honorDao.insertUserHonor(user.getUserId());
             //提示完善个人信息
-        Message message = new Message(user.getUserId(), "请您早日完善个人信息", "提示通知");
-        message.setRead(false);
-        messageDao.insertMessage(message);
+            Message message = new Message(user.getUserId(), "请您早日完善个人信息", "提示通知");
+            message.setRead(false);
+            messageDao.insertMessage(message);
+            return true;
 
     }
 

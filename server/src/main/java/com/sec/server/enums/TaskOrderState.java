@@ -10,5 +10,7 @@ public enum TaskOrderState {
     //完成状态      发布者审批通过
     finish,
     //预约状态      等待预约结果中
-    appoint
+    appoint,
+    //等待状态      等待被加入工作
+    waiting
 }

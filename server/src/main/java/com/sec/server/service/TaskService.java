@@ -63,6 +63,13 @@ public interface TaskService {
     TaskModel getTask(long taskId);
 
     /**
+     * 获取任务当前工作人数
+     * @param taskId 任务Id
+     * @return 当前工作人数
+     */
+    int getWorkerNumber(long taskId);
+
+    /**
      * 任务激励方法
      */
     void checkTaskEveryDay();
@@ -80,7 +87,7 @@ public interface TaskService {
     /**
      *  每到十二点就运行一次这个方法判断有没有任务到了DDL todo
      */
-    void endTask();
+    void timeTask();
 
 
 

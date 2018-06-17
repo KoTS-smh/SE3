@@ -13,7 +13,8 @@ public enum ResultCode {
     PARAMETER_ERROR(10101, "参数错误"),
     TASK_NOT_FOUND(10110, "任务不存在"),
     NO_IMAGE_ERROR(10111, "任务中无图片"),
-    TASK_ALREADY_ACCEPT(11000, "任务已经被接取");
+    TASK_ALREADY_ACCEPT(11000, "任务已经被接取"),
+    USERNAME_EXIST_ERROR(11001,"用户名已被注册");
 
     private int code;
     private String msg;

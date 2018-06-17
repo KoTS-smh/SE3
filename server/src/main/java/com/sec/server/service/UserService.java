@@ -7,7 +7,7 @@ import com.sec.server.model.UserModel;
 public interface UserService {
      User login(String username, String password);
 
-     void register(UserModel userModel);
+     boolean register(UserModel userModel);
 
      User getUserById(long userId);
 

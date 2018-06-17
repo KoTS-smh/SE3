@@ -5,13 +5,9 @@ import com.sec.server.domain.Message;
 import com.sec.server.domain.Task;
 import com.sec.server.domain.TaskOrder;
 import com.sec.server.enums.AnnotationType;
-import com.sec.server.repository.AppointDao;
-import com.sec.server.repository.HonorDao;
-import com.sec.server.repository.TaskDao;
+import com.sec.server.enums.TaskState;
+import com.sec.server.repository.*;
 import com.sec.server.service.AppointService;
-import com.sec.server.service.MessageService;
-import com.sec.server.service.TaskOrderService;
-import com.sec.server.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +23,10 @@ public class AppointServiceImpl implements AppointService {
     private TaskDao taskDao;
     @Autowired
     private HonorDao honorDao;
-
-    private TaskOrderService taskOrderService;
-    private MessageService messageService;
+    @Autowired
+    private TaskOrderDao taskOrderDao;
+    @Autowired
+    private MessageDao messageDao;
 
     /**
      * 预约任务
@@ -80,7 +77,8 @@ public class AppointServiceImpl implements AppointService {
                 messageToWaitingList.setUserId(userList.get(i));
                 messageToWaitingList.setMessageInfo("您已经被加入等待列表，请耐心等待替换或者预约新的任务。任务名称："+task.getTaskname());
                 messageToWaitingList.setTitle("任务通知");
-                messageService.addMessage(messageToWaitingList);
+                messageToAppointSuccess.setRead(false);
+                messageDao.insertMessage(messageToWaitingList);
             }
         }
 
@@ -95,13 +93,18 @@ public class AppointServiceImpl implements AppointService {
             taskOrder.setAcceptUserId(userId);
             taskOrder.setBeginDate(task.getBeginDate());
             taskOrder.setEndDate(task.getEndDate());
-            taskOrderService.createTaskOrder(taskOrder);
+            taskOrderDao.insertTaskOrder(taskOrder);
             //通知工人任务开始
             messageToAppointSuccess.setUserId(userId);
             messageToAppointSuccess.setMessageInfo("您已经成功预约任务，祝您完成任务顺利。任务名称："+task.getTaskname());
             messageToAppointSuccess.setTitle("任务通知");
-            messageService.addMessage(messageToAppointSuccess);
+            messageToAppointSuccess.setRead(false);
+            messageDao.insertMessage(messageToAppointSuccess);
         }
+
+        //修改任务状态
+        task.setState(TaskState.ongoing);
+        taskDao.updateTask(task);
 
     }
 

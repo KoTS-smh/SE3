@@ -6,6 +6,7 @@ import com.sec.server.enums.*;
 import com.sec.server.exception.ResultException;
 import com.sec.server.model.Picture_CardModel;
 import com.sec.server.model.TaskModel;
+import com.sec.server.service.AppointService;
 import com.sec.server.service.DataAnalysisService;
 import com.sec.server.service.MessageService;
 import com.sec.server.service.TaskService;
@@ -16,6 +17,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -34,15 +37,13 @@ public class TaskServiceImpl implements TaskService {
     private UserDao userDao;
 
     @Autowired
-    private HonorDao honorDao;
+    private MessageDao messageDao;
 
-    @Autowired
-    private WaitingDao waitingDao;
-
-    @Autowired
-    private MessageService messageService;
-
+    @Resource(name = "dataAnalysisService")
     private DataAnalysisService dataAnalysisService;
+
+    @Resource(name = "appointService")
+    private AppointService appointService;
 
     /**
      * 创建任务
@@ -142,6 +143,11 @@ public class TaskServiceImpl implements TaskService {
         TaskModel taskModel = new TaskModel(task);
         taskModel.setAcceptUserIds(acceptUserList);
         return taskModel;
+    }
+
+    @Override
+    public int getWorkerNumber(long taskId) {
+        return taskOrderDao.getAcceptNum(taskId);
     }
 
     @Override
@@ -287,7 +293,8 @@ public class TaskServiceImpl implements TaskService {
         message.setUserId(task.getPostUserId());
         message.setMessageInfo("您的任务已经成功结束。任务名称："+task.getTaskname());
         message.setTitle("任务通知");
-        messageService.addMessage(message);
+        message.setRead(false);
+        messageDao.insertMessage(message);
 
         //获取所有的工人任务
         TaskOrder taskOrder;
@@ -306,9 +313,11 @@ public class TaskServiceImpl implements TaskService {
                     taskOrderDao.updateTaskOrder(taskOrder);
                     //通知工人通过
                     Message messageToWorker = new Message();
+                    messageToWorker.setRead(false);
+                    messageToWorker.setUserId(aList.getAcceptUserId());
                     messageToWorker.setMessageInfo("您的任务订单成功完成。任务名称："+task.getTaskname());
                     messageToWorker.setTitle("任务通知");
-                    messageService.addMessage(messageToWorker);
+                    messageDao.insertMessage(messageToWorker);
                     //结算佣金
                     dataAnalysisService.modifyCurrency(task.getReward(),taskOrder.getAcceptUserId());
                     //计算得分
@@ -321,7 +330,9 @@ public class TaskServiceImpl implements TaskService {
                     messageToFailWorker.setUserId(aList.getAcceptUserId());
                     messageToFailWorker.setMessageInfo("您没有通过检查点的审批，感谢您曾经为此任务做出的贡献。"+"任务名称："+task.getTaskname());
                     messageToFailWorker.setTitle("任务通知");
-                    messageService.addMessage(messageToFailWorker);
+                    messageToFailWorker.setUserId(aList.getAcceptUserId());
+                    messageToFailWorker.setRead(false);
+                    messageDao.insertMessage(messageToFailWorker);
                     //计算得分 todo
                     break;
                 default:
@@ -336,31 +347,48 @@ public class TaskServiceImpl implements TaskService {
     }
 
     /**
-     * 系统定时检查任务DDL方法
+     * 系统定时检查是否有任务需要开始任务或者结算任务
      * @describe 每天零点调用一次
      */
     @Override
-    @Scheduled(cron = "0 0 0 * * ?")
-    public void endTask() {
-        //获取所有未完成的任务
-        List<Task> list = taskDao.getEveryUnFinishedTask();
-
+    @Scheduled(cron = "0 48 16 * * ?")
+    public void timeTask() {
+        System.out.println("success");
+        //获取所有预约中未开始的任务
+        List<Task> appointTaskList = taskDao.getAllAppointTask();
+        //获取所有进行中未结算的任务
+        List<Task> ongoingTaskList = taskDao.getAllOngoingTask();
         //获取当前时间
-        Date ddl = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String nowtime = format.format(ddl);
-        Calendar calendar1 = Calendar.getInstance();
-        calendar1.setTime(ddl);
-        Calendar calendar2 = Calendar.getInstance();
+        Date nowTime = new Date();
+        Date compareTime;
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        //判断任务是否到达DDL
-        for (Task aList : list) {
-            calendar2.setTime(aList.getEndDate());
-            if (calendar1.getTime().equals(calendar2.getTime())) {
-                //到达DDL则结算任务
-                finishTask(aList.getTaskId());
+        try {
+            nowTime = df.parse(df.format(new Date()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        //判断是否到达时间需要预约开始
+        for(Task aTask:appointTaskList){
+            compareTime = aTask.getBeginDate();
+            //如果当前时间超过开始时间
+            if(compareTime.getTime()<=nowTime.getTime()){
+                //开始任务
+                appointService.endAppointment(aTask.getTaskId());
             }
         }
+
+        //判断是否到达时间需要任务结算
+        for(Task aTask:ongoingTaskList){
+            compareTime = aTask.getEndDate();
+            //如果当前时间超过结束时间
+            if(compareTime.getTime()<=nowTime.getTime()){
+                //结算任务
+                finishTask(aTask.getTaskId());
+            }
+        }
+
     }
 
     @Override

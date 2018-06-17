@@ -9,20 +9,24 @@
         <div class="handle-box">
             <el-select v-model="select_cate" placeholder="筛选任务" class="handle-select mr10" @change="handleChange()">
                 <el-option key="1" label="已完成" value="已完成"></el-option>
-                <el-option key="2" label="未完成" value="未完成"></el-option>
-                <el-option key="3" label="草稿" value="草稿"></el-option>
+                <el-option key="2" label="进行中" value="进行中"></el-option>
+                <el-option key="3" label="预约中" value="预约中"></el-option>
+                <el-option key="4" label="等待中" value="等待中"></el-option>
+                <el-option key="5" label="已提交" value="已提交"></el-option>
+                <el-option key="6" label="已失败" value="已失败"></el-option>
             </el-select>
             <el-button type="primary"  @click="newTask">接取任务</el-button>
         </div>
         <el-table :data="tableData"  style="width: 100%" ref="multipleTable" @selection-change="handleSelectionChange">
             <el-table-column prop="taskName" label="任务名称" width="140"></el-table-column>
-            <el-table-column prop="taskId" label="任务Id" width="140"></el-table-column>
+            <el-table-column prop="taskId" label="任务Id" width="120"></el-table-column>
             <el-table-column prop="submited" label="任务状态" width="140"></el-table-column>
             <el-table-column prop="degreeOfCompletion" label="完成度" width="140"></el-table-column>
-            <el-table-column prop="endDate" label="截止时间" width="210"></el-table-column>
-            <el-table-column prop="rate" label="评分" width="140"></el-table-column>
+            <el-table-column prop="beginDate" label="开始时间" width="180"></el-table-column>
+            <el-table-column prop="endDate" label="截止时间" width="180"></el-table-column>
+            <el-table-column prop="rate" label="评分" width="120"></el-table-column>
 
-            <el-table-column label="操作" width="200">
+            <el-table-column label="操作" width="160">
                 <template slot-scope="scope">
                     <el-button size="small"
                             @click="handleEdit(scope.$index, scope.row)">详情</el-button>
@@ -35,6 +39,9 @@
             <el-form :model="selectTable">
                 <el-form-item label="任务ID" label-width="100px">
                     <el-input v-model="selectTable.taskId" auto-complete="off" readonly="true"></el-input>
+                </el-form-item>
+                <el-form-item label="开始时间" label-width="100px">
+                    <el-input v-model="selectTable.beginDate" auto-complete="off" readonly="true"></el-input>
                 </el-form-item>
                 <el-form-item label="截止时间" label-width="100px">
                     <el-input v-model="selectTable.endDate" auto-complete="off" readonly="true"></el-input>
@@ -73,7 +80,8 @@
                 newDialogVisible: false,
                 is_search: false,
                 src: '',
-                fileList: []
+                fileList: [],
+                all_task:[],//todo
             }
         },
         computed: {
@@ -167,43 +175,12 @@
             },
             handleChange() {
                 var selection = this.select_cate;
-                var userId = localStorage.getItem("userId");
-                var mydata;
-                if(selection === "已完成"){
-                    axios.post("http://localhost:8080/taskOrder/getAllSubmited", {"userId": userId, "password": ""})
-                    .then(response => {
-                        console.log(response);
-                        mydata = JSON.parse(response.data.data);
-                        var i = 0;
-                        for(i = 0;i < mydata.length;++i){
-                            mydata[i].endDate = this.convertDate(mydata[i].endDate);
-                            mydata[i].beginDate = this.convertDate(mydata[i].beginDate);
-                            var tmprate = mydata[i].rate;
-                            if(tmprate != null && tmprate !== undefined && tmprate !== -1){
-                                //donothing
-                            }else{
-                                mydata[i].rate = '未评分';
-                            }
-                        }
-                        this.tableData = mydata;
-                    })
-                }else if(selection === "未完成"){
-                    axios.post("http://localhost:8080/taskOrder/getAllunSubmited", {"userId": userId, "password": ""})
-                    .then(response => {
-                        mydata = JSON.parse(response.data.data);
-                        var i = 0;
-                        for(i = 0;i < mydata.length;++i){
-                            mydata[i].endDate = this.convertDate(mydata[i].endDate);
-                            mydata[i].beginDate = this.convertDate(mydata[i].beginDate);
-                            var tmprate = mydata[i].rate;
-                            if(tmprate != null && tmprate !== undefined && tmprate !== -1){
-                                //doNothing
-                            }else{
-                                mydata[i].rate = '未评分';
-                            }
-                        }
-                        this.tableData = mydata;
-                    })
+                var mydata = this.all_task;
+                this.tableData = [];
+                var i = 0;
+                for(i = 0;i<mydata.length;++i){
+                    if(mydata[i].submited===selection)
+                        this.tableData.push(mydata[i]);
                 }
             },
             delAll(){
@@ -246,15 +223,31 @@
                 var userId = localStorage.getItem('userId');
                 axios.post('http://localhost:8080/taskOrder/getAll', {"username": username, "password": '', "acceptUserId": userId})
                 .then(response => {
-                    console.log(response);
+                    // console.log(response);
                     for(let j = 0;j < response.data.data.length; j++){
-                        if(response.data.data[j].submited === false){
-                            response.data.data[j].submited = "未提交";
-                        }else{
-                            response.data.data[j].submited = "已提交";
+                        // console.log(response.data.data[j].submited)
+                        switch (response.data.data[j].submited){
+                            case "submitted":
+                                response.data.data[j].submited = "已提交";
+                                break;
+                            case "unSubmitted":
+                                response.data.data[j].submited = "进行中";
+                                break;
+                            case "fail":
+                                response.data.data[j].submited = "已失败";
+                                break;
+                            case "finish":
+                                response.data.data[j].submited = "已完成";
+                                break;
+                            case "appoint":
+                                response.data.data[j].submited = "预约中";
+                                break;
+                            case "waiting":
+                                response.data.data[j].submited = "等待中";
+                                break;
                         }
-
                         response.data.data[j].endDate = this.convertDate(response.data.data[j].endDate);
+                        response.data.data[j].beginDate = this.convertDate(response.data.data[j].beginDate);
                         var tmprate = response.data.data[j].rate;
                         if(tmprate != null && tmprate !== undefined && tmprate !== -1){
                             //donothing
@@ -264,7 +257,7 @@
                     }
                     var list = response.data.data;
                     this.tableData = list;
-
+                    this.all_task = list;//todo
                 }
 
                 ).catch(err => {

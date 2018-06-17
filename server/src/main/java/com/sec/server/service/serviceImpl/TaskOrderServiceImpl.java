@@ -42,12 +42,22 @@ public class TaskOrderServiceImpl implements TaskOrderService {
      * 获取工人所有的任务订单
      * @param userId 工人Id
      * @return 任务订单列表 list
+     * @describe    todo
+     *              需要在这里组装
+     *              传回去的任务订单列表包括：
+     *              1、taskOrder表中已经创建的任务订单
+     *              2、appoint表中预约的任务(如果task还在预约期)
+     *              3、appoint表中等待的任务(如果task不在预约期)
      */
     @Override
     public List<TaskOrderModel> getAllTaskOrder(long userId) {
-        DecimalFormat fmt = new DecimalFormat("##0.0");
-        List<TaskOrder> taskOrderList = taskOrderDao.getAllTaskOrder(userId);
+        //返回的数据
         List<TaskOrderModel> taskOrderModels = new ArrayList<>();
+        //设置完成度为一位小数
+        DecimalFormat fmt = new DecimalFormat("##0.0");
+        //获取taskOrder表中所有任务
+        List<TaskOrder> taskOrderList = taskOrderDao.getAllTaskOrder(userId);
+        //操作taskOrder表的信息
         for(TaskOrder tmp : taskOrderList) {
             TaskOrderModel taskOrderModel = new TaskOrderModel(tmp);
             Task task = taskDao.getTask(tmp.getTaskId());
@@ -57,6 +67,34 @@ public class TaskOrderServiceImpl implements TaskOrderService {
 
             taskOrderModels.add(taskOrderModel);
         }
+        //获取appoint表中的任务
+        List<Long> taskIdList = appointDao.getAppointTask(userId);
+        //创建对应的任务信息
+        for (Long aTaskId:taskIdList) {
+            Task task = taskDao.getTask(aTaskId);
+            TaskOrderModel taskOrderModel = new TaskOrderModel();
+            taskOrderModel.setAcceptUserId(userId);
+            taskOrderModel.setBeginDate(task.getBeginDate());
+            taskOrderModel.setEndDate(task.getEndDate());
+            taskOrderModel.setDegreeOfCompletion("0.0");
+            taskOrderModel.setLastPic(0);
+            taskOrderModel.setRate(0);
+            taskOrderModel.setTaskId(task.getTaskId());
+            taskOrderModel.setTaskName(task.getTaskname());
+            taskOrderModel.setTaskOrderId(0);
+            //判断任务是否已经开始
+            switch (task.getState()){
+                case appoint:
+                    taskOrderModel.setSubmited(TaskOrderState.appoint);
+                    break;
+                case ongoing:
+                    taskOrderModel.setSubmited(TaskOrderState.waiting);
+                    break;
+            }
+            taskOrderModels.add(taskOrderModel);
+        }
+
+
         return taskOrderModels;
     }
 

@@ -17,9 +17,6 @@ import java.util.List;
 public class HonorServiceImpl implements HonorService {
 
     @Autowired
-    private UserDao userDao;
-
-    @Autowired
     private TaskOrderDao taskOrderDao;
 
     @Autowired
@@ -217,7 +214,7 @@ public class HonorServiceImpl implements HonorService {
     @Override
     public void createHonorMessage(long userId) {
         honorDao.insertUserHonor(userId);
-        System.out.print(userId+"success");
+        System.out.println("userId1:"+userId+".");
     }
 
     @Override

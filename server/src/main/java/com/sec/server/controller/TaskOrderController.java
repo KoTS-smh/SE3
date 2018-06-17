@@ -2,12 +2,13 @@ package com.sec.server.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.sec.server.domain.Task;
 import com.sec.server.domain.TaskOrder;
-import com.sec.server.model.SimpleTaskOrderModel;
-import com.sec.server.model.SimpleUserModel;
-import com.sec.server.model.TaskOrderModel;
-import com.sec.server.model.UserModel;
+import com.sec.server.enums.ResultCode;
+import com.sec.server.model.*;
+import com.sec.server.service.AppointService;
 import com.sec.server.service.TaskOrderService;
+import com.sec.server.service.TaskService;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +22,13 @@ import java.util.List;
 public class TaskOrderController {
     @Resource(name = "taskOrderService")
     private TaskOrderService taskOrderService;
+
+    @Resource(name = "taskService")
+    private TaskService taskService;
+
+    @Resource(name = "appointService")
+    private AppointService appointService;
+
     /**
      * 获取一个任务订单
      * @param taskOrderId 任务订单ID
@@ -36,6 +44,7 @@ public class TaskOrderController {
      * 获取工人所有的任务订单
      * @param simpleUserModel 工人信息的一层封装
      * @return 所有的任务订单
+     * @describe
      */
     @RequestMapping("/taskOrder/getAll")
     public Result getAllTaskOrder(@RequestBody SimpleUserModel simpleUserModel) {
@@ -50,10 +59,33 @@ public class TaskOrderController {
      */
     @RequestMapping("/taskOrder/createTaskOrder")
     public Result createTaskOrder(@RequestBody SimpleTaskOrderModel simpleTaskOrderModel){
+        //获取任务信息
+        TaskModel task  = taskService.getTask(simpleTaskOrderModel.getTaskId());
+        System.out.println("taskId="+simpleTaskOrderModel.getTaskId());
+        System.out.println("userId="+simpleTaskOrderModel.getAcceptUserId());
+        System.out.println("state="+task.getState());
+        //判断任务状态
+        switch (task.getState()){
+            //任务处在预约期就预约任务
+            case appoint:
+                appointService.appointTask(simpleTaskOrderModel.getTaskId(),simpleTaskOrderModel.getAcceptUserId());
+                return ResultUtils.success();
+            //任务处于进行期
+            case ongoing:
+                //判断接取人数是否已经足够
+                if(task.getMaxParticipator()==taskService.getWorkerNumber(simpleTaskOrderModel.getTaskId())){
+                    //加入等待列表
+                    appointService.appointTask(simpleTaskOrderModel.getTaskId(),simpleTaskOrderModel.getAcceptUserId());
+                    return ResultUtils.success();
+                }else{
+                    //创建任务
+                    TaskOrder taskOrder = new TaskOrder(simpleTaskOrderModel.getTaskId(), simpleTaskOrderModel.getAcceptUserId());
+                    taskOrderService.createTaskOrder(taskOrder);
+                    return ResultUtils.success();
+                }
+        }
 
-        TaskOrder taskOrder = new TaskOrder(simpleTaskOrderModel.getTaskId(), simpleTaskOrderModel.getAcceptUserId());
-        taskOrderService.createTaskOrder(taskOrder);
-        return ResultUtils.success();
+        return ResultUtils.error(ResultCode.NO_IMAGE_ERROR);
     }
 
     /**
@@ -79,12 +111,14 @@ public class TaskOrderController {
     }
 
     /**
-     * 获得用户提交的所有任务订单信息
+     * 获得用户所有的任务订单信息
      * @param simpleUserModel 工人ID的一层封装
      * @return 返回所有任务订单信息
+     * @describe 包括预约中和等待中的
      */
     @RequestMapping("/taskOrder/getAllSubmited")
     public Result getAllSubmitted(@RequestBody SimpleUserModel simpleUserModel){
+        //获取所有的
         List<TaskOrder> list = taskOrderService.getAllSubmited(simpleUserModel.getAcceptUserId());
         return ResultUtils.success(list);
     }
