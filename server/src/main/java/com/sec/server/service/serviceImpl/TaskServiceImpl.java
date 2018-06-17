@@ -514,10 +514,10 @@ public class TaskServiceImpl implements TaskService {
             task.setReward(task.getReward() * 1.2);
             task.setUpRate("+20%");
         }else if(percent > 0.5) {
-            task.setReward(task.getReward() * 1.4);
+            task.setReward((task.getReward() / 1.2) * 1.4);
             task.setUpRate("+40%");
         }else if(percent > 0.8) {
-            task.setReward(task.getReward() * 1.6);
+            task.setReward((task.getReward() / 1.4) * 1.6);
             task.setUpRate("+60%");
         }
 
