@@ -32,7 +32,17 @@
                 axios.post('http://localhost:8080/task/recommend', {"userId": userId, "password": ''})
                 .then(response => {
                     console.log(response.data.data);
-                    var cardList = response.data.data
+                    var cardList = [];
+                    cardList = response.data.data;
+                    if(cardList.length == 0) {
+                        const h = this.$createElement;
+                        this.$notify({
+                            title: '无任务可推荐',
+                            message: h('i', { style: 'color: teal'}, '当前无任务可推荐！')
+                        });
+
+                        return;
+                    }
                     for(var i = 0;i < cardList.length;i++) {
                         var tags = cardList[i].tagList
                         for(var j = 0;j < tags.length;j++) {

@@ -114,12 +114,6 @@ public class TaskController {
     public Result getRecommendTasks(@RequestBody UserModel userModel){
         long userId = userModel.getUserId();
         List<Task> recommendList = taskService.getRecommendTask(userId);
-//        List<Picture_CardModel> modelList = new ArrayList<>();
-//        for(Task tmp : recommendList) {
-//            Picture_CardModel model = new Picture_CardModel(tmp.getTaskId(), tmp.getTaskname(), tmp.getImgUrls().get(0), tmp.getTaskInfo(), tmp.getViewedTimes(), tmp.getReward(), tmp.getUpRate());
-//            modelList.add(model);
-//
-//        }
         List<Recommend_CardModel> modelList = new ArrayList<>();
         for(Task tmp : recommendList) {
             Recommend_CardModel model = new Recommend_CardModel(tmp);
