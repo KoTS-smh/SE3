@@ -1,5 +1,5 @@
 <template>
-  <div class="header">
+  <div class="header" style="background: url('https://ws1.sinaimg.cn/large/0073JsqJly1fsea6alqjqj3107065jsd.jpg') no-repeat;background-size:1380px 240px;">
   	<div class="h-center">
         <search class="msearch"></search>
   	</div >
@@ -29,7 +29,7 @@ export default {
 <style lang="stylus">
  .header
      position relative
-     //margin -42px auto 0
+     
      background-color white
     .h-center
     	width 960px

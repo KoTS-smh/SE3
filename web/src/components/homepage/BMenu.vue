@@ -1,5 +1,5 @@
 <template>
-	<div class="menu">
+	<div class="menu" style="background: #E4F0A2">
 		<div class="menu-wrapper">
 			<ul class="nav-menu">
 				<BMenuItem  v-for="i in classify" :item="i"></BMenuItem>

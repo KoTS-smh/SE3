@@ -1,6 +1,6 @@
 <template>
     <div style="height:100%">
-        <el-container style="height:100% " >
+        <el-container style="height:100%" >
             <el-header>
                 <!-- <TopContainer></TopContainer> -->
                 <component :is="currentView"></component>
