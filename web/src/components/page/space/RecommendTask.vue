@@ -7,7 +7,7 @@
 
         </el-row> -->
         <el-row :sm="12" :md="6" v-for="(card, index) in card_list" :key="card.id">
-            <rec-task-card :name="card.name" :url="card.url" :description="card.description" :id="card.id" :viewedTimes="card.viewedTimes" :reward="card.reward" :upRate="card.upRate" :tagList="card.tagList"></rec-task-card>
+            <rec-task-card :name="card.name" :url="card.url" :description="card.description" :id="card.id" :viewedTimes="card.viewedTimes" :reward="card.reward" :upRate="card.upRate" :tagList="card.tagList" @getInfo="getInfo(card)"></rec-task-card>
         </el-row>
     </div>
 </template>
@@ -72,6 +72,11 @@
                     }                  
                     this.card_list = cardList;
                 })
+            },
+
+            getInfo: function(item) {
+                var taskId = item.id;
+                this.$router.push({path: 'checkTask', query:{"taskId":taskId}})
             }
         },
 
