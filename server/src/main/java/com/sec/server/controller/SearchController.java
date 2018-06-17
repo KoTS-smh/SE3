@@ -20,12 +20,6 @@ public class SearchController {
 
     @RequestMapping("search/getTask")
     public Result searchTask(String message, String taskType, String taskTag){
-        System.out.println(message);
-        System.out.println(taskType);
-        System.out.println(taskTag);
-//        System.out.println("ffffffhere");
-//        System.out.println(message);
-//        System.out.println(taskType);
         List<Picture_CardModel> list = taskService.searchTask(message, taskType, taskTag);
         System.out.println(list.size());
         return ResultUtils.success(list);

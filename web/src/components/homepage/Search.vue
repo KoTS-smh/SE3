@@ -1,17 +1,26 @@
 <template>
 	<div class="search">
-		<form action="http://localhost:8888/#/search" id="searchform">
-			<input name="keyword" type="text" class="search-keyword" id="search-keyword" autocomplete="off" accesskey="s" x-webkit-speech="" x-webkit-grammar="builtin:translate" placeholder="寻找你感兴趣的任务！" data-recommend="av8509845">
-			<button type="submit" class="search-submit"></button>
+		<form id="searchform">
+			<input @keyup.enter="gotoSearch" v-model="keyword" name="keyword" type="text" class="search-keyword" id="search-keyword" autocomplete="off" accesskey="s" x-webkit-speech="" x-webkit-grammar="builtin:translate" placeholder="寻找你感兴趣的任务！" data-recommend="av8509845">
+			<button type="submit" class="search-submit" @click="gotoSearch"></button>
 		</form>
-		<a class="link-ranking" href="http://localhost:8888/#/search" target="_blank">
+		<a class="link-ranking" target="_blank">
 			<span>搜索任务</span>
 		</a>
 	</div>
 </template>
 <script>
 	export default {
-
+		methods: {
+			gotoSearch() {
+				this.$router.push({path: 'search', query:{"keyword": this.keyword}})
+			}
+		},
+		data() {
+			return {
+				keyword: ''
+			}
+		}
 	}
 </script>
 

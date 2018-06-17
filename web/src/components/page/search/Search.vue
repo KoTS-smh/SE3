@@ -187,8 +187,19 @@
             },
             handleClick(tab, event) {
                 console.log(tab, event);
+            },
+            getKeyword() {
+                let keyword = this.$route.query.keyword;
+                this.input = keyword;
+                console.log(keyword);
+                if(keyword != null && keyword != '' && keyword != undefined){
+                    this.$refs.mycontent.searchForTasks(keyword, 0, "all");
+                }
             }
 
+        },
+        mounted() {
+            this.getKeyword();
         }
     }
 </script>

@@ -232,15 +232,18 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<Picture_CardModel> searchTask(String message, String taskType, String tag) {
         List<Picture_CardModel> list = new ArrayList<>();
-        if(taskType.equals("all")){
-
-            List<Task> taskList = taskDao.searchForAllTasks(message);
-
+        List<Task> taskList = new ArrayList<>();
+        if(taskType.equals("all")) {
+            taskList = taskDao.searchForAllTasks(message);
+        }else{
+            int typeNum = (taskType.charAt(taskType.length() - 1) - '1');
+            taskList = taskDao.searchForTypedTasks(message, typeNum);
+        }
             for(Task tmp : taskList) {
                 tmp = placeTaskTag(tmp);
             }
 
-            if(tag.equals("请选择")) {
+            if(tag.equals("请选择") || tag.equals("all") || tag.trim().equals("")) {
                 //do nothing
             }else {
                 taskList = taskFilter(taskList, tag);
@@ -251,7 +254,7 @@ public class TaskServiceImpl implements TaskService {
                 }
             }
 
-        }
+
        return list;
     }
 

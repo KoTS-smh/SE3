@@ -154,6 +154,21 @@ public interface TaskDao {
     })
     List<Task> searchForAllTasks(@Param("taskName") String taskName);
 
+    /**
+     * 搜索不同类型的任务
+     * @param taskName 任务名称
+     * @param annotationType 标注类型
+     * @return 任务列表
+     */
+    @Select("select * from MRGSDB.task where taskName like CONCAT('%',#{taskName},'%') and annotationType = #{annotationType}")
+    @Results({
+            @Result(property = "imgUrls",column = "taskId", javaType = List.class,
+                    many=@Many(select = "com.sec.server.repository.ImgUrlDao.getUrls")
+            ),
+            @Result(property = "taskId", column = "taskId")
+    })
+    List<Task> searchForTypedTasks(@Param("taskName") String taskName, @Param("annotationType") int annotationType);
+
     @Insert("insert into mrgsdb.task(quality) values(#{quality}) where taskId = #{taskId}")
     void setTaskQuality(@Param("taskId") long taskId,@Param("quality") double quality);//todo 带测试
 
