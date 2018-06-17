@@ -53,7 +53,7 @@
                                 </div>
                             </el-form-item>
 
-                            <el-form-item style="height:100px;width: 400px" label="可选标签">
+                            <el-form-item style="height:100px;width: 380px" label="可选标签">
                                 <div id="available-tags">
                                     <el-button
                                         :key="tag"
@@ -66,7 +66,7 @@
                                 </div>
                             </el-form-item>
 
-                            <el-form-item style="width: 400px" label="任务标签">
+                            <el-form-item style="width: 380px" label="任务标签">
                                 <div id="for-tag">
                                     <el-tag
                                         :key="tag"

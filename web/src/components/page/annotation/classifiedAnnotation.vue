@@ -40,33 +40,54 @@
                     </el-footer>
                 </el-container>
                 <el-aside width="400px" style="border-left: gainsboro 1px solid">
+                    <el-steps id="steps" :active="1" finish-status="success" style="margin-top: 10px;margin-left: 10px;width: 90%">
+                        <el-step title="开始" :description="beginDate"></el-step>
+                        <el-step v-if="test1" title="检测点1" :description="test1Date"></el-step>
+                        <el-step v-if="test2" title="检测点2" :description="test2Date"></el-step>
+                        <el-step v-if="endTask" title="提交" :description="endDate"></el-step>
+                    </el-steps>
+
                     <el-row style="margin-top: 20px">
-                        <el-col :span="6" style="display: flex;align-items:center;justify-content: center">
-                            <span>任务进度:</span>
+                        <el-col :span="12" style="border-right: gainsboro solid 1px">
+                            <el-form size="mini" style="margin-left: 5%">
+                                <el-form-item label="当前进度：">
+                                    {{process}}%
+                                </el-form-item>
+                                <el-form-item label="评估质量: ">
+                                    {{currentQuality}}
+                                </el-form-item>
+                            </el-form>
                         </el-col>
-                        <el-col :span="18">
-                            <el-progress :text-inside="true" :stroke-width="18" :percentage="process" style="width: 280px"></el-progress>
+                        <el-col :span="12">
+                            <el-form size="mini" style="margin-left: 5%">
+                                <el-form-item label="目标进度：">
+                                    {{targetProcess}}%
+                                </el-form-item>
+                                <el-form-item label="目标质量: ">
+                                    60
+                                </el-form-item>
+                            </el-form>
                         </el-col>
                     </el-row>
-                    <div style="margin-top: 20px;display: flex;align-items:center;justify-content: center">
+                    <div style="margin-top: 10px;display: flex;align-items:center;justify-content: center">
                         <i class="el-icon-edit"></i>
                         <span style="font-weight: bold">标注信息</span>
                     </div>
-                    <div id="annotationField" style="width: 100%;height: 400px">
+                    <div id="annotationField" style="width: 100%;height: 370px">
                     </div>
                     <div>
-                        <el-button-group style="margin-left: 60px;margin-top: 100px">
-                            <el-tooltip content="重新标注" placement="top">
-                                <el-button type="primary" icon="el-icon-refresh" style="width: 80px" @click="reAnnotation"></el-button>
-                            </el-tooltip>
+                        <el-button-group style="margin-left: 10%;">
                             <el-tooltip content="保存" placement="top">
-                                <el-button type="primary" icon="el-icon-upload" style="width: 80px" @click="save"></el-button>
+                                <el-button type="primary" icon="el-icon-upload" style="width: 80px" @click="save" :disabled="canNotAnno"></el-button>
                             </el-tooltip>
                             <el-tooltip content="删除" placement="top">
-                                <el-button type="primary" icon="el-icon-delete" style="width: 80px" @click="remove"></el-button>
+                                <el-button type="primary" icon="el-icon-delete" style="width: 80px" @click="remove" :disabled="canNotAnno"></el-button>
+                            </el-tooltip>
+                            <el-tooltip content="下一张" placement="top">
+                                <el-button type="primary" icon="el-icon-d-arrow-right" style="width: 80px" @click="nextPic"></el-button>
                             </el-tooltip>
                             <el-tooltip content="离开" placement="top">
-                                <el-button type="primary" icon="el-icon-d-arrow-right" style="width: 80px" @click="leave"></el-button>
+                                <el-button type="primary" icon="el-icon-circle-close" style="width: 80px" @click="leave"></el-button>
                             </el-tooltip>
                         </el-button-group>
                     </div>
@@ -86,6 +107,7 @@
     let acceptUserId;
     let imgUrlList;
     let annotated;
+    let annotationModel;
     let img =new Image();
     let isNew = false;
     let draw;
@@ -114,6 +136,9 @@
                 this.$router.push("/homepage")
             }
             taskOrderId = this.$route.query.taskOrderId;
+            this.test2 = true;
+            this.test1 = true;
+            this.endTask = true;
             draw = new Draw();
             draw.init();
             axios.get('http://localhost:8080/taskOrder/orderInfo',{
@@ -123,34 +148,47 @@
             }).then((response) => {
                 taskOrder=response.data.data;
                 this.currentPage = taskOrder.lastPic;
+                this.currentQuality = taskOrder.rate;
+                if(taskOrder.finishedPics===0){
+                    this.totalNum=1;
+                }else {
+                    this.totalNum = taskOrder.finishedPics;
+                }
                 annotated = taskOrder.finishedPics;
                 taskId = taskOrder.taskId;
                 acceptUserId = taskOrder.acceptUserId;
                 axios.post('http://localhost:8080/task/taskInfo',{
                     taskId:taskId
                 }).then((response) => {
-                    classifiedInfo = response.data.data.classifiedInfo;
                     let str = '';
+                    classifiedInfo = response.data.data.classifiedInfo;
                     classifiedLen = classifiedInfo.length;
-                    for(let i = 0;i <classifiedLen;i++){
-                        str = str+'<span style="margin-top: 12px;margin-left: 20px">'+
-                            classifiedInfo[i]+':</span><input style="margin-left: 10px;margin-top: 12px;width: 240px;height: 24px" id="text'+i+'"><br>'
+                    if(response.data.data.postUserId == localStorage.getItem("userId")||response.data.data.state == 'finish'){
+                        this.canNotAnno = true;
+                        for(let i = 0;i <classifiedLen;i++){
+                            str = str+'<button  style="margin-top: 12px;margin-left: 20px;width: 75px;border: 0;background-color: transparent">'+
+                                classifiedInfo[i]+':</button><input readonly style="margin-left: 10px;margin-top: 12px;width: 240px;height: 24px" id="text'+i+'"><br>'
+                        }
+                    }else{
+                        for(let i = 0;i <classifiedLen;i++){
+                            str = str+'<button  style="margin-top: 12px;margin-left: 20px;width: 75px;border: 0;background-color: transparent">'+
+                                classifiedInfo[i]+':</button><input style="margin-left: 10px;margin-top: 12px;width: 240px;height: 24px" id="text'+i+'"><br>'
+                        }
                     }
                     document.getElementById('annotationField').innerHTML = str;
                     imgUrlList = response.data.data.imgUrlList;
-                    this.totalNum = imgUrlList.length;
-                    this.process = annotated / this.totalNum*100;
+                    this.process = annotated / imgUrlList.length*100;
+                    this.beginDate = new Date(response.data.data.beginDate).Format("yyyy-MM-dd");
+                    this.endDate = new Date(response.data.data.endDate).Format("yyyy-MM-dd");
                     img.addEventListener('load',() =>{
                         this.imgX =img.width;
                         this.imgY = img.height;
                     });
-                    img.src = imgUrlList[thisPage - 1];
+                    img.src = imgUrlList[this.currentPage - 1];
                     this.imgUrls = "url('"+img.src+"')";
+                    this.getAnnotation(taskOrderId,this.currentPage);
                 });
-                //获得标注信息的tag
-                this.getAnnoTag(taskId,thisPage);
                 //获得标注信息
-                this.getAnnotation(taskOrderId,thisPage);
                 this.fullscreenLoading = false;
             }).catch( ()=> {
                 this.$message({
@@ -162,9 +200,18 @@
         },
         data() {
             return {
+                beginDate:'',
+                endDate:"",
+                test1Date:"",
+                test2Date:'',
+                test1:'',
+                test2:'',
+                endTask:'',
+                currentQuality:'',
+                targetProcess:"",
+                canNotAnno:false,
                 activeIndex: '1',
                 currentPage: 1,
-                textarea:'',
                 totalNum:null,
                 imgX:null,
                 imgY:null,
@@ -189,28 +236,28 @@
                 });
                 img.src = imgUrlList[val - 1];
                 this.imgUrls = "url('"+img.src+"')";
-                thisPage = val;
-                this.getAnnotation(taskOrderId,thisPage);
-                this.getAnnoTag(taskId,thisPage);
+                this.currentPage = val;
+                this.reAnnotation();
+                this.getAnnotation(taskOrderId,this.currentPage);
                 this.fullscreenLoading = false;
             },
             save(){
-                let words;
+                let words='';
                 for(let i =0;i<classifiedLen-1;i++){
                     words = words+document.getElementById('text'+i).value+',';
                 }
-                words+=document.getElementById('text'+(classifiedLen-1));
+                words+=document.getElementById('text'+(classifiedLen-1)).value;
                 let annotation =new Annotation(taskOrderId,this.currentPage,"",words,JSON.stringify(coordinates));
-                axios.post('http://localhost:8080/annotation/update',{
-                    annotation//todo test
-                }).then((response)=>{
+                axios.post('http://localhost:8080/annotation/update',
+                    annotation
+                ).then((response)=>{
                     if(response.data.code!==0){
                         this.$message.error(response.data.msg)
                     }else {
                         if(isNew){
                             isNew=false;
                             annotated++;
-                            this.process = annotated / this.totalNum*100;
+                            this.process = annotated / imgUrlList.length*100;
                         }
                         this.$message({
                             showClose: true,
@@ -234,33 +281,39 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    this.reAnnotation();
-                    coordinates = [];
-                    axios.post('http://localhost:8080/annotation/update',{
-                        annotationInfo:JSON.stringify(annotationInfo)
-                    }).then((response)=>{
-                        if(response.data.code!==0){
-                            this.$message.error(response.data.msg)
-                        }else {
-                            if(!isNew){
+                    if (isNew) {
+                        this.reAnnotation();
+                        coordinates = [];
+                    }else {
+                        axios.get('http://localhost:8080/annotation/delete',{
+                            params: {
+                                taskOrderId: taskOrderId,
+                                pictureNum: this.currentPage
+                            }
+                        }).then((response) => {
+                            if (response.data.code !== 0) {
+                                this.$message.error(response.data.msg)
+                            } else {
                                 isNew = true;
                                 annotated--;
-                                this.process = annotated / this.totalNum*100;
+                                this.process = annotated / imgUrlList.length * 100;
+                                this.reAnnotation();
+                                coordinates = [];
+                                this.$message({
+                                    showClose: true,
+                                    message: '删除成功！',
+                                    type: 'success'
+                                });
+                                this.autoSave();
                             }
+                        }).catch(() => {
                             this.$message({
                                 showClose: true,
-                                message: '删除成功！',
-                                type: 'success'
+                                type: 'error',
+                                message: '网络异常!'
                             });
-                            this.autoSave();
-                        }
-                    }).catch(()=>{
-                        this.$message({
-                            showClose:true,
-                            type: 'error',
-                            message: '网络异常!'
                         });
-                    });
+                    }
                 }).catch(() => {
                     this.$message({
                         showClose:true,
@@ -273,15 +326,14 @@
                 for(let i =0;i<classifiedLen;i++){
                     document.getElementById('text'+i).value = '';
                 }
-                words = [];
                 draw.refresh();
             },
             leave(){
                 taskOrder.lastPic = this.currentPage;
                 taskOrder.finishedPics = annotated;
-                axios.post('http://localhost:8080/taskOrder/update',{
-                    taskOrder:JSON.stringify(taskOrder)
-                }).then((response)=>{
+                axios.post('http://localhost:8080/taskOrder/update',
+                    taskOrder
+                ).then((response)=>{
                     if(response.data.code!==0){
                         this.$confirm('网络异常，信息未正常保存, 是否继续?', '提示', {
                             confirmButtonText: '确定',
@@ -330,12 +382,12 @@
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(() => {
-                        taskOrder.isSubmited = true;
-                        taskOrder.lastPic = thisPage;
+                        taskOrder.isSubmited = 'submitted';
+                        taskOrder.lastPic = this.currentPage;
                         taskOrder.finishedPics = annotated;
-                        axios.post('http://localhost:8080/taskOrder/update', {
-                            taskOrder: JSON.stringify(taskOrder)
-                        }).then((response) => {
+                        axios.post('http://localhost:8080/taskOrder/update',
+                            taskOrder
+                        ).then((response) => {
                             if (response.data.code !== 0) {
                                 this.$message({
                                     type: 'error',
@@ -371,7 +423,6 @@
                     axios.get('http://localhost:8080/taskOrder/delete',{
                         params:{
                             taskOrderId:taskOrder.taskOrderId,
-                            userId:localStorage.getItem("userId")
                         }
                     }).then((response)=>{
                         if(response.data.code!==0){
@@ -400,11 +451,11 @@
                 });
             },
             autoSave(){
-                taskOrder.lastPic = thisPage;
+                taskOrder.lastPic = this.currentPage;
                 taskOrder.finishedPics = annotated;
-                axios.patch('http://localhost:8080/taskOrder/update',{
-                    taskOrder:JSON.stringify(taskOrder),
-                })
+                axios.patch('http://localhost:8080/taskOrder/update',
+                    taskOrder
+                )
             },
             handleCommand(command) {
                 if (command === 'logout') {
@@ -421,23 +472,43 @@
             getAnnotation(taskOrderId,pictureNum){
                 axios.get('http://localhost:8080/annotation/get',{
                     params:{
-                        annotationId:taskOrderId,
+                        taskOrderId:taskOrderId,
                         pictureNum:pictureNum
                     }
                 }).then((response) => {
                     annotationModel = response.data.data;
                     if(response.data.code !== 0){
                         isNew = true;
+                        coordinates = [];
+                        for(let i =0;i<classifiedLen;i++){
+                            document.getElementById('text'+i).value = '';
+                        }
                     }else {
-                        this.textarea = annotationModel.sentence;
                         coordinates = annotationModel.coordinates;
-                        words = annotationModel.words;
+                        let words = annotationModel.words.split(',');
+                        console.log(words[0]);
                         for(let i =0;i<classifiedLen;i++){
                             document.getElementById('text'+i).value = words[i];
                         }
                         this.showAnnotation();
                     }
                 })
+            },
+            nextPic() {
+                if (isNew == true) {
+                    this.$message.info("本图还未标注！");
+                } else {
+                    if (this.currentPage === imgUrlList.length) {
+                        this.$message.info("已经是最后一张了！");
+                    } else {
+                        if(this.currentPage === this.totalNum){
+                            this.totalNum++;
+                            this.handleCurrentChange(this.totalNum);
+                        }else{
+                            this.handleCurrentChange(this.currentPage+1);
+                        }
+                    }
+                }
             }
         },
         name: "classifiedAnnotation"
@@ -531,6 +602,25 @@
             this.pen.stroke();
             this.pen.closePath();
         }
+    }
+
+    Date.prototype.Format = function(fmt)
+    {
+        let o = {
+            "M+" : this.getMonth()+1,                 //月份
+            "d+" : this.getDate(),                    //日
+            "h+" : this.getHours(),                   //小时
+            "m+" : this.getMinutes(),                 //分
+            "s+" : this.getSeconds(),                 //秒
+            "q+" : Math.floor((this.getMonth()+3)/3), //季度
+            "S"  : this.getMilliseconds()             //毫秒
+        };
+        if(/(y+)/.test(fmt))
+            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+        for(let k in o)
+            if(new RegExp("("+ k +")").test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length===1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+        return fmt;
     }
 
 </script>
