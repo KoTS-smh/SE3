@@ -121,11 +121,15 @@ public class TaskController {
 
     @RequestMapping("/task/getReward")
     public Result getMinReward(@RequestBody TaskModel taskModel){
-        System.out.println(taskModel.getAnnotationType());
-        System.out.println(taskModel.getBeginDate());
-        System.out.println(taskModel.getReward());
         double reward = dataAnalysisService.calculateMinimumMoneyOfTask(new Task(taskModel));
         return ResultUtils.success(reward);
+    }
+
+    @RequestMapping("/task/viewedTimeInc")
+    public Result viewedTimeInc(long taskId) {
+        taskService.viewedTimeInc(taskId);
+
+        return ResultUtils.success();
     }
 
 }

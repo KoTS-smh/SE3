@@ -113,6 +113,11 @@
 
 	  getInfo: function(item) {
 		  var taskId = item.id;
+      axios.get('http://localhost:8080/task/viewedTimeInc', {
+        params: {
+          taskId: taskId
+        }
+      })
 		  this.$router.push({path: 'checkTask', query:{"taskId":taskId}})
 	  }
     },

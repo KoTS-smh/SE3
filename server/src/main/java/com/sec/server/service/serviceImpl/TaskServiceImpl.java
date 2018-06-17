@@ -139,8 +139,6 @@ public class TaskServiceImpl implements TaskService {
         try {
             task = taskDao.getTask(taskId);
             acceptUserList = taskOrderDao.getAcceptUserIds(taskId);
-            //todo 换个地方写
-            taskDao.increaseViewedTimes(taskId);
         }catch (Exception e){
             throw new ResultException("任务不存在！", 1111);
         }
@@ -455,6 +453,11 @@ public class TaskServiceImpl implements TaskService {
 
         return array;
 
+    }
+
+    @Override
+    public void viewedTimeInc(long taskId) {
+        taskDao.increaseViewedTimes(taskId);
     }
 
 

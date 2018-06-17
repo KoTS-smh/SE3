@@ -89,8 +89,8 @@ public interface TaskService {
      */
     void timeTask();
 
-
-
     JSONArray getMenuItems();
+
+    void viewedTimeInc(long taskId);
 
 }
