@@ -54,8 +54,11 @@ public class UserController {
      */
     @RequestMapping("/user/register")
     public Result register(@RequestBody UserModel userModel){
-        userService.register(userModel);
-        return ResultUtils.success();
+        boolean result = userService.register(userModel);
+        if(result)
+            return ResultUtils.success();
+        else
+            return ResultUtils.error(ResultCode.USERNAME_EXIST_ERROR);
     }
 
     /**
