@@ -212,4 +212,7 @@ public interface TaskDao {
      */
     @Select("select * from MRGSDB.task where state = 1")
     List<Task> getAllOngoingTask();
+
+    @Select("select taskId from mrgsdb.task where state = 2")
+    List<Long> getOngoingTaskId();
 }

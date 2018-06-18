@@ -117,6 +117,9 @@ public interface TaskOrderDao {
     @Select("select * from MRGSDB.taskOrder where taskId = #{taskId} and submited <> 2 ")
     List<TaskOrder> getAllTaskOrderOfATask(@Param("taskId") long taskId);
 
+    @Select("select taskOrderId from MRGSDB.taskOrder where taskId = #{taskId} and submited <> 2 ")
+    List<Long> getAllTaskOrderIdOfATask(@Param("taskId") long taskId);
+
     /**
      * 获得工人接受的所有任务
      * @param acceptUserId 工人Id
@@ -136,6 +139,9 @@ public interface TaskOrderDao {
      */
     @Update("update MRGSDB.taskOrder set submited = #{submited} where taskOrderId = #{taskOrderId}")
     void changeTaskOrderState(@Param("taskOrderId") long taskOrderId ,@Param("submited") TaskOrderState submited);
+
+    @Update("update mrgsdb.taskOrder set rate = #{quality} where taskOrderId = #{taskOrderId}")
+    void setQuality(@Param("quality") double quality,@Param("taskOrderId") long taskOrderId);
 
     /**
      * 获取一个任务的所有订单

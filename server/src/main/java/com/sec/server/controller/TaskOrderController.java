@@ -11,6 +11,7 @@ import com.sec.server.service.TaskOrderService;
 import com.sec.server.service.TaskService;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +29,7 @@ public class TaskOrderController {
 
     @Resource(name = "appointService")
     private AppointService appointService;
+
 
     /**
      * 获取一个任务订单
@@ -126,4 +128,8 @@ public class TaskOrderController {
         return ResultUtils.success();
     }
 
+    @RequestMapping("/taskOrder/getAppoint")
+    public Result getAppointUser(long taskId){
+        return ResultUtils.success(appointService.getAppointUser(taskId));
+    }
 }

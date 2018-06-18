@@ -57,7 +57,7 @@
                     <el-row>
                         <el-button type="primary" class="choiceBtn" @click="acceptTask()">接受任务</el-button>
                         <el-button type="success" class="choiceBtn" @click="startAnno()">开始标注</el-button>
-                        <el-button type="info" class="choiceBtn" @click="leave()">返&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;回</el-button>
+                        <el-button type="info" class="choiceBtn" @click="leave()">返回主页</el-button>
                     </el-row>
                 </div>
                 <div v-show="showInfo" style="margin-top: 8%">
@@ -123,7 +123,7 @@ export default {
             getTask() {
             var acceptUserId = localStorage.getItem("userId");
             var taskId = this.taskData.taskId;
-            axios.post("http://localhost:8080/task/taskInfo", {"taskId": taskId})
+            axios.post("http://localhost:8080/task/taskInfo", {taskId: taskId})
             .then((response) => {
                 console.log(response);
                 if(response.data.code === 0) {
@@ -176,8 +176,18 @@ export default {
             })
             },
             startAnno(){
+                // axios.get("http://localhost:8080/taskOrder/getAppoint",{
+                //     params:{
+                //         taskId:this.taskData.taskId
+                //     }
+                // }).then(response=>{
+                //     if(response.data.code === 0){
+                //         for(let i=0;i<response.data.data.length;i++){
+                //             if()
+                //         }
+                //     }
+                // });
                 let taskOrderId;
-                let submited;
                 axios.post("http://localhost:8080/taskOrder/getAll",{
                     acceptUserId:localStorage.getItem("userId")
                 }).then((response)=>{
@@ -185,7 +195,6 @@ export default {
                        for(let i=0;i<response.data.data.length;i++){
                            if(response.data.data[i].taskId === this.taskData.taskId){
                                taskOrderId = response.data.data[i].taskOrderId;
-                               submited = response.data.data[i].submited;
                                break;
                            }
                        }
@@ -240,9 +249,11 @@ export default {
                     }
                 }
                 if(!isAccepted) {
-                    axios.post("http://localhost:8080/taskOrder/createTaskOrder", {
-                        taskId: this.taskData.taskId,
-                        acceptUserId: localStorage.getItem("userId")
+                    axios.get("http://localhost:8080/taskOrder/appoint", {
+                        params:{
+                            taskId: this.taskData.taskId,
+                            userId: localStorage.getItem("userId")
+                        }
                     }).then((response) => {
                         if (response.data.code === 0) {
                             this.$message.success('接受成功！');
