@@ -111,6 +111,7 @@ public class EvaluateServiceImpl implements EvaluateService {
 
     @Override
     public void evaluateTaskQuality(long taskId) {
+        System.loadLibrary("opencv_java341.dll");
         Task task = taskDao.getTask(taskId);
         List<String> urls = task.getImgUrls();
         List<Double> points = new ArrayList<>();
