@@ -50,7 +50,8 @@ public interface UserDao {
      * @param user 用户信息
      */
     @Update("update MRGSDB.users set sex=#{sex},telPhone=#{telPhone}," +
-            "email=#{email},description=#{description},profession=#{profession} WHERE userId=#{userId}")
+            "email=#{email},description=#{description},profession=#{profession}," +
+            "balance = #{balance},username = #{username} WHERE userId=#{userId}")
     void updateUser(User user);
 
     /**
