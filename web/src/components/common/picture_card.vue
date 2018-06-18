@@ -3,7 +3,7 @@
   
     <div class="preview" :style="{ backgroundImage: 'url(' + url + ')' }"></div>
     <div class="card-info" style="border-bottom:1px solid gainsboro;height:50px">
-      <span class="large-text">&nbsp;&nbsp;{{ name }} - {{ id }}</span>
+      <span class="large-text">&nbsp;&nbsp;{{ name }}</span>
       <span class="description">&nbsp;&nbsp;{{ description }}</span>
     </div>
     <div class="card-footer justify-between" style="height: 40px">
