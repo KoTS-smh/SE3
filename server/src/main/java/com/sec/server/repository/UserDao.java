@@ -15,9 +15,9 @@ public interface UserDao {
      * 新建一个用户
      * @param user 用户
      */
-    @Insert("insert into MRGSDB.users(email,description,education,password," +
+    @Insert("insert into MRGSDB.users(email,description,password," +
             "point,sex,telPhone,userLevel,username,profession,balance) values (#{email}," +
-            "#{description},#{education},#{password},#{point},#{sex},#{telPhone}," +
+            "#{description},#{password},#{point},#{sex},#{telPhone}," +
             "#{userLevel},#{username},#{profession},#{balance})")
     @Options(useGeneratedKeys = true, keyProperty = "userId", keyColumn = "userId")
     void insertUser(User user);
@@ -64,7 +64,7 @@ public interface UserDao {
     void recharge(@Param("num") int num,@Param("userId") long userId);
 
     @Select("select balance from MRGSDB.users where userId = #{userId}")
-    double getBalance(long userId);
+    double getBalance(@Param("userId") long userId);
 
     @Update("update MRGSDB.users set balance = balance - #{cost} where userId = #{userId}")
     void consume(@Param("cost") double cost,@Param("userId") long userId);

@@ -86,21 +86,19 @@ public class UserServiceImpl implements UserService {
             user.setUserLevel(UserLevel.LEVEL1);
             user.setPoint(0);
             user.setBalance(0);
-            userDao.insertUser(user);
         }
         User user = new User(userModel);
         user.setUserLevel(UserLevel.LEVEL1);
         user.setPoint(70);
         user.setBalance(0);
-
         userDao.insertUser(user);
-            //新建荣誉信息
-            honorDao.insertUserHonor(user.getUserId());
-            //提示完善个人信息
-            Message message = new Message(user.getUserId(), "请您早日完善个人信息", "提示通知");
-            message.setRead(false);
-            messageDao.insertMessage(message);
-            return true;
+        //新建荣誉信息
+        honorDao.insertUserHonor(user.getUserId());
+        //提示完善个人信息
+        Message message = new Message(user.getUserId(), "请您早日完善个人信息", "提示通知");
+        message.setRead(false);
+        messageDao.insertMessage(message);
+        return true;
 
     }
 

@@ -79,7 +79,7 @@ public class Task {
         this.maxParticipator = taskModel.getMaxParticipator();
         this.state = taskModel.getState();
         this.viewedTimes = 0;
-        this.reward = 0;
+        this.reward = taskModel.getReward();
         this.imgUrls = taskModel.getImgUrlList();
         this.taskTags = convertTaskTag(taskModel.getDynamicTags());
         this.taskTagString = convertTagsToString(taskTags);

@@ -61,9 +61,6 @@ public class TaskOrderController {
     public Result createTaskOrder(@RequestBody SimpleTaskOrderModel simpleTaskOrderModel){
         //获取任务信息
         TaskModel task  = taskService.getTask(simpleTaskOrderModel.getTaskId());
-        System.out.println("taskId="+simpleTaskOrderModel.getTaskId());
-        System.out.println("userId="+simpleTaskOrderModel.getAcceptUserId());
-        System.out.println("state="+task.getState());
         //判断任务状态
         switch (task.getState()){
             //任务处在预约期就预约任务
