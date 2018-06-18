@@ -188,17 +188,17 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
         List<Integer> pointList = userDao.getAllPoints();
         Collections.sort(pointList);
 
-        int count = 0;
+        int count = 1;
         for(int i = 0;i < pointList.size(); ++i) {
-            if(point > pointList.get(i))
+            if(point < pointList.get(i))
                 count++;
         }
 
-        if(count <= 100)
+        if(count <= 10)
             rank = "第" + count + "名";
 
         else {
-            double percentage = count / pointList.size();
+            double percentage = (count * 1.0) / pointList.size();
             DecimalFormat df = new DecimalFormat("0.00");
             rank = "前" + df.format(percentage * 100) + " %";
         }
