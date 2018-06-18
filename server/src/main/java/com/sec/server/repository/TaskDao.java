@@ -38,14 +38,6 @@ public interface TaskDao {
     void deleteTask(@Param("taskId") long taskId);
 
     /**
-     * 获取任务
-     * @param taskId 任务Id
-     * @return 任务 task
-     */
-    @Select("select * from mrgsdb.task where taskId = #{taskId}")
-    Task getById(@Param("taskId") long taskId);
-
-    /**
      * 增加任务观看人数
      * @param taskId 任务Id
      */

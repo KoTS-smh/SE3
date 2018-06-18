@@ -1,8 +1,11 @@
 package com.sec.server.controller;
 
+import com.sec.server.domain.Task;
+import com.sec.server.domain.TaskOrder;
 import com.sec.server.model.PersonalDataModel;
 import com.sec.server.model.UserModel;
 import com.sec.server.service.DataAnalysisService;
+import com.sec.server.service.TaskOrderService;
 import com.sec.server.service.TaskService;
 import com.sec.server.utils.Result;
 import com.sec.server.utils.ResultUtils;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 public class DataAnalysisController {
@@ -20,6 +24,9 @@ public class DataAnalysisController {
 
     @Resource(name = "dataAnalysisService")
     private DataAnalysisService dataAnalysisService;
+
+    @Resource(name = "taskOrderService")
+    private TaskOrderService taskOrderService;
 
     /**
      * 众包发起者获取任务的完成情况
@@ -34,7 +41,10 @@ public class DataAnalysisController {
 //        list = dataAnalysisService.getTaskMessage(taskId);
 //        System.out.println(list.size());
 //        return ResultUtils.success(list);
-        return null;
+
+
+
+        return ResultUtils.success(dataAnalysisService.getTaskOrderMessage(taskId));
     }
 
     /**

@@ -21,9 +21,9 @@
             <el-table-column prop="taskName" label="任务名称" width="140"></el-table-column>
             <el-table-column prop="taskId" label="任务Id" width="120"></el-table-column>
             <el-table-column prop="submited" label="任务状态" width="140"></el-table-column>
-            <el-table-column prop="degreeOfCompletion" label="完成度" width="140"></el-table-column>
-            <el-table-column prop="beginDate" label="开始时间" width="180"></el-table-column>
-            <el-table-column prop="endDate" label="截止时间" width="180"></el-table-column>
+            <el-table-column prop="degreeOfCompletion" label="完成度" width="120"></el-table-column>
+            <el-table-column prop="beginDate" label="开始时间" width="150"></el-table-column>
+            <el-table-column prop="endDate" label="截止时间" width="150"></el-table-column>
             <el-table-column prop="rate" label="评分" width="120"></el-table-column>
 
             <el-table-column label="操作" width="160">

@@ -36,7 +36,7 @@ public interface UserDao {
      * @return 用户 user
      */
     @Select("select * from MRGSDB.users where userId=#{userId}")
-    User getUserById(long userId);
+    User getUserById(@Param("userId") long userId);
 
     /**
      * 获得所有用户

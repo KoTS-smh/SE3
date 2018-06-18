@@ -56,4 +56,6 @@ public interface TaskOrderService {
     void appointTask(long taskId,long userId);
 
     int getNumOfDiffenentType(long userId, AnnotationType annotationType);
+
+    List<TaskOrder> getTaskOrderByTaskId(long taskId);
 }

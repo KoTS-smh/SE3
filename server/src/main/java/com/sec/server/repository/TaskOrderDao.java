@@ -136,4 +136,12 @@ public interface TaskOrderDao {
      */
     @Update("update MRGSDB.taskOrder set submited = #{submited} where taskOrderId = #{taskOrderId}")
     void changeTaskOrderState(@Param("taskOrderId") long taskOrderId ,@Param("submited") TaskOrderState submited);
+
+    /**
+     * 获取一个任务的所有订单
+     * @param taskId 任务订单
+     * @return taskOrder列表
+     */
+    @Select("select * from MRGSDB.taskOrder where taskId = #{taskId}")
+    List<TaskOrder> getTaskOrderByTaskId(long taskId);
 }
