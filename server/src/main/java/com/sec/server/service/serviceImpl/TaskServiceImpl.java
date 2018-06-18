@@ -54,6 +54,9 @@ public class TaskServiceImpl implements TaskService {
     @Resource(name = "userService")
     private UserService userService;
 
+    @Resource(name = "honorService")
+    private HonorService honorService;
+
     /**
      * 创建任务
      * @param task 任务信息
@@ -84,7 +87,7 @@ public class TaskServiceImpl implements TaskService {
         imgUrlDao.insertUrlList(urlLists, task.getTaskId());
 
         //计算任务质量 todo 现在会报错
-//        evaluateService.evaluateTaskQuality(task.getTaskId());
+        evaluateService.evaluateTaskQuality(task.getTaskId());
 
         //创建检查点
         System.out.println("taskId = "+task.getTaskId());
@@ -351,6 +354,8 @@ public class TaskServiceImpl implements TaskService {
                     messageToWorker.setMessageInfo("您的任务订单成功完成。任务名称："+task.getTaskname());
                     messageToWorker.setTitle("任务通知");
                     messageDao.insertMessage(messageToWorker);
+                    //修改honor的值
+                    honorService.updateHonorMessage(aList.getAcceptUserId(),task.getAnnotationType());
                     //结算佣金
                     dataAnalysisService.modifyCurrency(task.getReward(),taskOrder.getAcceptUserId());
                     //计算得分

@@ -161,6 +161,7 @@ public class EvaluateServiceImpl implements EvaluateService {
 
     //##############################################################
     private double getPictureQuality(String imgUrl){
+        System.load("D:\\Cd\\server\\opencv\\x64\\opencv_java341.dll");
         System.out.println(imgUrl);
         try {
             URL url = new URL(imgUrl);

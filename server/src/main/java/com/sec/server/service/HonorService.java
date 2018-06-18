@@ -30,6 +30,9 @@ public interface HonorService {
     //计算积分
     double calculateTypePoint(long userId,AnnotationType annotationType);
 
+    //根据类型计算和修改对应类型的荣誉值
+    void updateHonorMessage(long userId,AnnotationType annotationType);
+
     //创建荣誉信息
     void createHonorMessage(long userId);
 

@@ -207,6 +207,29 @@ public class HonorServiceImpl implements HonorService {
     }
 
     /**
+     * 根据类型计算和修改荣誉值
+     * @param userId 工人Id
+     * @param annotationType 标注类型
+     */
+    @Override
+    public void updateHonorMessage(long userId, AnnotationType annotationType) {
+        switch (annotationType){
+            case option1:
+                honorOfFrameTag(userId);
+                break;
+            case option2:
+                honorOfClassifyTag(userId);
+                break;
+            case option3:
+                honorRegionTag(userId);
+                break;
+            case option4:
+                honorOfWholeTag(userId);
+                break;
+        }
+    }
+
+    /**
      * 创建荣誉信息
      * @param userId 用户Id
      * @describe 每注册一个用户就新建一个对应的荣誉信息
