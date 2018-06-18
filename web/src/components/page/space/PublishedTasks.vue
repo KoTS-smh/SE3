@@ -51,10 +51,10 @@
                 <div class="el-table" style="width: 100%">
                     <el-table :data="selectTable" style="width:100%">
                         <el-table-column prop="taskOrderId" label="编号" sortable></el-table-column>
-                        <el-table-column prop="acceptUserName" label="用户名"></el-table-column>
-                        <el-table-column prop="rate" label="进度" sortable>
+                        <el-table-column prop="acceptUsername" label="用户名"></el-table-column>
+                        <el-table-column prop="percentage" label="进度" sortable>
                             <template slot-scope="scope">
-                                <el-progress type="line" :percentage="scope.row.rate*100"></el-progress>
+                                <el-progress type="line" :percentage="scope.row.percentage*100"></el-progress>
                             </template>
                         </el-table-column>
                         <el-table-column prop="state" label="状态"></el-table-column>
@@ -115,22 +115,45 @@ export default {
                     taskId:taskId
                 }
             }).then(response => {
-                self.selectTable = response.data.data;
-                console.log(self.selectTable);
-                self.calculateTotalRate();
-            }).catch(error => {
-                self.$message("获取失败");
+                // self.selectTable = response.data.data;
+                // console.log(self.selectTable);
+                // self.calculateTotalRate();
+                
+                var indata = response.data.data;
+
+                for(var i = 0;i < indata.length;++i) {
+                    if(indata[i].state == "unSubmitted"){
+                    
+                    indata[i].state = "标注中"
+                    }else if(indata[i].state == "submitted"){
+                        indata[i].state = "待评审"
+                    }else if(indata[i].state == "fail"){
+                        indata[i].state = "失败"
+                    }else if(indata[i].state == "finish") {
+                        indata[i].state = "审批通过"
+                    }else if(indata[i].state == "appoint") {
+                        indata[i].state = "预约中"
+                    }else if(indata[i].state == "waiting") {
+                        indata[i].state = "等待被加入工作"
+                    }
+                }
+                
+                
+
+                self.selectTable = indata;
+
             })
         },
         handleRate(row){
             var type;
-            axios.get("http://localhost:8080/task/taskInfo",{
+            axios.post("http://localhost:8080/task/taskInfo",{
                 "taskId": this.taskId
             }).then(response=>{
+                console.log(response);
                 type = response.data.data.annotationType;
                 if(type == 'option1'){
                     this.$router.push({
-                        path: "/annotation/rate/rect", query: {
+                        path: "/annotation/rect", query: {
                             taskOrderId: row.taskOrderId,
                             acceptUserId:localStorage.getItem("userId")
                         }
@@ -138,7 +161,7 @@ export default {
                 }
                 else if(type == 'option2'){
                     this.$router.push({
-                        path: "/annotation/rate/classified", query: {
+                        path: "/annotation/classified", query: {
                             taskOrderId: row.taskOrderId,
                             acceptUserId:localStorage.getItem("userId")
                         }
@@ -146,7 +169,7 @@ export default {
                 }
                 else if(type == 'option3'){
                     this.$router.push({
-                        path: "/annotation/rate/region", query: {
+                        path: "/annotation/region", query: {
                             taskOrderId: row.taskOrderId,
                             acceptUserId:localStorage.getItem("userId")
                         }
@@ -154,7 +177,7 @@ export default {
                 }
                 else{
                     this.$router.push({
-                        path: "/annotation/rate/all", query: {
+                        path: "/annotation/all", query: {
                             taskOrderId: row.taskOrderId,
                             acceptUserId:localStorage.getItem("userId")
                         }

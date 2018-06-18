@@ -155,6 +155,11 @@ public class TaskOrderServiceImpl implements TaskOrderService {
         return num;
     }
 
+    @Override
+    public List<TaskOrder> getTaskOrderByTaskId(long taskId) {
+        return taskOrderDao.getTaskOrderByTaskId(taskId);
+    }
+
 
     @Override
     public void appointTask(long taskId, long userId) {

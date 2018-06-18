@@ -2,6 +2,7 @@ package com.sec.server.service.serviceImpl;
 
 import com.sec.server.domain.Message;
 import com.sec.server.model.PersonalDataModel;
+import com.sec.server.model.TaskOrderMessage;
 import com.sec.server.repository.AppointDao;
 import com.sec.server.repository.TaskDao;
 import com.sec.server.repository.TaskOrderDao;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -202,5 +204,30 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
         PersonalDataModel personalDataModel = new PersonalDataModel(point, ongoingTaskNum, rank);
 
         return personalDataModel;
+    }
+
+    @Override
+    public List<TaskOrderMessage> getTaskOrderMessage(long taskId) {
+        Task task = taskDao.getTask(taskId);
+        List<TaskOrderMessage> messageList = new ArrayList<>();
+        if(task != null) {
+            List<TaskOrder> taskOrderList = taskOrderDao.getTaskOrderByTaskId(taskId);
+            for(TaskOrder tmp : taskOrderList) {
+                TaskOrderMessage message = new TaskOrderMessage();
+                DecimalFormat df = new DecimalFormat("#0.00");
+
+                String percentage = df.format((tmp.getFinishedPics() * 1.0) / task.getImgUrls().size() );
+                message.setPercentage(Double.parseDouble(percentage));
+
+                String username = userDao.getUserById(tmp.getAcceptUserId()).getUsername();
+                message.setAcceptUsername(username);
+
+                message.setState(tmp.getSubmited());
+                message.setTaskOrderId(tmp.getTaskOrderId());
+
+                messageList.add(message);
+            }
+        }
+        return messageList;
     }
 }

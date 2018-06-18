@@ -60,11 +60,12 @@ public class TaskServiceImpl implements TaskService {
         List<String> urlLists = task.getImgUrls();
         int maxParticipator = task.getMaxParticipator();
         double cost = 0;
-        if(urlLists.size() * maxParticipator * 0.02 < 10){
-            cost = 10;
-        }else {
-            cost = urlLists.size() * maxParticipator * 0.02;
-        }
+//        if(urlLists.size() * maxParticipator * 0.02 < 10){
+//            cost = 10;
+//        }else {
+//            cost = urlLists.size() * maxParticipator * 0.02;
+//        }
+        cost = task.getReward();
 
 
         long userId = task.getPostUserId();
@@ -471,6 +472,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void viewedTimeInc(long taskId) {
         taskDao.increaseViewedTimes(taskId);
+    }
+
+    @Override
+    public Task getSimpleTask(long taskId) {
+        return taskDao.getTask(taskId);
     }
 
 

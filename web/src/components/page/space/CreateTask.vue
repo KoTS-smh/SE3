@@ -279,6 +279,12 @@ export default {
             this.form.endDate = this.dataValue[1];
             this.form.beginDate = this.dataValue[0];
             this.form.dynamicTags = this.dynamicTags;
+            
+            if( !this.isNum(this.form.maxParticipator)) {
+                
+                this.$message.error('请输入正确标注人数！');
+                return;
+            }
             if(this.form.reward!==''&&this.form.reward!=='请先完善任务信息！') {
                 axios.post('http://localhost:8080/task/create', this.form).then(function (response) {
                     console.log(response);
@@ -374,6 +380,15 @@ export default {
         handleAddTag(tag) {
             this.availableTags.splice(this.availableTags.indexOf(tag), 1);
             this.dynamicTags.push(tag)
+        },
+        isNum(s) {
+            if(s != null) {
+                var r, re;
+                re = /\d*/i; //\d表示数字,*表示匹配多个数字
+                r = s.match(re);
+                return (r==s)?true:false;
+            }
+            return false;
         }
     },
     watch: {

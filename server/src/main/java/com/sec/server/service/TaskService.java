@@ -93,4 +93,6 @@ public interface TaskService {
 
     void viewedTimeInc(long taskId);
 
+    Task getSimpleTask(long taskId);
+
 }

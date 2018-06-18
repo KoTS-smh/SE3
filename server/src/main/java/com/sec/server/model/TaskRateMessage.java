@@ -1,5 +1,9 @@
 package com.sec.server.model;
 
+import com.sec.server.domain.TaskOrder;
+import com.sec.server.repository.UserDao;
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class TaskRateMessage {
     private String acceptUserName;
     private double rate;
