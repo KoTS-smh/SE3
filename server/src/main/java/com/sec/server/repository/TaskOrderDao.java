@@ -44,7 +44,7 @@ public interface TaskOrderDao {
      * @return 任务订单列表 list
      */
     @Select("select * from MRGSDB.taskOrder " +
-            "where acceptUserId = #{acceptUserId} and submited = 3 and annotationType = #{type}")
+            "where acceptUserId = #{acceptUserId} and submited = 3 and taskId not in (select taskId from MRGSDB.task where annotationType <> #{type})")
     List<TaskOrder> getAllFinishedTaskOrderOfAType(@Param("acceptUserId") long acceptUserId,@Param("type") AnnotationType type);
 
     /**
@@ -144,4 +144,11 @@ public interface TaskOrderDao {
      */
     @Select("select * from MRGSDB.taskOrder where taskId = #{taskId}")
     List<TaskOrder> getTaskOrderByTaskId(long taskId);
+
+    /**
+     * 获取所有需要审批的任务
+     * @return 任务列表 list
+     */
+    @Select("select * MRGSDB.taskOrder where submited = 0 or submited = 1")
+    List<TaskOrder> getTaskNeedEvaluate();
 }
