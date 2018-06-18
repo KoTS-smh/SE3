@@ -176,66 +176,59 @@ export default {
             })
             },
             startAnno(){
-                // axios.get("http://localhost:8080/taskOrder/getAppoint",{
-                //     params:{
-                //         taskId:this.taskData.taskId
-                //     }
-                // }).then(response=>{
-                //     if(response.data.code === 0){
-                //         for(let i=0;i<response.data.data.length;i++){
-                //             if()
-                //         }
-                //     }
-                // });
-                let taskOrderId;
-                axios.post("http://localhost:8080/taskOrder/getAll",{
-                    acceptUserId:localStorage.getItem("userId")
-                }).then((response)=>{
-                   if(response.data.code === 0){
-                       for(let i=0;i<response.data.data.length;i++){
-                           if(response.data.data[i].taskId === this.taskData.taskId){
-                               taskOrderId = response.data.data[i].taskOrderId;
-                               break;
-                           }
-                       }
-                       if(taskOrderId == null){
-                           this.$message.info("任务还未接受！")
-                       }else {
-                           if(this.taskData.tagType == '标框标注'){
-                                   this.$router.push({
-                                       path: "/annotation/rect", query: {
-                                           taskOrderId: taskOrderId
-                                       }
-                                   })
-                           }
-                           else if(this.taskData.tagType == "分类标注"){
-                                   this.$router.push({
-                                       path: "/annotation/classified", query: {
-                                           taskOrderId: taskOrderId
-                                       }
-                                   })
-                           }
-                           else if(this.taskData.tagType == "区域标注"){
-                                   this.$router.push({
-                                       path: "/annotation/region", query: {
-                                           taskOrderId: taskOrderId
-                                       }
-                                   })
-                           }
-                           else if(this.taskData.tagType == "整体标注"){
-                                   this.$router.push({
-                                       path: "/annotation/all", query: {
-                                           taskOrderId: taskOrderId
-                                       }
-                                   })
-                           }
-                       }
-                   }else{
-                       this.$message.info("任务还未接受！")
-                   }
-                }).catch(()=>{
-                    this.$message.error("网络异常！")
-                });
+                if(this.taskData.state=='appoint'){
+                   this.$message.info("任务未开始！")
+                }else {
+                    let taskOrderId;
+                    axios.post("http://localhost:8080/taskOrder/getAll", {
+                        acceptUserId: localStorage.getItem("userId")
+                    }).then((response) => {
+                        if (response.data.code === 0) {
+                            for (let i = 0; i < response.data.data.length; i++) {
+                                if (response.data.data[i].taskId === this.taskData.taskId) {
+                                    taskOrderId = response.data.data[i].taskOrderId;
+                                    break;
+                                }
+                            }
+                            if (taskOrderId == null) {
+                                this.$message.info("不是可标注用户！")
+                            } else {
+                                if (this.taskData.tagType == '标框标注') {
+                                    this.$router.push({
+                                        path: "/annotation/rect", query: {
+                                            taskOrderId: taskOrderId
+                                        }
+                                    })
+                                }
+                                else if (this.taskData.tagType == "分类标注") {
+                                    this.$router.push({
+                                        path: "/annotation/classified", query: {
+                                            taskOrderId: taskOrderId
+                                        }
+                                    })
+                                }
+                                else if (this.taskData.tagType == "区域标注") {
+                                    this.$router.push({
+                                        path: "/annotation/region", query: {
+                                            taskOrderId: taskOrderId
+                                        }
+                                    })
+                                }
+                                else if (this.taskData.tagType == "整体标注") {
+                                    this.$router.push({
+                                        path: "/annotation/all", query: {
+                                            taskOrderId: taskOrderId
+                                        }
+                                    })
+                                }
+                            }
+                        } else {
+                            this.$message.info("不是可标注用户！")
+                        }
+                    }).catch(() => {
+                        this.$message.error("网络异常！")
+                    });
+                }
             },
             toTaskInfo(){
                 this.$router.push("/publishedTasks");
@@ -248,6 +241,20 @@ export default {
                         break;
                     }
                 }
+                axios.get("http://localhost:8080/taskOrder/getAppoint", {
+                    params:{
+                        taskId: this.taskData.taskId,
+                    }
+                }).then((response) => {
+                    if (response.data.code === 0) {
+                        for(let i=0;i<response.data.data.length;i++){
+                            if(response.data.data[i]==localStorage.getItem("userId")){
+                                isAccepted=true;
+                                break;
+                            }
+                        }
+                    }
+                });
                 if(!isAccepted) {
                     axios.get("http://localhost:8080/taskOrder/appoint", {
                         params:{
