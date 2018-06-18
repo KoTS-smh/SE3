@@ -395,8 +395,8 @@ public class TaskServiceImpl implements TaskService {
      *              4、有没有任务到达检查点
      */
     @Override
-//    @Scheduled(cron = "0 0 0 * * ?")
-    @Scheduled(cron = "0 47 17 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
+//    @Scheduled(cron = "0 47 17 * * ?")
     public void timeTask() {
         //获取所有未完成的任务订单 todo
 //        List<TaskOrder> taskOrderList = taskOrderDao.getTaskNeedEvaluate();
@@ -439,7 +439,7 @@ public class TaskServiceImpl implements TaskService {
             }
         }
 
-        //获取到达检查点的任务 todo
+        //获取到达检查点的任务
         List<Long> checkList = new ArrayList<>();
              checkList = checkPointDao.getTaskIdByDate(nowTime);
 //        checkList.add((long) 20);
@@ -496,16 +496,27 @@ public class TaskServiceImpl implements TaskService {
         List<Long> replaceList = new ArrayList<>();
         //获取评分信息
         for(TaskOrder taskOrder:taskOrderList){
-            //小于60为不合格，将被替换
-            if(taskOrder.getRate()<60){
-                //如果是最后一个检查点，则不需要替换工人，直接fail
-                if(isEnd){
-                    taskOrder.setSubmited(TaskOrderState.fail);
-                    taskOrderDao.updateTaskOrder(taskOrder);
+            //如果是最后一个检查点
+            if(isEnd){
+                switch (taskOrder.getSubmited()){
+                    //如果仍未提交则直接fail
+                    case unSubmitted:
+                        taskOrder.setSubmited(TaskOrderState.fail);
+                        taskOrderDao.updateTaskOrder(taskOrder);
+                        break;
+                    //如果是最后一个检查点，则不需要替换工人，直接fail
+                    case submitted:
+                        if(taskOrder.getRate()<60){
+                            taskOrder.setSubmited(TaskOrderState.fail);
+                            taskOrderDao.updateTaskOrder(taskOrder);
+                        }
+                        break;
                 }
-                //如果不是最后一个检查点，则调用替换算法
-                else
-                    replaceList.add(taskOrder.getAcceptUserId());
+            }
+            //如果不是最后一个检查点
+            else{
+                //小于60为不合格，将被替换
+                replaceList.add(taskOrder.getAcceptUserId());
             }
         }
         //如果是最后一个检查点，replaceList会是空的
