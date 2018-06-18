@@ -39,6 +39,9 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private AppointDao appointDao;
 
+    @Autowired
+    private CheckPointDao checkPointDao;
+
     @Resource(name = "dataAnalysisService")
     private DataAnalysisService dataAnalysisService;
 
@@ -81,7 +84,11 @@ public class TaskServiceImpl implements TaskService {
         imgUrlDao.insertUrlList(urlLists, task.getTaskId());
 
         //计算任务质量 todo 现在会报错
-        evaluateService.evaluateTaskQuality(task.getTaskId());
+//        evaluateService.evaluateTaskQuality(task.getTaskId());
+
+        //创建检查点
+        System.out.println("taskId = "+task.getTaskId());
+        createCheckPoint(task.getTaskId());
     }
 
     @Override
@@ -276,7 +283,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     /**
-     * 任务结算方法 todo
+     * 任务结算方法  todo
      * @param taskId 任务Id
      * @describe
      *              1、每天十二点判断是否有任务到达DDL，有则会调用此方法
@@ -292,7 +299,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void finishTask(long taskId) {
         //最后一次质量审核任务
-        checkTask(taskId,true);
+        checkTaskAtCheckPoint(taskId,true);
 
         //获取任务信息
         Task task = taskDao.getTask(taskId);
@@ -375,12 +382,23 @@ public class TaskServiceImpl implements TaskService {
     }
 
     /**
-     * 系统定时检查是否有任务需要开始任务或者结算任务
-     * @describe 每天零点调用一次
+     * 系统定时检查
+     * @describe
+     *              1、有没有任务需要开始
+     *              2、有没有任务需要结算
+     *              3、审批工人任务质量
+     *              4、有没有任务到达检查点
      */
     @Override
-    @Scheduled(cron = "0 6 13 * * ?")
+//    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 47 17 * * ?")
     public void timeTask() {
+        //获取所有未完成的任务订单 todo
+//        List<TaskOrder> taskOrderList = taskOrderDao.getTaskNeedEvaluate();
+        //给任务订单评分 todo
+//        for(TaskOrder taskOrder:taskOrderList){
+//            evaluateService.evaluateAnnotation(taskOrder.getTaskOrderId());
+//        }
         //获取所有预约中未开始的任务
         List<Task> appointTaskList = taskDao.getAllAppointTask();
         //获取所有进行中未结算的任务
@@ -412,19 +430,51 @@ public class TaskServiceImpl implements TaskService {
             //如果当前时间超过结束时间
             if(compareTime.getTime()<=nowTime.getTime()){
                 //结算任务
-                System.out.println("taskId = "+aTask.getTaskId());
                 finishTask(aTask.getTaskId());
             }
         }
 
+        //获取到达检查点的任务 todo
+        List<Long> checkList = new ArrayList<>();
+             checkList = checkPointDao.getTaskIdByDate(nowTime);
+//        checkList.add((long) 20);
+        //判断是否有任务需要检查
+        if(checkList.size()!=0){
+            for (Long taskId:checkList){
+                //检查任务是否需要替换工人
+                checkTaskAtCheckPoint(taskId,false);
+            }
+        }
     }
 
     /**
      * 创建检查点
+     * @describe
+     *              DDL也是一次检查点
+     *              5天要检查一次
+     *              大于等于十天的任务中间设一次检查点
+     *              大于等于十五天的任务中间设两次检查点
      */
     @Override
+//    @Scheduled(cron = "0 50 15 * * ?")
     public void createCheckPoint(long taskId) {
-        //todo
+        //获取任务
+        Task task = taskDao.getTask(taskId);
+        //获取任务时间长度
+        long difference = (task.getEndDate().getTime()-task.getBeginDate().getTime())/86400000;
+        double time = Math.abs(difference);
+        //设置检查点
+        double judge = time/5;
+        Calendar calendar = new GregorianCalendar();
+        for(int i = 1;i<=judge;i++){
+            //天数+5
+            calendar.setTime(task.getBeginDate());
+            calendar.add(Calendar.DATE,5*i);
+            System.out.println(taskId);
+            checkPointDao.createCheckPoint(taskId,calendar.getTime(),false);
+        }
+        //创建最后一个检查点
+        checkPointDao.createCheckPoint(taskId,task.getEndDate(),true);
     }
 
     /**
@@ -434,7 +484,7 @@ public class TaskServiceImpl implements TaskService {
      * @describe 任务完成也是一个检查点
      */
     @Override
-    public void checkTask(long taskId,boolean isEnd) {
+    public void checkTaskAtCheckPoint(long taskId,boolean isEnd) {
         //获取任务订单信息
         List<TaskOrder> taskOrderList = taskOrderDao.getAllTaskOrderOfATask(taskId);
         //将被替换的名单
@@ -452,11 +502,15 @@ public class TaskServiceImpl implements TaskService {
                 else
                     replaceList.add(taskOrder.getAcceptUserId());
             }
-
         }
         //如果是最后一个检查点，replaceList会是空的
-        if (replaceList.size()>0)
-            dataAnalysisService.replaceWorker(taskId,replaceList);
+        if (replaceList.size()>0) {
+            //获取任务的等待列表
+            List<Long> temp = appointDao.getAppointUser(taskId);
+            //如果等待列表中有人则调用替换算法
+            if(temp.size()>0)
+                dataAnalysisService.replaceWorker(taskId, replaceList);
+        }
     }
 
     @Override

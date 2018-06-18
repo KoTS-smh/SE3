@@ -31,7 +31,7 @@ public interface AppointDao {
      * @return 工人列表 list
      */
     @Select("select userId from mrgsdb.appoint where taskId = #{taskId}")
-    List<Long> getAppointUser(long taskId);
+    List<Long> getAppointUser(@Param("taskId") long taskId);
 
     /**
      * 获取工人预约的所有任务Id
@@ -39,5 +39,5 @@ public interface AppointDao {
      * @return 任务列表 list
      */
     @Select("select taskId from mrgsdb.appoint where userId = #{userId}")
-    List<Long> getAppointTask(long userId);
+    List<Long> getAppointTask(@Param("userId") long userId);
 }

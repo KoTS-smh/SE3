@@ -58,11 +58,10 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
      */
     @Override
     public double calculateMinimumMoneyOfTask(Task task){
-
         //工人数量  权重：0.101
         double workerNumber = task.getMaxParticipator();
         //时间      权重：0.048
-        double time = 0;
+        double time;
         //标注类型  权重：0.208
         double type = 0;
         //图片数量  权重：0.643
@@ -86,7 +85,7 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
                 break;
         }
 
-        return workerNumber*0.101/10+time*0.048/7+type*0.208/4+pictureNumber*0.643/100;
+        return (workerNumber*0.101/10+time*0.048/7+type*0.208/4+pictureNumber*0.643/10)*5;
     }
 
     /**
@@ -155,8 +154,8 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
         List<Long> waitingList = appointDao.getAppointUser(taskId);
         //对工人进行排序
         waitingList = appointService.sortListByHonorMessage(waitingList,task.getAnnotationType());
-        //从等待列表中选择等待工人补足
-        for(int i = 0;i<replacedWorkerList.size();i++){
+        //从等待列表中选择等待工人补足，如果需要替换的工人大于等待工人的数目，则会随机剩下一些人
+        for(int i = 0;i<replacedWorkerList.size()&&i<waitingList.size();i++){
             //新建任务订单
             TaskOrder taskOrder = new TaskOrder();
 
@@ -165,6 +164,9 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
             taskOrder.setEndDate(list.get(0).getEndDate());
             taskOrder.setSubmited(TaskOrderState.unSubmitted);
             taskOrder.setTaskId(taskId);
+
+            //从等待列表中删除被选中的工人
+            appointDao.deleteAppointMessage(taskId,taskOrder.getAcceptUserId());
 
             //通知工人已被选为新工人
             messageToNewWorker.setUserId(taskOrder.getAcceptUserId());

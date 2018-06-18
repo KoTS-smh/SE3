@@ -150,9 +150,7 @@ public class TaskOrderServiceImpl implements TaskOrderService {
 
     @Override
     public int getNumOfDiffenentType(long userId, AnnotationType annotationType) {
-        int num = taskOrderDao.getAllFinishedTaskOrderOfAType(userId, annotationType).size();
-
-        return num;
+        return taskOrderDao.getAllFinishedTaskOrderOfAType(userId, annotationType).size();
     }
 
     @Override

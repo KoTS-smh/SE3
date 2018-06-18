@@ -38,6 +38,7 @@ public class EvaluateServiceImpl implements EvaluateService {
     private final int smallNumTimes = 1;
     private final int bigNumTimes = 3;
 
+
     @Resource(name = "annotationService")
     private AnnotationService annotationService;
     @Autowired
@@ -160,6 +161,7 @@ public class EvaluateServiceImpl implements EvaluateService {
 
     //##############################################################
     private double getPictureQuality(String imgUrl){
+        System.out.println(imgUrl);
         try {
             URL url = new URL(imgUrl);
             //打开链接
@@ -173,12 +175,8 @@ public class EvaluateServiceImpl implements EvaluateService {
             //把输入流转换成mat对象
             BufferedImage bufferedImage = ImageIO.read(inStream);
             Mat mat = img2Mat(bufferedImage);
-            Mat grayMat = new Mat();
-            //转灰度图
-            Imgproc.cvtColor(mat,grayMat,Imgproc.COLOR_RGB2GRAY);
             //估算图片质量
-            Double score =100 - new BRISQUE().brisquescore(grayMat);
-            return score;
+            return 100 - new BRISQUE().brisquescore(mat);
         } catch (IOException e) {
             return -1;
         }
@@ -297,17 +295,34 @@ public class EvaluateServiceImpl implements EvaluateService {
 
     public static void main(String s[]){
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        Mat mat;
+//        Mat mat;
+//        try {
+//            //使用java2D读取图像
+//            String filePath = "C:\\Users\\pc\\Desktop\\TIM20180520000418.jpg";
+//            mat = Imgcodecs.imread(filePath);
+//            Mat grayMat = new Mat();
+//            Imgproc.cvtColor(mat,grayMat,Imgproc.COLOR_RGB2GRAY);
+//            System.out.println(new BRISQUE().brisquescore(grayMat));
+//        } catch (Exception e) {
+//            System.out.println("读取图像出现异常!");
+//            e.printStackTrace();
+//        }
         try {
-            //使用java2D读取图像
-            String filePath = "C:\\Users\\18333\\Desktop\\picTest\\1.bmp";
-            mat = Imgcodecs.imread(filePath);
-            Mat grayMat = new Mat();
-            Imgproc.cvtColor(mat,grayMat,Imgproc.COLOR_RGB2GRAY);
-            System.out.println(new BRISQUE().brisquescore(grayMat));
-        } catch (Exception e) {
-            System.out.println("读取图像出现异常!");
-            e.printStackTrace();
+            URL url = new URL("http://p6r9un2qj.bkt.clouddn.com/FhRaFRaRIvxZDZ9AdWGeFs-H5eh7");
+            //打开链接
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            //设置请求方式为"GET"
+            conn.setRequestMethod("GET");
+            //超时响应时间为5秒
+            conn.setConnectTimeout(5 * 1000);
+            //通过输入流获取图片数据
+            InputStream inStream = conn.getInputStream();
+            //把输入流转换成mat对象
+            BufferedImage bufferedImage = ImageIO.read(inStream);
+            Mat mat = new EvaluateServiceImpl().img2Mat(bufferedImage);
+            //估算图片质量
+            System.out.println(100 - new BRISQUE().brisquescore(mat));
+        } catch (IOException e) {
         }
     }
 

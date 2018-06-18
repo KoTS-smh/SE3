@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,8 +122,11 @@ public class TaskController {
 
     @RequestMapping("/task/getReward")
     public Result getMinReward(@RequestBody TaskModel taskModel){
+        //获得任务推荐最小金额
         double reward = dataAnalysisService.calculateMinimumMoneyOfTask(new Task(taskModel));
-        return ResultUtils.success(reward);
+        //保留两位小数
+        DecimalFormat df = new DecimalFormat("#.00");
+        return ResultUtils.success(df.format(reward));
     }
 
     @RequestMapping("/task/viewedTimeInc")

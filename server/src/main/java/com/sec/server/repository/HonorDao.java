@@ -13,7 +13,7 @@ public interface HonorDao {
      * @return 工人的等级信息 message
      */
     @Select("select * from MRGSDB.honor where userId = #{userId}")
-    HonorMessage getHonorMessage(long userId);
+    HonorMessage getHonorMessage(@Param("userId") long userId);
 
     /**
      * 修改一个工人荣誉等级情况
@@ -31,14 +31,14 @@ public interface HonorDao {
             "classifyTagLevel,classifyTagPoint,wholeTagLevel,wholeTagPoint," +
             "regionTagLevel,regionTagPoint,totalLevel) " +
             "values (#{userId},0,0,0,0,0,0,0,0,0)")
-    void insertUserHonor(long userId);
+    void insertUserHonor(@Param("userId") long userId);
 
     /**
      * 删除一个工人的荣誉
      * @param userId 工人Id
      */
     @Delete("delete MGRSDB.honor where userId = #{userId}")
-    void deleteUserHonor(long userId);
+    void deleteUserHonor(@Param("userId") long userId);
 
     /**
      * 获取一个工人标框标注积分
@@ -46,7 +46,7 @@ public interface HonorDao {
      * @return 积分
      */
     @Select("select frameTagPoint from MRGSDB.honor where userId = #{userId}")
-    Double getFrameTagPoint(long userId);
+    Double getFrameTagPoint(@Param("userId") long userId);
 
     /**
      * 获取一个工人分类标注积分
@@ -54,7 +54,7 @@ public interface HonorDao {
      * @return 积分
      */
     @Select("select classifyTagPoint from MRGSDB.honor where userId = #{userId}")
-    Double getClassifyTagPoint(long userId);
+    Double getClassifyTagPoint(@Param("userId") long userId);
 
     /**
      * 获取一个工人整体标注积分
@@ -62,7 +62,7 @@ public interface HonorDao {
      * @return 积分
      */
     @Select("select wholeTagPoint from MRGSDB.honor where userId = #{userId}")
-    Double getWholeTagPoint(long userId);
+    Double getWholeTagPoint(@Param("userId") long userId);
 
     /**
      * 获取一个工人区域标注积分
@@ -70,5 +70,5 @@ public interface HonorDao {
      * @return 积分
      */
     @Select("select regionTagPoint from MRGSDB.honor where userId = #{userId}")
-    Double getRegionTagPoint(long userId);
+    Double getRegionTagPoint(@Param("userId") long userId);
 }

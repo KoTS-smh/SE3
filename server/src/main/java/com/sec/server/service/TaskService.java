@@ -85,11 +85,12 @@ public interface TaskService {
     void finishTask(long taskId);
 
     /**
-     * 定时遍历数据库的任务
+     * 系统定时检查
      * @describe
-     *              运行时间：每天午夜十二点
-     *              目的： 1、检查有没有任务需要开始
-     *                    2、检查有没有任务需要
+     *              1、有没有任务需要开始
+     *              2、有没有任务需要结算
+     *              3、审批工人任务质量
+     *              4、有没有任务到达检查点  TODO
      */
     void timeTask();
 
@@ -103,7 +104,7 @@ public interface TaskService {
      * @param taskId 任务Id
      * @param isEnd 是否是最后一个检查点
      */
-    void checkTask(long taskId,boolean isEnd);
+    void checkTaskAtCheckPoint(long taskId,boolean isEnd);
 
     JSONArray getMenuItems();
 
