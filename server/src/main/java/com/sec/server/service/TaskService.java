@@ -85,9 +85,25 @@ public interface TaskService {
     void finishTask(long taskId);
 
     /**
-     *  每到十二点就运行一次这个方法判断有没有任务到了DDL todo
+     * 定时遍历数据库的任务
+     * @describe
+     *              运行时间：每天午夜十二点
+     *              目的： 1、检查有没有任务需要开始
+     *                    2、检查有没有任务需要
      */
     void timeTask();
+
+    /**
+     * 创建检查点
+     */
+    void createCheckPoint(long taskId);
+
+    /**
+     * 到达检查点开始检查任务订单完成质量
+     * @param taskId 任务Id
+     * @param isEnd 是否是最后一个检查点
+     */
+    void checkTask(long taskId,boolean isEnd);
 
     JSONArray getMenuItems();
 

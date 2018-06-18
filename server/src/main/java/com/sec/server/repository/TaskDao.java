@@ -24,7 +24,10 @@ public interface TaskDao {
      * 更新任务
      * @param task 任务
      */
-    @Update("update MRGSDB.task set taskName = #{taskName},taskInfo = #{taskInfo},endDate = #{endDate},totalPoints = #{totalPoints},taskLevel = #{taskLevel},maxParticipator = #{maxParticipator},reward = #{reward},taskTagString = #{taskTagString},quality = #{quality} where taskId = #{taskId}")
+    @Update("update MRGSDB.task set state = #{state},taskName = #{taskname}," +
+            "taskInfo = #{taskInfo},endDate = #{endDate},totalPoints = #{totalPoints}," +
+            "taskLevel = #{taskLevel},maxParticipator = #{maxParticipator},reward = #{reward}," +
+            "taskTagString = #{taskTagString},quality = #{quality},upRate = #{upRate} where taskId = #{taskId}")
     void updateTask(Task task);
 
     /**
@@ -53,7 +56,7 @@ public interface TaskDao {
      * 任务结算
      * @param taskId 任务Id
      */
-    @Update("update mrgsdb.task set state = 2")
+    @Update("update mrgsdb.task set state = 2 where taskId = #{taskId}")
     void finishTask(@Param("taskId") long taskId);
 
     /**
@@ -208,13 +211,13 @@ public interface TaskDao {
      * 获取所有预约中未开始的任务
      * @return 预约中未开始的任务列表 list
      */
-    @Select("select * from MRGSDB.task where state = 4")
+    @Select("select * from MRGSDB.task where state = 0")
     List<Task> getAllAppointTask();
 
     /**
      * 获取所有进行中未结算的任务
      * @return 进行中未结算的任务列表 list
      */
-    @Select("select * from MRGSDB.task where state = 2")
+    @Select("select * from MRGSDB.task where state = 1")
     List<Task> getAllOngoingTask();
 }

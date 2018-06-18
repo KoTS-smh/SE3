@@ -6,10 +6,7 @@ import com.sec.server.enums.*;
 import com.sec.server.exception.ResultException;
 import com.sec.server.model.Picture_CardModel;
 import com.sec.server.model.TaskModel;
-import com.sec.server.service.AppointService;
-import com.sec.server.service.DataAnalysisService;
-import com.sec.server.service.MessageService;
-import com.sec.server.service.TaskService;
+import com.sec.server.service.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +45,12 @@ public class TaskServiceImpl implements TaskService {
     @Resource(name = "appointService")
     private AppointService appointService;
 
+    @Resource(name = "evaluateService")
+    private EvaluateService evaluateService;
+
+    @Resource(name = "userService")
+    private UserService userService;
+
     /**
      * 创建任务
      * @param task 任务信息
@@ -76,7 +79,8 @@ public class TaskServiceImpl implements TaskService {
         taskDao.addTask(task);
         imgUrlDao.insertUrlList(urlLists, task.getTaskId());
 
-
+        //计算任务质量 todo 现在会报错
+        evaluateService.evaluateTaskQuality(task.getTaskId());
     }
 
     @Override
@@ -286,6 +290,9 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public void finishTask(long taskId) {
+        //最后一次质量审核任务
+        checkTask(taskId,true);
+
         //获取任务信息
         Task task = taskDao.getTask(taskId);
 
@@ -323,8 +330,6 @@ public class TaskServiceImpl implements TaskService {
         for (TaskOrder aList : list) {
             taskOrder = aList;
 
-            //质量审核 todo 如果不达标submited会变成fail，否则就会是submitted
-
             //操作通过的任务订单
             switch (taskOrder.getSubmited()) {
                 case submitted:
@@ -353,14 +358,16 @@ public class TaskServiceImpl implements TaskService {
                     messageToFailWorker.setUserId(aList.getAcceptUserId());
                     messageToFailWorker.setRead(false);
                     messageDao.insertMessage(messageToFailWorker);
-                    //计算得分 todo
+                    //计算得分
+                    userService.pointDrop(aList.getAcceptUserId());
                     break;
                 default:
                     break;
             }
 
-            //修改发布者余额
-            dataAnalysisService.modifyCurrency(-task.getReward()*passNumber,task.getPostUserId());
+            //修改发布者余额 todo
+            double number = task.getUpRate().charAt(0)/10+1;
+            dataAnalysisService.modifyCurrency(-(task.getReward()/number)*passNumber,task.getPostUserId());
 
         }
 
@@ -371,14 +378,13 @@ public class TaskServiceImpl implements TaskService {
      * @describe 每天零点调用一次
      */
     @Override
-    @Scheduled(cron = "0 48 16 * * ?")
+    @Scheduled(cron = "0 6 13 * * ?")
     public void timeTask() {
-        System.out.println("success");
         //获取所有预约中未开始的任务
         List<Task> appointTaskList = taskDao.getAllAppointTask();
         //获取所有进行中未结算的任务
         List<Task> ongoingTaskList = taskDao.getAllOngoingTask();
-        //获取当前时间
+        //获取当前时间df
         Date nowTime = new Date();
         Date compareTime;
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -405,10 +411,51 @@ public class TaskServiceImpl implements TaskService {
             //如果当前时间超过结束时间
             if(compareTime.getTime()<=nowTime.getTime()){
                 //结算任务
+                System.out.println("taskId = "+aTask.getTaskId());
                 finishTask(aTask.getTaskId());
             }
         }
 
+    }
+
+    /**
+     * 创建检查点
+     */
+    @Override
+    public void createCheckPoint(long taskId) {
+        //todo
+    }
+
+    /**
+     * 到达检查点开始检查当前任务订单的质量
+     * @param taskId 任务Id
+     * @param isEnd  是否是最后一个检查点
+     * @describe 任务完成也是一个检查点
+     */
+    @Override
+    public void checkTask(long taskId,boolean isEnd) {
+        //获取任务订单信息
+        List<TaskOrder> taskOrderList = taskOrderDao.getAllTaskOrderOfATask(taskId);
+        //将被替换的名单
+        List<Long> replaceList = new ArrayList<>();
+        //获取评分信息
+        for(TaskOrder taskOrder:taskOrderList){
+            //小于60为不合格，将被替换
+            if(taskOrder.getRate()<60){
+                //如果是最后一个检查点，则不需要替换工人，直接fail
+                if(isEnd){
+                    taskOrder.setSubmited(TaskOrderState.fail);
+                    taskOrderDao.updateTaskOrder(taskOrder);
+                }
+                //如果不是最后一个检查点，则调用替换算法
+                else
+                    replaceList.add(taskOrder.getAcceptUserId());
+            }
+
+        }
+        //如果是最后一个检查点，replaceList会是空的
+        if (replaceList.size()>0)
+            dataAnalysisService.replaceWorker(taskId,replaceList);
     }
 
     @Override

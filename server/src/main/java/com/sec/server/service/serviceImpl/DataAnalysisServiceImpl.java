@@ -99,7 +99,7 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
     @Override
     public void modifyCurrency(double changeCurrency, long userId) {
         //获取要修改的用户
-        User user = new User();
+        User user;
         user = userDao.getUserById(userId);
 
         //修改余额
@@ -110,7 +110,7 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
     }
 
     /**
-     * 工人替换算法 todo
+     * 工人替换算法
      * @param taskId 任务Id
      * @param replacedWorkerList 需要被替换的工人
      * @describe 在以下情况会调用该方法：

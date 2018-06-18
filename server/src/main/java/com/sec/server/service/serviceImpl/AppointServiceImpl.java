@@ -5,6 +5,7 @@ import com.sec.server.domain.Message;
 import com.sec.server.domain.Task;
 import com.sec.server.domain.TaskOrder;
 import com.sec.server.enums.AnnotationType;
+import com.sec.server.enums.TaskOrderState;
 import com.sec.server.enums.TaskState;
 import com.sec.server.repository.*;
 import com.sec.server.service.AppointService;
@@ -93,6 +94,7 @@ public class AppointServiceImpl implements AppointService {
             taskOrder.setAcceptUserId(userId);
             taskOrder.setBeginDate(task.getBeginDate());
             taskOrder.setEndDate(task.getEndDate());
+            taskOrder.setSubmited(TaskOrderState.unSubmitted);
             taskOrderDao.insertTaskOrder(taskOrder);
             //通知工人任务开始
             messageToAppointSuccess.setUserId(userId);
@@ -101,6 +103,14 @@ public class AppointServiceImpl implements AppointService {
             messageToAppointSuccess.setRead(false);
             messageDao.insertMessage(messageToAppointSuccess);
         }
+
+        //通知发布者任务正式开始
+        Message message = new Message();
+        message.setRead(false);
+        message.setTitle("任务通知");
+        message.setMessageInfo("您发布的任务已经成功开始。任务名称："+task.getTaskname());
+        message.setUserId(task.getPostUserId());
+        messageDao.insertMessage(message);
 
         //修改任务状态
         task.setState(TaskState.ongoing);
@@ -157,6 +167,7 @@ public class AppointServiceImpl implements AppointService {
                 break;
         }
 
+        //倒过来
         List<Long> newList = new ArrayList<>();
         for(int i = honorMessageList.size()-1;i>=0;i--){
             newList.add(honorMessageList.get(i).getUserId());

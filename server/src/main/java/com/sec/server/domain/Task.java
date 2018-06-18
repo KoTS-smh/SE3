@@ -43,6 +43,7 @@ public class Task {
     //报酬（等级为1时的基础，如果更高会多给报酬，按照等级由网站支付）
     private double reward;
     private List<String> imgUrls;
+    //系统给予的额外奖励
     private String upRate;
     private List<TaskTag> taskTags;
     private String taskTagString;
