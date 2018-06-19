@@ -61,6 +61,7 @@ public class TaskOrderController {
      */
     @RequestMapping("/taskOrder/createTaskOrder")
     public Result createTaskOrder(@RequestBody SimpleTaskOrderModel simpleTaskOrderModel){
+        System.out.println(simpleTaskOrderModel.getAcceptUserId());
         //获取任务信息
         TaskModel task  = taskService.getTask(simpleTaskOrderModel.getTaskId());
         //判断任务状态
