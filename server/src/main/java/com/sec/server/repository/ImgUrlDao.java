@@ -1,10 +1,7 @@
 package com.sec.server.repository;
 
 import com.sec.server.domain.ImgUrl;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,4 +24,12 @@ public interface ImgUrlDao {
 
     @Select("select count(taskId) from mrgsdb.imgUrl where taskId = #{taskId}")
     int getImageNum(long taskId);
+
+    /**
+     * 删除一个任务对应的图片url信息
+     * @param taskId 任务Id
+     * @describe 此方法只有在任务可以被删除的时候才会调用
+     */
+    @Delete("delete from MRGSDB.imgUrl where taskId = #{taskId}")
+    void deleteUrl(long taskId);
 }

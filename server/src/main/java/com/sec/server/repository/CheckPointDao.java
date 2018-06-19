@@ -1,10 +1,7 @@
 package com.sec.server.repository;
 
 import com.sec.server.domain.CheckPoint;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -31,6 +28,19 @@ public interface CheckPointDao {
     @Select("select taskId from MRGSDB.checkpoint where date = #{date}")
     List<Long> getTaskIdByDate(@Param("date") Date date);
 
+    /**
+     * 获取一个任务所有的检查点信息
+     * @param taskId 任务Id
+     * @return 检查点列表 list
+     */
     @Select("select date from MRGSDB.checkpoint where taskId = #{taskId}")
     List<Date> getDate(@Param("taskId") long taskId);
+
+    /**
+     * 删除一个任务所有检查点
+     * @param taskId 任务Id
+     * @describe 这个方法只有当任务可以被删除的时候才会调用
+     */
+    @Delete("delete from MRGSDB.checkpoint where taskId = #{taskId}")
+    void deleteCheckPoint(@Param("taskId")long taskId);
 }

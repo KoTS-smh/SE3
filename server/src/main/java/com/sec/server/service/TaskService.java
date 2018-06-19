@@ -25,6 +25,9 @@ public interface TaskService {
     /**
      * 删除任务
      * @param taskId 任务Id
+     * @describe 只有以下两种情况可以删除任务：
+     *              1、开始了没有人接取
+     *              2、还未开始且没人预约的任务
      */
     void deleteTask(long taskId);
 
