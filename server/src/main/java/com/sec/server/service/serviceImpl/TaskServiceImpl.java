@@ -76,14 +76,15 @@ public class TaskServiceImpl implements TaskService {
 //            cost = urlLists.size() * maxParticipator * 0.02;
 //        }
         cost = task.getReward();
-
+        cost += 10; //加上手续费
 
         long userId = task.getPostUserId();
         double currentBalance = userDao.getBalance(userId);
         if(currentBalance < cost) {
             throw new ResultException("余额不足", 12222);
         }
-        userDao.consume(cost, userId);
+        //先只扣除手续费
+        userDao.consume(10, userId);
         taskDao.addTask(task);
         imgUrlDao.insertUrlList(urlLists, task.getTaskId());
 
