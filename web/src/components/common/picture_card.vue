@@ -8,10 +8,10 @@
     </div>
     <div class="card-footer justify-between" style="height: 40px">
       <div class="left" >
-        <span ><icon name="eye" style="margin-top:12px; margin-left:5px"></icon>{{ viewedTimes }}</span>
-        <span ><icon name="money-bill-alt" style="margin-top:12px margin-left:5px"></icon> {{ reward }}</span>
-        <span v-if="this.upRate != ''" style="background-color:#1CC1E9;color:#FFFFFF">{{ upRate }}</span>
-        <el-button class="moreBtn" size="mini" round @click="getInfo" style="float: right; margin-top:5px; margin-right:8px">more</el-button>
+        <span ><icon name="eye" style="margin-top:12px; margin-left:3px"></icon>{{ viewedTimes }}</span>
+        <span ><icon name="money-bill-alt" style="margin-top:12px margin-left:0px"></icon> {{ reward }}</span>
+        <span class="up-rate" v-if="this.upRate != ''" style="background-color:#1CC1E9;color:#FFFFFF">{{ upRate }}</span>
+        <el-button class="moreBtn" size="mini" round @click="getInfo" style="float: right; margin-top:5px; margin-right:4px">more</el-button>
       </div>
 
     </div>
@@ -73,6 +73,9 @@
         height: 150px;
         background-size: cover;
         border-radius: 5px;
+    }
+    .up-rate{
+      font-size: 0.5rem;
     }
 
     .lee-picture-card{
