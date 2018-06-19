@@ -68,7 +68,6 @@ public class HomePageController {
         PersonalPointModel pointModel = new PersonalPointModel(framePoint, classifyPoint, wholePoint, regionPoint);
 
         int num = taskOrderService.getNumOfDiffenentType(6, AnnotationType.option1);
-        System.out.println("this is num " + num);
 
         JSONObject object1 = new JSONObject(pModel);
         JSONObject object2 = new JSONObject(pointModel);

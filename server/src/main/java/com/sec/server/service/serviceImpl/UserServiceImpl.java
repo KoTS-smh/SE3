@@ -3,10 +3,7 @@ package com.sec.server.service.serviceImpl;
 import com.sec.server.domain.HonorMessage;
 import com.sec.server.domain.Message;
 import com.sec.server.model.PersonalTaskNumModel;
-import com.sec.server.repository.HonorDao;
-import com.sec.server.repository.MessageDao;
-import com.sec.server.repository.TaskOrderDao;
-import com.sec.server.repository.UserDao;
+import com.sec.server.repository.*;
 import com.sec.server.domain.User;
 import com.sec.server.enums.ResultCode;
 import com.sec.server.enums.UserLevel;
@@ -39,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private TaskOrderDao taskOrderDao;
+
+    @Autowired
+    private AppointDao appointDao;
 
     @Resource(name = "honorService")
     private HonorService honorService;
@@ -161,7 +161,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public PersonalTaskNumModel getPersonalTaskNum(long userId) {
         int ongoingNum = taskOrderDao.getAllOngoing(userId).size();
-        int appointNum = taskOrderDao.getAllAppoint(userId).size();
+        int appointNum = appointDao.getAppointTask(userId).size();
         int finishedNum = taskOrderDao.getAllSubmited(userId).size();
         int point = 0;
         if(userDao.getPoint(userId) != null)

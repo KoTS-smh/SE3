@@ -64,14 +64,6 @@ public interface TaskOrderDao {
     List<TaskOrder> getAllOngoing(long acceptUserId);
 
     /**
-     * 获取一个工人所有正在预约中的任务订单
-     * @param acceptUserId 工人ID
-     * @return 正在预约的任务订单列表 list
-     */
-    @Select("select * from MRGSDB.taskOrder where acceptUserId = #{acceptUserId} and submited = 0")
-    List<TaskOrder> getAllAppoint(long acceptUserId);
-
-    /**
      * 更新任务订单
      * @param taskOrder 任务订单Id
      */
