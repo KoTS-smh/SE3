@@ -30,4 +30,7 @@ public interface CheckPointDao {
      */
     @Select("select taskId from MRGSDB.checkpoint where date = #{date}")
     List<Long> getTaskIdByDate(@Param("date") Date date);
+
+    @Select("select date from MRGSDB.checkpoint where taskId = #{taskId}")
+    List<Date> getDate(@Param("taskId") long taskId);
 }

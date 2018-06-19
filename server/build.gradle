@@ -40,7 +40,6 @@ dependencies {
     compile("mysql:mysql-connector-java:5.1.6")
     compile 'edu.stanford.nlp:stanford-corenlp:3.9.1'
     compile group: 'com.google.guava', name: 'guava', version: '25.1-jre'
-    compile files('opencv/opencv-341.jar')
     compile files('corenlp/stanford-corenlp-3.9.1-models.jar')
     compile files('corenlp/stanford-corenlp-3.9.1-models-english.jar')
     compile files('libsvm/libsvm.jar')

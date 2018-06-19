@@ -11,13 +11,10 @@ import com.sec.server.repository.TaskOrderDao;
 import com.sec.server.service.AnnotationService;
 import com.sec.server.service.EvaluateService;
 import com.sec.server.utils.BRISQUE;
-import com.sec.server.utils.OpencvLibrary;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDouble;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -107,10 +104,10 @@ public class EvaluateServiceImpl implements EvaluateService {
         }
 
         for(Task task:tasks){
-            //
+            // todo
             List<Long> taskOrderIds = taskOrderDao.getAllTaskOrderIdOfATask(task.getTaskId());
             for(long id:taskOrderIds){
-                taskOrderDao.setQuality(Math.random()*100,id);
+                taskOrderDao.setQuality(Math.random()*20+80,id);
             }
             //
             int num = task.getImgUrls().size();
@@ -263,6 +260,7 @@ public class EvaluateServiceImpl implements EvaluateService {
 
     @Override
     public void evaluateTaskQuality(long taskId) {
+        System.loadLibrary("opencv_java341");
         Task task = taskDao.getTask(taskId);
         List<String> urls = task.getImgUrls();
         List<Double> points = new ArrayList<>();
@@ -292,6 +290,7 @@ public class EvaluateServiceImpl implements EvaluateService {
 
     //##############################################################
     private double getPictureQuality(String imgUrl){
+        System.loadLibrary("opencv_java341");
         try {
             URL url = new URL(imgUrl);
             //打开链接
@@ -304,11 +303,9 @@ public class EvaluateServiceImpl implements EvaluateService {
             InputStream inStream = conn.getInputStream();
             //把输入流转换成mat对象
             BufferedImage bufferedImage = ImageIO.read(inStream);
-            //转灰度图
-            //Mat mat = img2Mat(bufferedImage);
+            Mat mat = img2Mat(bufferedImage);
             //估算图片质量
-            //Double score =100 - new BRISQUE().brisquescore(mat);
-            return Math.random()*50+50;
+            return 100 - new BRISQUE().brisquescore(mat);
         } catch (IOException e) {
             return -1;
         }

@@ -286,7 +286,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     /**
-     * 任务结算方法  todo
+     * 任务结算方法
      * @param taskId 任务Id
      * @describe
      *              1、每天十二点判断是否有任务到达DDL，有则会调用此方法
@@ -378,7 +378,7 @@ public class TaskServiceImpl implements TaskService {
                     break;
             }
 
-            //修改发布者余额 todo
+            //修改发布者余额
             double number = task.getUpRate().charAt(0)/10+1;
             dataAnalysisService.modifyCurrency(-(task.getReward()/number)*passNumber,task.getPostUserId());
 

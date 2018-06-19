@@ -165,8 +165,8 @@ public interface TaskDao {
     })
     List<Task> searchForTypedTasks(@Param("taskName") String taskName, @Param("annotationType") int annotationType);
 
-    @Insert("insert into mrgsdb.task(quality) values(#{quality}) where taskId = #{taskId}")
-    void setTaskQuality(@Param("taskId") long taskId,@Param("quality") double quality);//todo 带测试
+        @Update("update mrgsdb.task set quality = #{quality} where taskId = #{taskId}")
+    void setTaskQuality(@Param("taskId") long taskId,@Param("quality") double quality);
 
 
     /**
