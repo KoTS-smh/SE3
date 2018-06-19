@@ -68,8 +68,6 @@ public class UserController {
      */
     @RequestMapping("/user/getUser")
     public Result getUser(long userId){
-//        User user = userService.get(userId);
-//        return ResultUtils.success(user);
         User user = userService.getUserById(userId);
         return ResultUtils.success(user);
     }

@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.*;
 
 import static java.lang.Math.log;
@@ -283,7 +284,9 @@ public class EvaluateServiceImpl implements EvaluateService {
             result+=point;
         }
         result/=urls.size();
-        taskDao.setTaskQuality(taskId,result);
+        //保留两位小数
+        DecimalFormat df = new DecimalFormat("#.00");
+        taskDao.setTaskQuality(taskId,Double.parseDouble(df.format(result)));
     }
 
 

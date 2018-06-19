@@ -5,7 +5,6 @@ public interface EvaluateService {
     /**
      * 计算评分
      * @param taskOrderId 任务Id
-     * @return 评分
      * @describe 每天十二点要调用一次
      */
     void evaluateAnnotation(long taskOrderId);

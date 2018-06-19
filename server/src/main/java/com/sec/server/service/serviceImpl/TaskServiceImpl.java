@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.awt.event.MouseWheelEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -99,14 +100,58 @@ public class TaskServiceImpl implements TaskService {
         taskDao.updateTask(task);
     }
 
+    /**
+     * 删除任务
+     * @param taskId 任务Id
+     * @describe 只有以下两种情况可以删除任务：
+     *              1、开始了没有人接取
+     *              2、还未开始且没人预约的任务
+     */
     @Override
     public void deleteTask(long taskId) {
-        try {
-            //taskDao.deleteTask(taskId);
-            throw new ResultException("任务已被接取，无法删除", 12580);
-        }catch (Exception e) {
-            throw new ResultException("任务已被接取，无法删除", 12580);
+        //获取任务信息
+        Task task = taskDao.getTask(taskId);
+        TaskState taskState = task.getState();
+        //判断任务状态
+        switch(taskState){
+            //对于已经开始的任务
+            case ongoing:
+                //判断有没有人接取
+                int number = taskOrderDao.getAcceptNum(taskId);
+                //如果有人接取
+                if(number > 0)
+                    throw new ResultException("任务已被接取，无法删除", 12580);
+                break;
+            //对于还在预约中的任务
+            case appoint:
+                //获取预约的人
+                List<Long> appointUserList = appointDao.getAppointUser(taskId);
+                //通知他们任务已经被删除
+                for(Long appointUser:appointUserList){
+                    Message message1 = new Message();
+                    message1.setRead(false);
+                    message1.setMessageInfo("您预约的任务已被发布者删除，感谢您的对任务的关注。任务名称："+task.getTaskname());
+                    message1.setUserId(appointUser);
+                    message1.setTitle("任务通知");
+                    messageDao.insertMessage(message1);
+                    //删除预约记录
+                    appointDao.deleteAppointMessage(taskId,appointUser);
+                }
+                break;
+            case finish:
+                throw new ResultException("任务已经完成，无法删除",12581);
         }
+        //删除任务相关信息
+        taskDao.deleteTask(taskId);
+        checkPointDao.deleteCheckPoint(taskId);
+        imgUrlDao.deleteUrl(taskId);
+        //通知发布者删除成功
+        Message message = new Message();
+        message.setUserId(task.getPostUserId());
+        message.setMessageInfo("您选中的任务已经成功删除。任务名称："+task.getTaskname());
+        message.setTitle("任务通知");
+        message.setRead(false);
+        messageDao.insertMessage(message);
     }
 
     @Override
@@ -471,6 +516,10 @@ public class TaskServiceImpl implements TaskService {
         double time = Math.abs(difference);
         //设置检查点
         double judge = time/5;
+        //如果正好是五的倍数，则需要-1
+        int temp = (int) time/5;
+        if(judge==temp)
+            judge-=1;
         Calendar calendar = new GregorianCalendar();
         for(int i = 1;i<=judge;i++){
             //天数+5
