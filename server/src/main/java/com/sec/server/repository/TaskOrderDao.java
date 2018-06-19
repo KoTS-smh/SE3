@@ -71,19 +71,12 @@ public interface TaskOrderDao {
             "beginDate = #{beginDate}, endDate = #{endDate}, rate = #{rate} where taskOrderId = #{taskOrderId}")
     void updateTaskOrder(TaskOrder taskOrder);
 
-    /**
-     * 删除任务订单
-     * @param taskOrderId 任务订单Id
-     */
-    @Delete("delete from MRGSDB.taskOrder where taskOrderId = #{taskOrderId}")
-    void deleteTaskOrder(@Param("taskOrderId") long taskOrderId);
-
-    /**
-     * 删除预约工人的订单
-     *
-     */
-    @Delete("delete from MRGSDB.taskOrder where taskId = {#taskId} and userId = {#userId}")
-    void deleteAppointTaskOrder(@Param("taskId") long taskId,@Param("userId") long userId);
+//    /**
+//     * 删除任务订单
+//     * @param taskOrderId 任务订单Id
+//     */
+//    @Delete("delete from MRGSDB.taskOrder where taskOrderId = #{taskOrderId}")
+//    void deleteTaskOrder(@Param("taskOrderId") long taskOrderId);
 
     /**
      * 获取接取一个任务的所有工人Id

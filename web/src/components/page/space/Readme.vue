@@ -16,7 +16,7 @@
             </el-row>
         </div>
         </el-row>
-        
+
         <el-row>
             <div class="chart" style="width:440px;hight:280px;margin-left:10px;margin-top:50px">
                 <ve-radar :data="chartData"></ve-radar>
@@ -72,8 +72,8 @@ import VCharts from 'v-charts'
 
         methods: {
             placeData() {
-                var userId = localStorage.getItem('userId')
-                console.log(userId)
+                var userId = localStorage.getItem('userId');
+                console.log(userId);
                 axios.post('http://localhost:8080/getPersonalData', {"userId": userId, "password": ''})
                 .then(response => {
                     console.log(response);
@@ -86,7 +86,7 @@ import VCharts from 'v-charts'
                     this.cardsData[3].count = taskNumData.point;
 
                     var chartRow = {'ID': '你的标注评分','分类标注': radarPicData.classifyPoint, '整体标注': radarPicData.wholePoint, '区域标注': radarPicData.regionPoint, '标框标注': radarPicData.framePoint};
-                    // this.chartData.rows[0] = chartRow;    
+                    // this.chartData.rows[0] = chartRow;
                     console.log(chartRow);
                     this.chartData.rows.push(chartRow);
                 })

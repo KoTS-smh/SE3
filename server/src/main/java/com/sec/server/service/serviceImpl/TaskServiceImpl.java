@@ -340,8 +340,6 @@ public class TaskServiceImpl implements TaskService {
      * 工人预约任务-> 预约成功开始工作 -> 任务提交等待审批 -> 任务订单审批通过 -> 任务结算 -> 获取佣金
      * 任务到期之后停止订单的修改和提交操作
      * 1、所有人都提交了，检查点到最后一个阶段（即到达任务结束时间），需要结算任务
-     *          问题：
-     *              a、因为在日常的检查点会有专门的方法去检查每个任务评分是否达到要求，那在最后一个检查点如果没达到要求是直接变成fail?
      * 结算方法主要是为了付钱和更改任务状态
      */
     @Override
@@ -440,8 +438,8 @@ public class TaskServiceImpl implements TaskService {
      *              4、有没有任务到达检查点
      */
     @Override
-    @Scheduled(cron = "0 0 0 * * ?")
-//    @Scheduled(cron = "0 47 17 * * ?")
+//    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 19 17 * * ?")
     public void timeTask() {
         //获取所有未完成的任务订单 todo
 //        List<TaskOrder> taskOrderList = taskOrderDao.getTaskNeedEvaluate();

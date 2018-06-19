@@ -1,9 +1,11 @@
 package com.sec.server.service.serviceImpl;
 
+import com.sec.server.domain.Message;
 import com.sec.server.enums.TaskState;
 import com.sec.server.exception.ResultException;
 import com.sec.server.repository.AppointDao;
 import com.sec.server.enums.AnnotationType;
+import com.sec.server.repository.MessageDao;
 import com.sec.server.repository.TaskDao;
 import com.sec.server.repository.TaskOrderDao;
 import com.sec.server.domain.Task;
@@ -11,9 +13,11 @@ import com.sec.server.domain.TaskOrder;
 import com.sec.server.enums.TaskOrderState;
 import com.sec.server.model.TaskOrderModel;
 import com.sec.server.service.TaskOrderService;
+import com.sec.server.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +31,11 @@ public class TaskOrderServiceImpl implements TaskOrderService {
     private TaskDao taskDao;
     @Autowired
     private AppointDao appointDao;
+    @Autowired
+    private MessageDao messageDao;
+
+    @Resource(name = "userService")
+    private UserService userService;
 
     /**
      * 通过Id获取任务订单
@@ -123,11 +132,23 @@ public class TaskOrderServiceImpl implements TaskOrderService {
     /**
      * 删除任务订单或取消预约任务
      * @param taskOrderId 任务订单Id
-     * @describe
+     * @describe 任务订单无法删除，而且退出会被扣钱
      */
     @Override
     public void deleteTaskOrder(long taskOrderId) {
-        taskOrderDao.deleteTaskOrder(taskOrderId);
+        //获取任务订单
+        TaskOrder taskOrder = taskOrderDao.getTaskOrder(taskOrderId);
+        //更改任务订单状态
+        taskOrderDao.changeTaskOrderState(taskOrderId,TaskOrderState.fail);
+        //通知工人
+        Message message = new Message();
+        message.setTitle("任务通知");
+        message.setUserId(taskOrder.getAcceptUserId());
+        message.setMessageInfo("您已成功退出该任务，已被扣除信用积分，请下次诚信接取任务。任务名称:"+taskDao.getTaskName(taskOrder.getTaskId()));
+        message.setRead(false);
+        messageDao.insertMessage(message);
+        //扣除信用积分
+        userService.pointDrop(taskOrder.getAcceptUserId());
     }
 
     /**

@@ -203,9 +203,7 @@ public class DataAnalysisServiceImpl implements DataAnalysisService {
             rank = "前" + df.format(percentage * 100) + " %";
         }
 
-        PersonalDataModel personalDataModel = new PersonalDataModel(point, ongoingTaskNum, rank);
-
-        return personalDataModel;
+        return new PersonalDataModel(point, ongoingTaskNum, rank);
     }
 
     @Override
