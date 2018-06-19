@@ -86,7 +86,7 @@ public class TaskServiceImpl implements TaskService {
         taskDao.addTask(task);
         imgUrlDao.insertUrlList(urlLists, task.getTaskId());
 
-        //计算任务质量 todo 现在会报错
+        //计算任务质量
         evaluateService.evaluateTaskQuality(task.getTaskId());
 
         //创建检查点
@@ -404,6 +404,7 @@ public class TaskServiceImpl implements TaskService {
 //        for(TaskOrder taskOrder:taskOrderList){
 //            evaluateService.evaluateAnnotation(taskOrder.getTaskOrderId());
 //        }
+        evaluateService.evaluateAnnotation();
         //获取所有预约中未开始的任务
         List<Task> appointTaskList = taskDao.getAllAppointTask();
         //获取所有进行中未结算的任务

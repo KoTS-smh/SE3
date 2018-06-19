@@ -57,7 +57,7 @@
                     <el-row>
                         <el-button type="primary" class="choiceBtn" @click="acceptTask()">接受任务</el-button>
                         <el-button type="success" class="choiceBtn" @click="startAnno()">开始标注</el-button>
-                        <el-button type="info" class="choiceBtn" @click="leave()">返&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;回</el-button>
+                        <el-button type="info" class="choiceBtn" @click="leave()">返回主页</el-button>
                     </el-row>
                 </div>
                 <div v-show="showInfo" style="margin-top: 8%">
@@ -123,7 +123,7 @@ export default {
             getTask() {
             var acceptUserId = localStorage.getItem("userId");
             var taskId = this.taskData.taskId;
-            axios.post("http://localhost:8080/task/taskInfo", {"taskId": taskId})
+            axios.post("http://localhost:8080/task/taskInfo", {taskId: taskId})
             .then((response) => {
                 console.log(response);
                 if(response.data.code === 0) {
@@ -176,57 +176,59 @@ export default {
             })
             },
             startAnno(){
-                let taskOrderId;
-                let submited;
-                axios.post("http://localhost:8080/taskOrder/getAll",{
-                    acceptUserId:localStorage.getItem("userId")
-                }).then((response)=>{
-                   if(response.data.code === 0){
-                       for(let i=0;i<response.data.data.length;i++){
-                           if(response.data.data[i].taskId === this.taskData.taskId){
-                               taskOrderId = response.data.data[i].taskOrderId;
-                               submited = response.data.data[i].submited;
-                               break;
-                           }
-                       }
-                       if(taskOrderId == null){
-                           this.$message.info("任务还未接受！")
-                       }else {
-                           if(this.taskData.tagType == '标框标注'){
-                                   this.$router.push({
-                                       path: "/annotation/rect", query: {
-                                           taskOrderId: taskOrderId
-                                       }
-                                   })
-                           }
-                           else if(this.taskData.tagType == "分类标注"){
-                                   this.$router.push({
-                                       path: "/annotation/classified", query: {
-                                           taskOrderId: taskOrderId
-                                       }
-                                   })
-                           }
-                           else if(this.taskData.tagType == "区域标注"){
-                                   this.$router.push({
-                                       path: "/annotation/region", query: {
-                                           taskOrderId: taskOrderId
-                                       }
-                                   })
-                           }
-                           else if(this.taskData.tagType == "整体标注"){
-                                   this.$router.push({
-                                       path: "/annotation/all", query: {
-                                           taskOrderId: taskOrderId
-                                       }
-                                   })
-                           }
-                       }
-                   }else{
-                       this.$message.info("任务还未接受！")
-                   }
-                }).catch(()=>{
-                    this.$message.error("网络异常！")
-                });
+                if(this.taskData.state=='appoint'){
+                   this.$message.info("任务未开始！")
+                }else {
+                    let taskOrderId;
+                    axios.post("http://localhost:8080/taskOrder/getAll", {
+                        acceptUserId: localStorage.getItem("userId")
+                    }).then((response) => {
+                        if (response.data.code === 0) {
+                            for (let i = 0; i < response.data.data.length; i++) {
+                                if (response.data.data[i].taskId === this.taskData.taskId) {
+                                    taskOrderId = response.data.data[i].taskOrderId;
+                                    break;
+                                }
+                            }
+                            if (taskOrderId == null) {
+                                this.$message.info("不是可标注用户！")
+                            } else {
+                                if (this.taskData.tagType == '标框标注') {
+                                    this.$router.push({
+                                        path: "/annotation/rect", query: {
+                                            taskOrderId: taskOrderId
+                                        }
+                                    })
+                                }
+                                else if (this.taskData.tagType == "分类标注") {
+                                    this.$router.push({
+                                        path: "/annotation/classified", query: {
+                                            taskOrderId: taskOrderId
+                                        }
+                                    })
+                                }
+                                else if (this.taskData.tagType == "区域标注") {
+                                    this.$router.push({
+                                        path: "/annotation/region", query: {
+                                            taskOrderId: taskOrderId
+                                        }
+                                    })
+                                }
+                                else if (this.taskData.tagType == "整体标注") {
+                                    this.$router.push({
+                                        path: "/annotation/all", query: {
+                                            taskOrderId: taskOrderId
+                                        }
+                                    })
+                                }
+                            }
+                        } else {
+                            this.$message.info("不是可标注用户！")
+                        }
+                    }).catch(() => {
+                        this.$message.error("网络异常！")
+                    });
+                }
             },
             toTaskInfo(){
                 this.$router.push("/publishedTasks");
@@ -239,10 +241,26 @@ export default {
                         break;
                     }
                 }
-                if(!isAccepted) {
-                    axios.post("http://localhost:8080/taskOrder/createTaskOrder", {
+                axios.get("http://localhost:8080/taskOrder/getAppoint", {
+                    params:{
                         taskId: this.taskData.taskId,
-                        acceptUserId: localStorage.getItem("userId")
+                    }
+                }).then((response) => {
+                    if (response.data.code === 0) {
+                        for(let i=0;i<response.data.data.length;i++){
+                            if(response.data.data[i]==localStorage.getItem("userId")){
+                                isAccepted=true;
+                                break;
+                            }
+                        }
+                    }
+                });
+                if(!isAccepted) {
+                    axios.get("http://localhost:8080/taskOrder/appoint", {
+                        params:{
+                            taskId: this.taskData.taskId,
+                            userId: localStorage.getItem("userId")
+                        }
                     }).then((response) => {
                         if (response.data.code === 0) {
                             this.$message.success('接受成功！');

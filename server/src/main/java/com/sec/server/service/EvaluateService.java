@@ -8,9 +8,8 @@ public interface EvaluateService {
      * @return 评分
      * @describe 每天十二点要调用一次
      */
-    double evaluateAnnotation(long taskOrderId);
+    void evaluateAnnotation(long taskOrderId);
 
-    double evaluateAnnotationWithStandard(long taskOrderId, double points, long standardId);
 
     /**
      * 计算任务质量
@@ -18,6 +17,5 @@ public interface EvaluateService {
      */
     void evaluateTaskQuality(long taskId);
 
-    double evaluateTaskRewards(long taskId);
-
+    void evaluateAnnotation();
 }
