@@ -14,6 +14,7 @@
                 <el-option key="4" label="等待中" value="等待中"></el-option>
                 <el-option key="5" label="已提交" value="已提交"></el-option>
                 <el-option key="6" label="已失败" value="已失败"></el-option>
+                <el-option key="7" label="全部"   value="全部"  ></el-option>
             </el-select>
             <el-button type="primary"  @click="newTask">接取任务</el-button>
         </div>
@@ -143,7 +144,8 @@
                         axios.get('http://localhost:8080/taskOrder/delete', {
                             params: {
                                 taskOrderId: row.taskOrderId,
-                                userId: localStorage.getItem("userId")
+                                userId: localStorage.getItem("userId"),
+                                taskId:row.taskId
                             }
                         }).then((response) => {
                             if (response.data.code !== 0) {
@@ -178,9 +180,13 @@
                 var mydata = this.all_task;
                 this.tableData = [];
                 var i = 0;
-                for(i = 0;i<mydata.length;++i){
-                    if(mydata[i].submited===selection)
-                        this.tableData.push(mydata[i]);
+                if(selection==="全部")
+                    this.tableData=this.all_task;
+                else{
+                    for(i = 0;i<mydata.length;++i){
+                        if(mydata[i].submited===selection)
+                            this.tableData.push(mydata[i]);
+                    }
                 }
             },
             delAll(){
@@ -246,8 +252,9 @@
                                 response.data.data[j].submited = "等待中";
                                 break;
                         }
-                        response.data.data[j].endDate = this.convertDate(response.data.data[j].endDate);
-                        response.data.data[j].beginDate = this.convertDate(response.data.data[j].beginDate);
+                        response.data.data[j].endDate = new Date(response.data.data[j].endDate).Format("yyyy-MM-dd");
+                            // this.convertDate(response.data.data[j].endDate);
+                        response.data.data[j].beginDate = new Date(response.data.data[j].beginDate).Format("yyyy-MM-dd");
                         var tmprate = response.data.data[j].rate;
                         if(tmprate != null && tmprate !== undefined && tmprate !== -1){
                             //donothing
@@ -287,7 +294,7 @@
         },
 
         mounted() {
-            var username = localStorage.getItem('username')
+            var username = localStorage.getItem('username');
             if(username != null && username.length > 0) {
                 //donothing
             }else {

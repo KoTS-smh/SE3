@@ -1,6 +1,7 @@
 package com.sec.server.controller;
 
 import com.sec.server.domain.Task;
+import com.sec.server.enums.ResultCode;
 import com.sec.server.model.Recommend_CardModel;
 import com.sec.server.model.TaskModel;
 import com.sec.server.model.UserModel;

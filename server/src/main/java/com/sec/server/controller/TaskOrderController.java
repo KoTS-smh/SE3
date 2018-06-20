@@ -2,11 +2,14 @@ package com.sec.server.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.sec.server.domain.Message;
 import com.sec.server.domain.Task;
 import com.sec.server.domain.TaskOrder;
 import com.sec.server.enums.ResultCode;
+import com.sec.server.exception.ResultException;
 import com.sec.server.model.*;
 import com.sec.server.service.AppointService;
+import com.sec.server.service.MessageService;
 import com.sec.server.service.TaskOrderService;
 import com.sec.server.service.TaskService;
 import com.sec.server.utils.Result;
@@ -29,6 +32,9 @@ public class TaskOrderController {
 
     @Resource(name = "appointService")
     private AppointService appointService;
+
+    @Resource(name = "messageService")
+    private MessageService messageService;
 
 
     /**
@@ -56,31 +62,47 @@ public class TaskOrderController {
 
     /**
      * 创建一个任务订单
-     * @param simpleTaskOrderModel 任务订单信息
+     * @param taskId 任务Id
      * @return 返回操作成功信息
      */
     @RequestMapping("/taskOrder/createTaskOrder")
-    public Result createTaskOrder(@RequestBody SimpleTaskOrderModel simpleTaskOrderModel){
-        System.out.println(simpleTaskOrderModel.getAcceptUserId());
+    public Result createTaskOrder(long taskId,long userId){
         //获取任务信息
-        TaskModel task  = taskService.getTask(simpleTaskOrderModel.getTaskId());
+        TaskModel task  = taskService.getTask(taskId);
+        //创建通知信息
+        Message message = new Message();
+        message.setRead(false);
+        message.setUserId(userId);
+        message.setTitle("任务通知");
+        System.out.println(task.getState());
         //判断任务状态
         switch (task.getState()){
             //任务处在预约期就预约任务
             case appoint:
-                appointService.appointTask(simpleTaskOrderModel.getTaskId(),simpleTaskOrderModel.getAcceptUserId());
+                //判断工人是否已经预约过该任务
+                List<Long> longList = appointService.getAppointUser(taskId);
+                if(longList.contains(userId))
+                    throw new ResultException("已经预约过该任务",12582);
+                //
+                appointService.appointTask(taskId,userId);
+                message.setMessageInfo("您已经预约成功，请等待预约结果。任务名称："+task.getTaskname());
+                messageService.addMessage(message);
                 return ResultUtils.success();
             //任务处于进行期
             case ongoing:
                 //判断接取人数是否已经足够
-                if(task.getMaxParticipator()==taskService.getWorkerNumber(simpleTaskOrderModel.getTaskId())){
+                if(task.getMaxParticipator()==taskService.getWorkerNumber(taskId)){
                     //加入等待列表
-                    appointService.appointTask(simpleTaskOrderModel.getTaskId(),simpleTaskOrderModel.getAcceptUserId());
+                    appointService.appointTask(taskId,userId);
+                    message.setMessageInfo("您已被加入等待列表，请耐心等候。任务名称："+task.getTaskname());
+                    messageService.addMessage(message);
                     return ResultUtils.success();
                 }else{
                     //创建任务
-                    TaskOrder taskOrder = new TaskOrder(simpleTaskOrderModel.getTaskId(), simpleTaskOrderModel.getAcceptUserId());
+                    TaskOrder taskOrder = new TaskOrder(taskId, userId);
                     taskOrderService.createTaskOrder(taskOrder);
+                    message.setMessageInfo("您已经成功接取任务，祝您任务顺利。任务名称："+task.getTaskname());
+                    messageService.addMessage(message);
                     return ResultUtils.success();
                 }
         }
@@ -101,13 +123,20 @@ public class TaskOrderController {
 
     /**
      * 删除一个任务订单信息
-     * @param taskOrderId 任务订单ID
+     * @param taskOrderId 任务Id
      * @return 返回操作成功信息
      */
     @RequestMapping("/taskOrder/delete")
-    public Result deleteTaskOrder(long taskOrderId){
-        taskOrderService.deleteTaskOrder(taskOrderId);
-        return ResultUtils.success();
+    public Result deleteTaskOrder(long taskOrderId,long userId,long taskId){
+        //如果-1则为预约中的任务
+        if(taskOrderId==-1){
+            appointService.cancelAppoint(taskId,userId);
+            return ResultUtils.success();
+        }
+        else {
+            taskOrderService.deleteTaskOrder(taskOrderId);
+            return ResultUtils.success();
+        }
     }
 
     /**

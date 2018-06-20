@@ -90,7 +90,7 @@ public class TaskOrderServiceImpl implements TaskOrderService {
             taskOrderModel.setRate(0);
             taskOrderModel.setTaskId(task.getTaskId());
             taskOrderModel.setTaskName(task.getTaskname());
-            taskOrderModel.setTaskOrderId(0);
+            taskOrderModel.setTaskOrderId(-1);
             //判断任务是否已经开始
             switch (task.getState()){
                 case appoint:
@@ -114,8 +114,8 @@ public class TaskOrderServiceImpl implements TaskOrderService {
     @Override
     public void createTaskOrder(TaskOrder taskOrder) {
         Task task = taskDao.getTask(taskOrder.getTaskId());
-        taskOrder.setBeginDate(new Date());
-        //taskOrder.setEndDate(task.getEndDate());
+        taskOrder.setBeginDate(task.getBeginDate());
+        taskOrder.setEndDate(task.getEndDate());
         taskOrder.setSubmited(TaskOrderState.unSubmitted);
         taskOrderDao.insertTaskOrder(taskOrder);
     }
@@ -139,7 +139,8 @@ public class TaskOrderServiceImpl implements TaskOrderService {
         //获取任务订单
         TaskOrder taskOrder = taskOrderDao.getTaskOrder(taskOrderId);
         //更改任务订单状态
-        taskOrderDao.changeTaskOrderState(taskOrderId,TaskOrderState.fail);
+        taskOrder.setSubmited(TaskOrderState.fail);
+        taskOrderDao.updateTaskOrder(taskOrder);
         //通知工人
         Message message = new Message();
         message.setTitle("任务通知");

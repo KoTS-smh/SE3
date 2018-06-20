@@ -423,7 +423,9 @@ public class TaskServiceImpl implements TaskService {
             }
 
             //修改发布者余额
-            double number = task.getUpRate().charAt(0)/10+1;
+            double number = 1;
+            if(task.getUpRate()!=null)
+                number = task.getUpRate().charAt(0)/10+1;
             dataAnalysisService.modifyCurrency(-(task.getReward()/number)*passNumber,task.getPostUserId());
 
         }
@@ -440,7 +442,7 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
 //    @Scheduled(cron = "0 0 0 * * ?")
-    @Scheduled(cron = "0 19 17 * * ?")
+    @Scheduled(cron = "0 48 14 * * ?")
     public void timeTask() {
         //获取所有未完成的任务订单 todo
 //        List<TaskOrder> taskOrderList = taskOrderDao.getTaskNeedEvaluate();
@@ -448,7 +450,7 @@ public class TaskServiceImpl implements TaskService {
 //        for(TaskOrder taskOrder:taskOrderList){
 //            evaluateService.evaluateAnnotation(taskOrder.getTaskOrderId());
 //        }
-        evaluateService.evaluateAnnotation();
+//        evaluateService.evaluateAnnotation();
         //获取所有预约中未开始的任务
         List<Task> appointTaskList = taskDao.getAllAppointTask();
         //获取所有进行中未结算的任务
@@ -476,10 +478,12 @@ public class TaskServiceImpl implements TaskService {
 
         //判断是否到达时间需要任务结算
         for(Task aTask:ongoingTaskList){
+            System.out.println(aTask.getTaskname());
             compareTime = aTask.getEndDate();
             //如果当前时间超过结束时间
             if(compareTime.getTime()<=nowTime.getTime()){
                 //结算任务
+                System.out.println("准备开始结算");
                 finishTask(aTask.getTaskId());
             }
         }

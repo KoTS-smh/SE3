@@ -61,6 +61,7 @@ public class HonorServiceImpl implements HonorService {
                     honorMessage.setFrameTagLevel(frameTagLevel+1);
                 break;
         }
+        System.out.println("point="+honorMessage.getFrameTagPoint());
         //修改工人数据库的荣誉等级
         honorDao.setTagLevel(honorMessage);
     }
@@ -213,6 +214,7 @@ public class HonorServiceImpl implements HonorService {
      */
     @Override
     public void updateHonorMessage(long userId, AnnotationType annotationType) {
+        System.out.println(userId+":"+annotationType);
         switch (annotationType){
             case option1:
                 honorOfFrameTag(userId);

@@ -91,7 +91,7 @@ public interface TaskOrderDao {
      * @param taskId 任务Id
      * @return 工人数目 number
      */
-    @Select("select count(*) from MRGSDB.taskOrder where taskId = #{taskId}")
+    @Select("select count(*) from MRGSDB.taskOrder where taskId = #{taskId} and submited <> 2")
     int getAcceptNum(@Param("taskId") long taskId);
 
     /**
