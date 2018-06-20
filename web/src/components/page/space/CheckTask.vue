@@ -256,7 +256,7 @@ export default {
                     }
                 });
                 if(!isAccepted) {
-                    axios.get("http://localhost:8080/taskOrder/appoint", {
+                    axios.get("http://localhost:8080/taskOrder/createTaskOrder", {
                         params:{
                             taskId: this.taskData.taskId,
                             userId: localStorage.getItem("userId")
