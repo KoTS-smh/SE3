@@ -8,7 +8,7 @@
             <el-col :span="18">
                 <div class="card-info" style="border-bottom:1px solid gainsboro;height:30px">
                     <span class="large-text">&nbsp;&nbsp;{{ name }} - {{ id }}</span>
-        
+
                 </div>
 
                 <div class="task-info" style="margin-top:10px">
@@ -29,8 +29,8 @@
                 </div>
             </el-col>
         </el-row>
-       
-    </div>    
+
+    </div>
 </template>
 
 
@@ -121,8 +121,8 @@ export default {
     }
 
     .card-footer {
-    padding: 0rem;
-    text-align: left;
+        padding: 0rem;
+        text-align: left;
 
     .left {
       color: grey;
@@ -140,7 +140,7 @@ export default {
         font-size: 1.4rem;
         margin-right: 0.5rem;
       }
-      
+
     }
     .el-tag {
       cursor: pointer;

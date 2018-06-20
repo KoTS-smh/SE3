@@ -1,16 +1,20 @@
 package com.sec.server.service.serviceImpl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.sec.server.domain.Annotation;
 import com.sec.server.domain.Task;
 import com.sec.server.domain.TaskOrder;
-import com.sec.server.enums.AnnotationType;
 import com.sec.server.exception.ResultException;
+import com.sec.server.model.Coordinate;
 import com.sec.server.repository.ImgUrlDao;
 import com.sec.server.repository.TaskDao;
 import com.sec.server.repository.TaskOrderDao;
 import com.sec.server.service.AnnotationService;
 import com.sec.server.service.EvaluateService;
 import com.sec.server.utils.BRISQUE;
+import com.sec.server.utils.DataNode;
+import com.sec.server.utils.OutlierNodeDetect;
+import com.sec.server.utils.OutlierNodeDetectPlus;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -21,10 +25,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -32,6 +34,7 @@ import java.util.*;
 
 import static java.lang.Math.log;
 import static java.lang.Math.sqrt;
+import static org.opencv.core.Core.dct;
 import static org.opencv.core.Core.meanStdDev;
 
 @Service("evaluateService")
@@ -40,7 +43,6 @@ public class EvaluateServiceImpl implements EvaluateService {
     private final int bigNumStandard = 36;
     private final int smallNumTimes = 1;
     private final int bigNumTimes = 3;
-
 
     @Resource(name = "annotationService")
     private AnnotationService annotationService;
@@ -105,33 +107,31 @@ public class EvaluateServiceImpl implements EvaluateService {
         }
 
         for(Task task:tasks){
-            // todo
-            List<Long> taskOrderIds = taskOrderDao.getAllTaskOrderIdOfATask(task.getTaskId());
-            for(long id:taskOrderIds){
-                taskOrderDao.setQuality(Math.random()*20+80,id);
-            }
-            //
             int num = task.getImgUrls().size();
             switch (task.getAnnotationType()){
                 case option1:
+                    evaluateRect(task.getTaskId());
                     break;
                 case option2:
+                    evaluateClassified(task.getTaskId());
                     break;
                 case option3:
+                    evaluateRegion(task.getTaskId());
                     break;
                 case option4:
+                    evaluateText(task.getTaskId());
                     break;
             }
         }
     }
 
-    private void evaluateText(long taskId,int num){
+    private void evaluateClassified(long taskId){
         List<TaskOrder> taskOrders = taskOrderDao.getAllTaskOrderOfATask(taskId);
 
         //去除系统认为是欺骗的标注信息
         for(TaskOrder taskOrder:taskOrders){
-            if(cheatFindOfText(taskOrder.getTaskOrderId())){
-                taskOrderDao.setQuality(10,taskOrder.getTaskOrderId());
+            if(cheatFindOfClassified(taskOrder.getTaskOrderId())){
+                taskOrderDao.setQuality(0,taskOrder.getTaskOrderId());
                 taskOrders.remove(taskOrder);
             }
         }
@@ -139,7 +139,286 @@ public class EvaluateServiceImpl implements EvaluateService {
         //任务可用数据过少，只能设置一个保守的80分，无法计算质量
         if(taskOrders.size()<3){
             for(TaskOrder taskOrder:taskOrders){
-                taskOrderDao.setQuality(80,taskOrder.getTaskOrderId());
+                taskOrderDao.setQuality(75,taskOrder.getTaskOrderId());
+            }
+        }
+
+        //按完成度由小到大排序
+        taskOrders.sort(Comparator.comparingInt(TaskOrder::getFinishedPics));
+        //得到最大能进行计算的图片数
+        int maxNum = taskOrders.get(taskOrders.size()-1).getFinishedPics();
+        if(taskOrders.get(taskOrders.size()-2).getFinishedPics()<maxNum){
+            maxNum = taskOrders.get(taskOrders.size()-2).getFinishedPics();
+            if(taskOrders.get(taskOrders.size()-3).getFinishedPics()<maxNum){
+                maxNum = taskOrders.get(taskOrders.size()-3).getFinishedPics();
+            }
+        }
+        HashMap<Long,List<Double>> points = new HashMap<>();
+
+        for(int i=1;i<=maxNum;i++){
+            List<Long> tmp = new ArrayList<>();
+            for(int j=taskOrders.size()-1;taskOrders.get(j).getFinishedPics()>=i;i--){
+                tmp.add(taskOrders.get(j).getTaskOrderId());
+            }
+            HashMap<Long,Double> thisPoint = getClassifiedPoint(tmp,i);
+            Set<Long> keys = thisPoint.keySet();
+            for(long id:keys){
+                points.get(id).add(thisPoint.get(id));
+            }
+        }
+        if(maxNum<taskOrders.get(taskOrders.size()-1).getFinishedPics()){
+            for(int i=0;i<taskOrders.get(taskOrders.size()-1).getFinishedPics()-maxNum;i++){
+                points.get(taskOrders.get(taskOrders.size()-1).getTaskOrderId()).add((double)75);
+            }
+        }
+
+        if(maxNum<taskOrders.get(taskOrders.size()-2).getFinishedPics()){
+            for(int i=0;i<taskOrders.get(taskOrders.size()-2).getFinishedPics()-maxNum;i++){
+                points.get(taskOrders.get(taskOrders.size()-2).getTaskOrderId()).add((double)75);
+            }
+        }
+
+        Set<Long> keys = points.keySet();
+        for(long id:keys){
+            List<Double> pts = points.get(id);
+            double tmp = 0;
+            for(double d:pts){
+                tmp+=d;
+            }
+            taskOrderDao.setQuality(tmp/pts.size(),id);
+        }
+
+    }
+
+    private HashMap<Long,Double> getClassifiedPoint(List<Long> taskOrderIds,int pictureNum){
+        HashMap<Long,Double> result = new HashMap<>();
+        HashMap<Long,String> words = new HashMap<>();
+        int num=0;
+        for(long id:taskOrderIds){
+            Annotation annotation = annotationService.getAnnotation(id,pictureNum);
+            words.put(id,annotation.getWords());
+            result.put(id, (double) 0);
+            if(num==0){
+                num = annotation.getWords().split(",").length;
+            }
+        }
+        int splitPoint = 100/num;
+        for(int i=0;i<num;i++){
+            HashMap<String,Integer> tmp = new HashMap<>();
+            for(Long id:taskOrderIds){
+                String temp = words.get(id).split(",")[i];
+                if (!tmp.containsKey(temp)) {
+                    tmp.put(temp, 1);
+                } else {
+                    tmp.put(temp, tmp.get(temp) + 1);
+                }
+            }
+            for(Long id:taskOrderIds){
+                double pt = getClassifiedFitness(tmp,taskOrderIds.size(),words.get(id).split(",")[i],splitPoint);
+                result.put(id,result.get(id)+pt);
+            }
+        }
+
+        return result;
+    }
+
+
+    private double getClassifiedFitness(HashMap<String,Integer> tags,int totalNum,String s,double maxPoint){
+        if(tags.get(s)!=null){
+            return tags.get(s)/totalNum*maxPoint;
+        }
+        return 0;
+    }
+
+    //////////////////////////////////////////////////
+    //基于密度的离群点检测 lof算法，就像焦点，实际图片可能有多个焦点，所以基于密度
+    private void evaluateRect(long taskId){
+        List<TaskOrder> taskOrders = taskOrderDao.getAllTaskOrderOfATask(taskId);
+
+        //任务可用数据过少，只能设置一个保守的75分，无法计算质量，至少5个数据才能计算
+        if(taskOrders.size()<5){
+            for(TaskOrder taskOrder:taskOrders){
+                taskOrderDao.setQuality(75,taskOrder.getTaskOrderId());
+            }
+        }
+
+        //按完成度由小到大排序
+        taskOrders.sort(Comparator.comparingInt(TaskOrder::getFinishedPics));
+        //得到最大能进行计算的图片数
+        int maxNum = taskOrders.get(taskOrders.size()-5).getFinishedPics();
+        HashMap<Long,List<Double>> points = new HashMap<>();
+
+        for(int i=1;i<=maxNum;i++){
+            List<Long> tmp = new ArrayList<>();
+            for(int j=taskOrders.size()-1;taskOrders.get(j).getFinishedPics()>=i;i--){
+                tmp.add(taskOrders.get(j).getTaskOrderId());
+            }
+            HashMap<Long,Double> thisPoint = getRectPoint(tmp,i);
+            Set<Long> keys = thisPoint.keySet();
+            for(long id:keys){
+                points.get(id).add(thisPoint.get(id));
+            }
+        }
+
+        for(int i=taskOrders.size()-4;i<taskOrders.size();i++){
+            for(int j=0;j<taskOrders.get(i).getFinishedPics()-maxNum;j++){
+                points.get(taskOrders.get(i).getTaskOrderId()).add(75.0);
+            }
+        }
+
+        Set<Long> keys = points.keySet();
+        for(long id:keys){
+            List<Double> pts = points.get(id);
+            double tmp = 0;
+            for(double d:pts){
+                tmp+=d;
+            }
+            taskOrderDao.setQuality(tmp/pts.size(),id);
+        }
+
+    }
+
+    private HashMap<Long,Double> getRectPoint(List<Long> taskOrderIds,int pictureNum){
+        HashMap<Long,Double> result = new HashMap<>();
+        ArrayList<DataNode> dpoints = new ArrayList<DataNode>();
+        for(Long id:taskOrderIds){
+            Annotation annotation = annotationService.getAnnotation(id,pictureNum);
+            List<Coordinate> coordinates = JSONArray.parseArray(annotation.getCoordinates(),Coordinate.class);
+            dpoints.add(new DataNode(String.valueOf(id),getCenter(coordinates)));
+        }
+        OutlierNodeDetect lof = new OutlierNodeDetect();
+        List<DataNode> nodeList = lof.getOutlierNode(dpoints);
+        for (DataNode node : nodeList) {
+            //这个值有待调整
+            if(node.getLof()>=10){
+                result.put(Long.parseLong(node.getNodeName()),15.0);
+            }else {
+                result.put(Long.parseLong(node.getNodeName()),90.0);
+            }
+        }
+        return result;
+    }
+
+    private double[] getCenter(List<Coordinate> coordinates){
+        double result[] =new double[2];
+        result[0] = (coordinates.get(0).getX()+coordinates.get(1).getX())/2;
+        result[1] = (coordinates.get(0).getY()+coordinates.get(1).getY())/2;
+        return result;
+    }
+
+    /////////////////////////////////////////////////
+    //边界更为重要，同样基于密度，但实现不同
+    private void evaluateRegion(long taskId){
+        List<TaskOrder> taskOrders = taskOrderDao.getAllTaskOrderOfATask(taskId);
+
+        //任务可用数据过少，只能设置一个保守的75分，无法计算质量，至少5个数据才能计算，这里不一定5个
+        if(taskOrders.size()<5){
+            for(TaskOrder taskOrder:taskOrders){
+                taskOrderDao.setQuality(75,taskOrder.getTaskOrderId());
+            }
+        }
+
+        //按完成度由小到大排序
+        taskOrders.sort(Comparator.comparingInt(TaskOrder::getFinishedPics));
+        //得到最大能进行计算的图片数
+        int maxNum = taskOrders.get(taskOrders.size()-5).getFinishedPics();
+        HashMap<Long,List<Double>> points = new HashMap<>();
+
+        for(int i=1;i<=maxNum;i++){
+            List<Long> tmp = new ArrayList<>();
+            for(int j=taskOrders.size()-1;taskOrders.get(j).getFinishedPics()>=i;i--){
+                tmp.add(taskOrders.get(j).getTaskOrderId());
+            }
+            HashMap<Long,Double> thisPoint = getRegionPoint(tmp,i);
+            Set<Long> keys = thisPoint.keySet();
+            for(long id:keys){
+                points.get(id).add(thisPoint.get(id));
+            }
+        }
+
+        for(int i=taskOrders.size()-4;i<taskOrders.size();i++){
+            for(int j=0;j<taskOrders.get(i).getFinishedPics()-maxNum;j++){
+                points.get(taskOrders.get(i).getTaskOrderId()).add(75.0);
+            }
+        }
+
+        Set<Long> keys = points.keySet();
+        for(long id:keys){
+            List<Double> pts = points.get(id);
+            double tmp = 0;
+            for(double d:pts){
+                tmp+=d;
+            }
+            taskOrderDao.setQuality(tmp/pts.size(),id);
+        }
+    }
+
+    private HashMap<Long,Double> getRegionPoint(List<Long> taskOrderIds,int pictureNum){
+        HashMap<Long,Double> result = new HashMap<>();
+        ArrayList<DataNode> dpoints = new ArrayList<DataNode>();
+        HashMap<Long,Integer> coordinateNum = new HashMap<>();
+        HashMap<Long,Integer> errorCoordinateNum = new HashMap<>();
+        for(Long id:taskOrderIds){
+            Annotation annotation = annotationService.getAnnotation(id,pictureNum);
+            List<Coordinate> coordinates = JSONArray.parseArray(annotation.getCoordinates(),Coordinate.class);
+            for(int i=0;i<coordinates.size();i++){
+                double d[]={coordinates.get(i).getX(),coordinates.get(i).getY()};
+                dpoints.add(new DataNode(String.valueOf(id)+"-"+i,d));
+            }
+            coordinateNum.put(id,coordinates.size());
+            errorCoordinateNum.put(id,0);
+        }
+        OutlierNodeDetectPlus lof = new OutlierNodeDetectPlus();
+        List<DataNode> nodeList = lof.getOutlierNode(dpoints);
+
+        for (DataNode node : nodeList) {
+            //这个值有待调整
+            if(node.getLof()>=10){
+                long id = Long.parseLong(node.getNodeName().split("-")[0]);
+                errorCoordinateNum.put(id,errorCoordinateNum.get(id)+1);
+            }
+        }
+
+        for(long id:taskOrderIds){
+            if(errorCoordinateNum.get(id)/coordinateNum.get(id)>=0.4){
+                result.put(id,15.0);
+            }else if(errorCoordinateNum.get(id)/coordinateNum.get(id)<=0.1){
+                result.put(id,90.0);
+            }else {
+                result.put(id,60.0);
+            }
+        }
+        //欺骗检验
+        int total = 0;
+        for(int i:coordinateNum.values()){
+            total+=i;
+        }
+        int avg = total/taskOrderIds.size();
+        for(long id:taskOrderIds){
+            if(coordinateNum.get(id)/avg<=0.1){
+                result.put(id,0.0);
+            }
+        }
+
+        return result;
+    }
+
+    //////////////////////////////////////////////////
+    private void evaluateText(long taskId){
+        List<TaskOrder> taskOrders = taskOrderDao.getAllTaskOrderOfATask(taskId);
+
+        //去除系统认为是欺骗的标注信息
+        for(TaskOrder taskOrder:taskOrders){
+            if(cheatFindOfText(taskOrder.getTaskOrderId())){
+                taskOrderDao.setQuality(0,taskOrder.getTaskOrderId());
+                taskOrders.remove(taskOrder);
+            }
+        }
+
+        //任务可用数据过少，只能设置一个保守的75分，无法计算质量
+        if(taskOrders.size()<3){
+            for(TaskOrder taskOrder:taskOrders){
+                taskOrderDao.setQuality(75,taskOrder.getTaskOrderId());
             }
         }
 
@@ -162,19 +441,19 @@ public class EvaluateServiceImpl implements EvaluateService {
             HashMap<Long,Double> thisPoint = getTextPoint(tmp,i);
             Set<Long> keys = thisPoint.keySet();
             for(long id:keys){
-                points.get(id).add(thisPoint.get(id));;
+                points.get(id).add(thisPoint.get(id));
             }
         }
 
         if(maxNum<taskOrders.get(taskOrders.size()-1).getFinishedPics()){
             for(int i=0;i<taskOrders.get(taskOrders.size()-1).getFinishedPics()-maxNum;i++){
-                points.get(taskOrders.get(taskOrders.size()-1).getTaskOrderId()).add((double)80);
+                points.get(taskOrders.get(taskOrders.size()-1).getTaskOrderId()).add((double)75);
             }
         }
 
         if(maxNum<taskOrders.get(taskOrders.size()-2).getFinishedPics()){
             for(int i=0;i<taskOrders.get(taskOrders.size()-2).getFinishedPics()-maxNum;i++){
-                points.get(taskOrders.get(taskOrders.size()-2).getTaskOrderId()).add((double)80);
+                points.get(taskOrders.get(taskOrders.size()-2).getTaskOrderId()).add((double)75);
             }
         }
 
@@ -189,38 +468,68 @@ public class EvaluateServiceImpl implements EvaluateService {
         }
     }
 
-    private void evaluateCoordinate(long taskId){
-
-    }
-
     private HashMap<Long,Double> getTextPoint(List<Long> taskOrderIds,int pictureNum){
         HashMap<Long,Double> result = new HashMap<>();
         HashMap<Long,String> words = new HashMap<>();
         for(long id:taskOrderIds){
             Annotation annotation = annotationService.getAnnotation(id,pictureNum);
             words.put(id,annotation.getWords());
-            result.put(id,(double)new Random().nextInt(100));
         }
-        //tf-idf算法
+        //由于标注句子短，关键词本来就少，放弃采用tf-idf算法，默认处理过的word都是关键词，出去只出现过一次的项，排除笔误
+        HashMap<String,Integer> tags = new HashMap<>();
+        for(long id:taskOrderIds){
+            String tmp[] = words.get(id).split(",");
+            for(String temp:tmp){
+                if (!tags.containsKey(temp)) {
+                    tags.put(temp, 1);
+                } else {
+                    tags.put(temp, tags.get(temp) + 1);
+                }
+            }
+        }
+        //除去误差项
+        tags.entrySet().removeIf(item -> item.getValue() <= 1);
+
+        for(long id:taskOrderIds){
+            result.put(id,getFitness(tags,string2Map(words.get(id))));
+        }
         return result;
     }
 
-
-    //粗略计算标注信息的符合程度
-    private double getFitness(HashMap<String,Integer> tags,HashMap<String,Integer> thisTag){
-        double totalNum = 0;
-        for(int num:tags.values()){
-            totalNum += num;
-        }
-        Set<String> keys = thisTag.keySet();
-        double points = 0;
-        for(Map.Entry<String,Integer> entry:tags.entrySet()){
-            if(keys.contains(entry.getKey())){
-                points+=(entry.getValue()/totalNum);
+    private  HashMap<String,Integer> string2Map(String s){
+        HashMap<String,Integer> tags = new HashMap<>();
+        String tmp[] = s.split(",");
+        for(String temp:tmp){
+            if (!tags.containsKey(temp)) {
+                tags.put(temp, 1);
+            } else {
+                tags.put(temp, tags.get(temp) + 1);
             }
         }
-        return points*100;
+        return tags;
     }
+
+    //余弦相似度计算标注信息的符合程度
+    private double getFitness(HashMap<String,Integer> tags,HashMap<String,Integer> thisTag){
+        double modulo1 = 0.00;
+        double modulo2 = 0.00;
+        double product = 0.00;
+
+        Set<String> keyWords = tags.keySet();
+
+        for(String s:keyWords){
+            modulo1+=tags.get(s)*tags.get(s);
+            if(thisTag.get(s)!=null){
+                modulo2+=thisTag.get(s)*thisTag.get(s);
+                product+=tags.get(s)*thisTag.get(s);
+            }
+        }
+        modulo1 = Math.sqrt(modulo1);
+        modulo2 = Math.sqrt(modulo2);
+        return product/(modulo1*modulo2)*100;
+    }
+
+    //////////////////////////////////////////////////////////
 
     private boolean cheatFindOfText(long taskOrderId){
         List<Annotation> annotations = annotationService.getAnnotations(taskOrderId);
@@ -243,7 +552,7 @@ public class EvaluateServiceImpl implements EvaluateService {
         return count / texts.size() >= 0.3;
     }
 
-    private boolean cheatFindOfClassified(long taskOrderId,int num){
+    private boolean cheatFindOfClassified(long taskOrderId){
         List<Annotation> annotations = annotationService.getAnnotations(taskOrderId);
         List<String> words = new ArrayList<>();
         for(Annotation annotation:annotations){
@@ -251,14 +560,16 @@ public class EvaluateServiceImpl implements EvaluateService {
         }
         int count =0;
         for(String s:words){
-            if(new HashSet<String>(Arrays.asList(s.split(","))).size()==1){
+            if(new HashSet<>(Arrays.asList(s.split(","))).size()==1){
                 count++;
             }
         }
         return count/words.size()>=0.3;
     }
 
-
+    /**************************************************************************************
+     标注质量，任务质量分割线
+     **************************************************************************************/
     @Override
     public void evaluateTaskQuality(long taskId) {
         System.loadLibrary("opencv_java341");
@@ -289,11 +600,8 @@ public class EvaluateServiceImpl implements EvaluateService {
         taskDao.setTaskQuality(taskId,Double.parseDouble(df.format(result)));
     }
 
-
-
-    //##############################################################
     private double getPictureQuality(String imgUrl){
-        System.loadLibrary("opencv_java341");
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
         try {
             URL url = new URL(imgUrl);
             //打开链接
@@ -306,6 +614,7 @@ public class EvaluateServiceImpl implements EvaluateService {
             InputStream inStream = conn.getInputStream();
             //把输入流转换成mat对象
             BufferedImage bufferedImage = ImageIO.read(inStream);
+            //转灰度图
             Mat mat = img2Mat(bufferedImage);
             //估算图片质量
             return 100 - new BRISQUE().brisquescore(mat);
@@ -425,22 +734,6 @@ public class EvaluateServiceImpl implements EvaluateService {
         return out;
     }
 
-//    public static void main(String s[]){
-//        System.out.println(System.getProperty("java.library.path"));
-//        OpencvLibrary.loadLibraries();
-//        Mat mat;
-//        try {
-//            //使用java2D读取图像
-//            String filePath = "C:\\Users\\18333\\Desktop\\picTest\\5.bmp";
-//            BufferedImage image =ImageIO.read(new File(filePath));
-//            mat = new EvaluateServiceImpl().img2Mat(image);
-//            System.out.println(new BRISQUE().brisquescore(mat));
-//        } catch (Exception e) {
-//            System.out.println("读取图像出现异常!");
-//            e.printStackTrace();
-//        }
-//    }
-
     private int[] getRandoms(int min, int max, int count){
         int[] randoms = new int[count];
         List<Integer> listRandom = new ArrayList<Integer>();
@@ -466,4 +759,20 @@ public class EvaluateServiceImpl implements EvaluateService {
         Random random = new Random();
         return random.nextInt( max - min + 1 ) + min;
     }
+
+
+//    public static void main(String s[]){
+//        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+//        Mat mat;
+//        try {
+//            //使用java2D读取图像
+//            String filePath = "C:\\Users\\18333\\Desktop\\picTest\\5.bmp";
+//            BufferedImage image =ImageIO.read(new File(filePath));
+//            mat = new EvaluateServiceImpl().img2Mat(image);
+//            System.out.println(new BRISQUE().brisquescore(mat));
+//        } catch (Exception e) {
+//            System.out.println("读取图像出现异常!");
+//            e.printStackTrace();
+//        }
+//    }
 }
